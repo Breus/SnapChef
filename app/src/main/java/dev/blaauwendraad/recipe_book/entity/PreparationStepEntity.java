@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "step")
-public class PreparationStep extends PanacheEntityBase {
+public class PreparationStepEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
-    public Recipe recipe;
+    public RecipeEntity recipe;
 
     @Column(columnDefinition = "text", nullable = false)
     public String description;

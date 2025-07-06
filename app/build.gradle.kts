@@ -20,6 +20,7 @@ dependencies {
     implementation("io.quarkus:quarkus-jdbc-postgresql")
 
     testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 group = "dev.blaauwendraad"

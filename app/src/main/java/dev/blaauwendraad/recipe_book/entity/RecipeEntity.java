@@ -11,22 +11,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ingredient")
-public class Ingredient extends PanacheEntityBase {
+@Table(name = "recipe")
+public class RecipeEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id", referencedColumnName = "id")
-    public Recipe recipe;
-
-    @Column(length = 255, nullable = false)
-    public String name;
-
-    @Column(length = 100)
-    public String quantity;
-
     @Column(nullable = false)
-    public Integer position = 0;
+    public String title;
+
+    @Column(columnDefinition = "text")
+    public String description;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    public AccountEntity author;
 }
