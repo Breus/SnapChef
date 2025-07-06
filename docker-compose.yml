@@ -27,7 +27,8 @@ services:
     depends_on:
         - postgres
     volumes:
-      - ./app/db/pgadmin-servers.json:/pgadmin4/servers.json:ro
+      - ./app/db/servers.json:/pgadmin4/servers.json:ro
+      - ./pgpass:/pgpass:ro
 
   quarkus_app:
     build:

@@ -1,0 +1,3 @@
+# Copy this file to `.pgpass` and fill in real credentials.
+# Format: hostname:port:database:username:password
+postgres:5432:recipe_book:quarkus_user:<password>

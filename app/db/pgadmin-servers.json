@@ -7,6 +7,7 @@
       "Port": 5432,
       "MaintenanceDB": "recipe_book",
       "Username": "quarkus_user",
+      "Pass_File": "/pgpass",
       "SSLMode": "prefer"
     }
   }
