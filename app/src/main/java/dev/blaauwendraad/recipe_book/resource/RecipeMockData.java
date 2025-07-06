@@ -49,7 +49,7 @@ public class RecipeMockData {
         // Create first recipe - Classic Chocolate Chip Cookies
         RecipeDTO cookies = new RecipeDTO(
             1,
-            "Classic Chocolate Chip Cookies!!!",
+            "Classic Chocolate Chip Cookies",
             "Soft and chewy chocolate chip cookies that are perfect for any occasion. A family favorite recipe passed down through generations.",
             "John Doe",
             cookiesIngredients,
