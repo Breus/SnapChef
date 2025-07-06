@@ -32,7 +32,7 @@ services:
   quarkus_app:
     build:
       context: .
-      dockerfile: app/src/main/docker/Dockerfile.jvm
+      dockerfile: ./app/src/main/docker/Dockerfile.jvm
     container_name: quarkus_app
     environment:
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/recipe_book
