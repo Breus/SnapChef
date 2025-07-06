@@ -19,8 +19,9 @@ services:
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: b.blaauwendraad@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: placeholder
-      PGADMIN_CONFIG_SERVER_MODE: 'True'
+      PGADMIN_DEFAULT_PASSWORD:  ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: ${PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED:-True}
+      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE:-True}
     ports:
       - "8081:80"
     depends_on:
