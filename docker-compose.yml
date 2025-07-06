@@ -10,6 +10,8 @@ services:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ./app/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./app/db/schema:/docker-entrypoint-initdb.d/schema
 
   pg_admin:
     image: dpage/pgadmin4:latest
@@ -18,10 +20,13 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: b.blaauwendraad@gmail.com
       PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - "8081:80"
     depends_on:
         - postgres
+    volumes:
+      - ./app/db/pgadmin-servers.json:/pgadmin4/pgadmin-servers.json:ro
 
   quarkus_app:
     build:

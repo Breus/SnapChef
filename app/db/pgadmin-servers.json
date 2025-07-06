@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "PostgresDB",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "recipe_book",
+      "Username": "quarkus_user",
+      "SSLMode": "prefer"
+    }
+  }
+}
