@@ -1,0 +1,2 @@
+services:
+  quarkus_app: !reset null
