@@ -1,4 +1,5 @@
 # Recipe Book application
+
 The Recipe Book will be a web application where users can save their recipes along with the corresponding ingredient
 list. We're not aiming to compete with existing recipe apps or services. Instead, the main goal is to learn the
 technologies involved in building a modern, full-featured web application. If the app turns out to be useful to others,
@@ -9,24 +10,28 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 
 * Any user can see all recipes
 * A recipe consists of two things:
-  * A (shopping) list of ingredients
-  * A list of steps to prepare the meal
+    * A (shopping) list of ingredients
+    * A list of steps to prepare the meal
 * A logged-in user can easily insert a new recipe
 * A logged-in user can easily edit an existing recipe
 
 ## Future Features Ideas
+
 * A user can select what they crave, e.g. “something with rice, chicken, …” and all matching recipes will be shown
 * A user can easily share the recipe's ingredient list with someone via WhatsApp for grocery shopping
 
 ## Used Technologies
 
 ### Infrastructure
+
 * Container orchestration: Docker-compose
 
 ### Database
-* PostgreSQL 
+
+* PostgreSQL
 
 ### Backend
+
 * Java
 * Web stack: Quarkus imperative, HotSpot
 * Serializer: Jackson
@@ -34,6 +39,7 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 * ORM: Hibernate ORM, and Panache
 
 ### Frontend
+
 * TypeScript
 * JavaScript Framework: VueJs
 * CSS Framework: Tailwind
@@ -41,6 +47,7 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 * Node package manager: pnpm
 
 ## Repository layout
+
 ```plain text
 project-root/
 ├── app/ ← Quarkus application
@@ -59,17 +66,32 @@ project-root/
 ├── ui/ ← The headless Vue.js frontend
 │ ├── public/
 │ ├── src/
-│ │ ├── components/
-│ │ ├── views/
 │ │ ├── api/ ← API clients talking to Quarkus
-│ │ └── main.ts
+│ │ ├── assets/
+│ │ ├── components/
+│ │ ├── models/ 
+│ │ ├── router/ 
+│ │ ├── App.vue
+│ │ ├── main.ts
+│ │ ├── style.css
+│ │ └── vite-env.d.ts ← TypeScript environment definitions
+│ ├── .gitignore
+│ ├── .prettierignore
+│ ├── .prettierrc
+│ ├── .eslint.config.js
 │ ├── index.html
-│ ├── vite.config.ts 
 │ ├── package.json
-│ └── tsconfig.json
+│ ├── pnpm-lock.yaml
+│ ├── pnpm-workspace.yaml
+│ ├── stylelint.config.js
+│ ├── tsconfig.app.json ← TypeScript configuration for the app
+│ ├── tsconfig.json ← TypeScript configuration for the entire project
+│ ├── tsconfig.node.json ← TypeScript configuration for Node.js
+│ └── vite.config.ts
 │
+├── docker-compose.override.yml
 ├── docker-compose.yml ← Compose backend/frontend/db
-├── README.md
+└── README.md
 ```
 
 ## Running the application in dev mode
