@@ -16,14 +16,14 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 
 ## Future Features Ideas
 * A user can select what they crave, e.g. “something with rice, chicken, …” and all matching recipes will be shown
-* A user can easily share the ingredient with someone via WhatsApp for grocery shopping
+* A user can easily share the recipe's ingredient list with someone via WhatsApp for grocery shopping
 
 ## Used Technologies
 
 ### Infrastructure
 * Container orchestration: Docker-compose
 
-### Datatabase
+### Database
 * PostgreSQL 
 
 ### Backend
