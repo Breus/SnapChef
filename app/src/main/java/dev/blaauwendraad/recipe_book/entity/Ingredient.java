@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipebook.entity;
+package dev.blaauwendraad.recipe_book.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
