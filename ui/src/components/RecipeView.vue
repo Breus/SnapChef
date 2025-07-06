@@ -14,8 +14,28 @@
         </button>
       </div>
 
+      <!-- Loading State -->
+      <div v-if="isLoading" class="py-12 text-center">
+        <div class="mb-4 text-6xl">⏳</div>
+        <h3 class="mb-2 text-xl font-medium text-gray-900">Loading recipe...</h3>
+        <p class="text-gray-600">Please wait while we fetch the recipe details.</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="py-12 text-center">
+        <div class="mb-4 text-6xl">❌</div>
+        <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
+        <p class="text-gray-600">{{ error }}</p>
+        <button 
+          @click="fetchRecipe" 
+          class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700"
+        >
+          Try Again
+        </button>
+      </div>
+
       <!-- Recipe Not Found -->
-      <div v-if="!recipe" class="py-12 text-center">
+      <div v-else-if="!recipe" class="py-12 text-center">
         <div class="mb-4 text-6xl">🔍</div>
         <h3 class="mb-2 text-xl font-medium text-gray-900">Recipe not found</h3>
         <p class="text-gray-600">The recipe you're looking for doesn't exist.</p>
@@ -29,7 +49,7 @@
           <p class="mb-4 text-lg text-gray-600">{{ recipe.description }}</p>
           <div class="flex items-center text-sm text-gray-500">
             <span class="mr-1">By </span>
-            <span class="font-medium">{{ getAuthorName(recipe.author_id) }}</span>
+            <span class="font-medium">{{ recipe.author }}</span>
           </div>
         </div>
 
@@ -77,10 +97,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { mockRecipes, getUserById, type Recipe } from "../data/mockRecipes";
+import { getRecipeById } from "../api/recipes";
+import type {Recipe} from "../models/Recipe.ts";
 
 const route = useRoute();
 const recipe = ref<Recipe | null>(null);
+const isLoading = ref<boolean>(true);
+const error = ref<string | null>(null);
 
 const sortedIngredients = computed(() => {
   if (!recipe.value) return [];
@@ -92,13 +115,22 @@ const sortedSteps = computed(() => {
   return [...recipe.value.steps].sort((a, b) => a.position - b.position);
 });
 
-const getAuthorName = (authorId: number): string => {
-  const user = getUserById(authorId);
-  return user ? user.username : "Unknown Chef";
+const fetchRecipe = async () => {
+  try {
+    isLoading.value = true;
+    const recipeId = parseInt(route.params.id as string);
+    recipe.value = await getRecipeById(recipeId);
+    error.value = null;
+  } catch (err) {
+    console.error("Failed to load recipe:", err);
+    error.value = "Failed to load recipe. Please try again later.";
+    recipe.value = null;
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(() => {
-  const recipeId = parseInt(route.params.id as string);
-  recipe.value = mockRecipes.find(r => r.id === recipeId) || null;
+  fetchRecipe();
 });
 </script>
