@@ -19,14 +19,14 @@ services:
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: b.blaauwendraad@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_DEFAULT_PASSWORD: placeholder
+      PGADMIN_CONFIG_SERVER_MODE: 'True'
     ports:
       - "8081:80"
     depends_on:
         - postgres
     volumes:
-      - ./app/db/pgadmin-servers.json:/pgadmin4/pgadmin-servers.json:ro
+      - ./app/db/pgadmin-servers.json:/pgadmin4/servers.json:ro
 
   quarkus_app:
     build:
