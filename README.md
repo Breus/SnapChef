@@ -64,7 +64,6 @@ project-root/
 │ └── data/
 │
 ├── ui/ ← The headless Vue.js frontend
-│ ├── public/
 │ ├── src/
 │ │ ├── api/ ← API clients talking to Quarkus
 │ │ ├── assets/

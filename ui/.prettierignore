@@ -1,2 +1,3 @@
 # Ignore artifacts:
-public
+dist
+node_modules
