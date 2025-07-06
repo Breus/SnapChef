@@ -14,10 +14,10 @@
         <div
           v-for="recipe in recipes"
           :key="recipe.id"
-          class="overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg"
+          class="flex flex-col h-full overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg"
         >
           <!-- Recipe Content -->
-          <div class="p-6">
+          <div class="flex-1 flex flex-col p-6">
             <h3 class="mb-2 text-xl font-semibold text-gray-900">
               {{ recipe.title }}
             </h3>
@@ -58,7 +58,7 @@
             </div>
 
             <!-- View Recipe Button -->
-            <div class="flex items-center justify-end">
+            <div class="flex items-center justify-end mt-auto">
               <button
                 class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700"
               >
