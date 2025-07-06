@@ -26,5 +26,9 @@ class RecipeEntityTest {
         Assertions.assertThat(recipe.id).isNotNull().isNotNegative();
         RecipeEntity recipeEntity = RecipeEntity.findById(recipe.id);
         Assertions.assertThat("Pasta").isEqualTo(recipeEntity.title);
+
+        // Clean-up
+        user.delete();
+        recipe.delete();
     }
 }
