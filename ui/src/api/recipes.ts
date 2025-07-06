@@ -1,5 +1,4 @@
-import type {Recipe} from "../models/Recipe.ts";
-
+import type { Recipe } from "../models/Recipe.ts";
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -12,7 +11,9 @@ export const getAllRecipes = async (): Promise<Recipe[]> => {
         const response = await fetch(`${API_BASE_URL}/recipes`);
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch recipes: ${response.status} ${response.statusText}`);
+            throw new Error(
+                `Failed to fetch recipes: ${response.status} ${response.statusText}`,
+            );
         }
 
         return await response.json();
@@ -32,7 +33,7 @@ export const getRecipeById = async (id: number): Promise<Recipe> => {
         // Since the Quarkus endpoint doesn't have a specific endpoint for getting a recipe by ID,
         // we'll fetch all recipes and find the one with the matching ID
         const recipes = await getAllRecipes();
-        const recipe = recipes.find(recipe => recipe.id === id);
+        const recipe = recipes.find((recipe) => recipe.id === id);
 
         if (!recipe) {
             throw new Error(`Recipe with ID ${id} not found`);

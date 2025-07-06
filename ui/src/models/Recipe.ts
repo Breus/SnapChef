@@ -1,5 +1,5 @@
-import type {Ingredient} from "./Ingredient.ts";
-import type {Step} from "./Step.ts";
+import type { Ingredient } from "./Ingredient.ts";
+import type { Step } from "./Step.ts";
 
 export interface Recipe {
     id: number;
