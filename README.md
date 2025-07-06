@@ -75,6 +75,7 @@ project-root/
 │ │ ├── main.ts
 │ │ ├── style.css
 │ │ └── vite-env.d.ts ← TypeScript environment definitions
+│ ├── .editorconfig
 │ ├── .gitignore
 │ ├── .prettierignore
 │ ├── .prettierrc
