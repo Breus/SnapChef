@@ -1,4 +1,4 @@
-package dev.blaauwendraad;
+package dev.blaauwendraad.recipebook.resource;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
