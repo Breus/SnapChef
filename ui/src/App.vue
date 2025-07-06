@@ -1,7 +1,5 @@
-<script setup lang="ts">
-import RecipeList from "./components/RecipeList.vue";
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <RecipeList />
+  <router-view />
 </template>

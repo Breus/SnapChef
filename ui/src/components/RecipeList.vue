@@ -60,6 +60,7 @@
             <!-- View Recipe Button -->
             <div class="flex items-center justify-end mt-auto">
               <button
+                @click="$router.push(`/recipe/${recipe.id}`)"
                 class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700"
               >
                 View Recipe
