@@ -64,7 +64,7 @@ project-root/
 │ │ ├── api/ ← API clients talking to Quarkus
 │ │ └── main.ts
 │ ├── index.html
-│ ├── vite.config.ts ← or vue.config.js, depending on tooling
+│ ├── vite.config.ts 
 │ ├── package.json
 │ └── tsconfig.json
 │
