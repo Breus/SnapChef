@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: recipe_book_pg_db
+    container_name: postgres_db
     environment:
       POSTGRES_USER: quarkus_user
       POSTGRES_PASSWORD: quarkus_password
@@ -26,8 +26,8 @@ services:
   quarkus_app:
     build:
       context: .
-      dockerfile: src/main/docker/Dockerfile.jvm
-    container_name: recipe_book_app
+      dockerfile: app/src/main/docker/Dockerfile.jvm
+    container_name: quarkus_app
     environment:
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/recipe_book
       QUARKUS_DATASOURCE_USERNAME: quarkus_user
