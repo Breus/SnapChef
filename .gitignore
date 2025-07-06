@@ -9,7 +9,7 @@ build/
 bin/
 
 # IntelliJ
-app/.idea
+.idea
 *.ipr
 *.iml
 *.iws
