@@ -20,6 +20,19 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 * A user can select what they crave, e.g. “something with rice, chicken, …” and all matching recipes will be shown
 * A user can easily share the recipe's ingredient list with someone via WhatsApp for grocery shopping
 
+## TODO short term
+- [ ] Add static code analysis
+  - [ ] Add errorProne and set rules
+  - [ ] Add SonarQube integration
+  - [ ] Add jSpecify / nullability checking
+- [ ] Add input validation on endpoints (Hibernate bean validation)
+- [ ] Add authentication/authorization
+
+## TODO longer term
+- [ ] Add JavaFormatting (pre-commit hook?)
+- [ ] Add resiliency patterns such as rate limiters on endpoints
+- [ ] Set-up continuous integration / deployment (Github actions)
+
 ## Used Technologies
 
 ### Infrastructure
