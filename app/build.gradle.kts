@@ -1,6 +1,9 @@
+import net.ltgt.gradle.errorprone.errorprone
+
 plugins {
     java
     id("io.quarkus")
+    id("net.ltgt.errorprone") version "4.3.0"
 }
 
 repositories {
@@ -22,6 +25,10 @@ dependencies {
 
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("org.assertj:assertj-core:3.27.3")
+
+    implementation("org.jspecify:jspecify:1.0.0")
+    errorprone("com.uber.nullaway:nullaway:0.12.7")
+    errorprone("com.google.errorprone:error_prone_core:2.39.0")
 }
 
 group = "dev.blaauwendraad"
@@ -38,4 +45,41 @@ tasks.withType<Test> {
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.errorprone {
+        error(
+            "CheckedExceptionNotThrown",
+            "DeadException",
+            "DefaultCharset",
+            "FunctionalInterfaceClash",
+            "InvalidThrows",
+            "InvalidThrowsLink",
+            "NonFinalStaticField",
+            "NullAway",
+            "RedundantOverride",
+            "RedundantThrows",
+            "RemoveUnusedImports",
+            "UnnecessarilyFullyQualified",
+            "UnnecessarilyUsedValue",
+            "UnnecessaryBoxedAssignment",
+            "UnnecessaryBoxedVariable",
+            "UnnecessaryFinal",
+            "UnusedException",
+            "UnusedLabel",
+            "UnusedMethod",
+            "UnusedNestedClass",
+            "UnusedVariable",
+            "WildcardImport",
+        )
+        disable(
+            "StringCaseLocaleUsage",
+            "MissingSummary",
+        )
+        option("NullAway:JSpecifyMode")
+        option("NullAway:AnnotatedPackages", "dev.blaauwendraad.masker")
+        excludedPaths = ".*/build/generated/.*"
+    }
+    options.encoding = "UTF-8"
 }
