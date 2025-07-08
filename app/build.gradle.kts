@@ -1,9 +1,10 @@
 import net.ltgt.gradle.errorprone.errorprone
+import org.gradle.kotlin.dsl.errorprone
 
 plugins {
     java
-    id("io.quarkus")
-    id("net.ltgt.errorprone") version "4.3.0"
+    alias(libs.plugins.quarkus)
+    alias(libs.plugins.errorprone)
 }
 
 repositories {
@@ -16,19 +17,19 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
-    implementation("io.quarkus:quarkus-rest")
-    implementation("io.quarkus:quarkus-rest-jackson")
+    implementation(libs.quarkus.rest)
+    implementation(libs.quarkus.rest.jackson)
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
-    implementation("io.quarkus:quarkus-arc")
-    implementation("io.quarkus:quarkus-hibernate-orm-panache")
-    implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation(libs.quarkus.arc)
+    implementation(libs.quarkus.hibernate.orm.panache)
+    implementation(libs.quarkus.jdbc.postgresql)
 
-    testImplementation("io.quarkus:quarkus-junit5")
-    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation(libs.quarkus.junit5)
+    testImplementation(libs.assertj.core)
 
-    implementation("org.jspecify:jspecify:1.0.0")
-    errorprone("com.uber.nullaway:nullaway:0.12.7")
-    errorprone("com.google.errorprone:error_prone_core:2.39.0")
+    implementation(libs.jspecify)
+    errorprone(libs.nullaway)
+    errorprone(libs.errorprone.core)
 }
 
 group = "dev.blaauwendraad"

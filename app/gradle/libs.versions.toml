@@ -1,0 +1,23 @@
+[versions]
+quarkus = "3.24.1"
+assertj = "3.27.3"
+jspecify = "1.0.0"
+errorprone = "2.39.0"
+nullaway = "0.12.7"
+errorprone-plugin = "4.3.0"
+
+[libraries]
+quarkus-rest = { module = "io.quarkus:quarkus-rest", version.ref = "quarkus" }
+quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson", version.ref = "quarkus" }
+quarkus-arc = { module = "io.quarkus:quarkus-arc", version.ref = "quarkus" }
+quarkus-hibernate-orm-panache = { module = "io.quarkus:quarkus-hibernate-orm-panache", version.ref = "quarkus" }
+quarkus-jdbc-postgresql = { module = "io.quarkus:quarkus-jdbc-postgresql", version.ref = "quarkus" }
+quarkus-junit5 = { module = "io.quarkus:quarkus-junit5", version.ref = "quarkus" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+errorprone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
+nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
+
+[plugins]
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }
+errorprone = { id = "net.ltgt.errorprone", version.ref = "errorprone-plugin" }
