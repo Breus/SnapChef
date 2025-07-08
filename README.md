@@ -22,9 +22,7 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 
 ## TODO short term
 - [ ] Add static code analysis
-  - [ ] Add errorProne and set rules
   - [ ] Add SonarQube integration
-  - [ ] Add jSpecify / nullability checking
 - [ ] Add input validation on endpoints (Hibernate bean validation)
 - [ ] Add authentication/authorization
 
