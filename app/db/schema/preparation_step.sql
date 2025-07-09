@@ -1,5 +1,5 @@
 -- Preparation step (per recipe)
-CREATE TABLE step (
+CREATE TABLE preparation_step (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipe(id) ON DELETE CASCADE,
     description TEXT NOT NULL,
