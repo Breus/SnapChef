@@ -1,2 +1,3 @@
-services:
-  quarkus_app: !reset null
+# Uncomment this if you want to use quarkus dev instead of the Docker container
+#services:
+#  quarkus_app: !reset null
