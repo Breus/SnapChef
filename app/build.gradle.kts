@@ -26,6 +26,8 @@ dependencies {
 
     testImplementation(libs.quarkus.junit5)
     testImplementation(libs.assertj.core)
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.postgresql)
 
     implementation(libs.jspecify)
     errorprone(libs.nullaway)
