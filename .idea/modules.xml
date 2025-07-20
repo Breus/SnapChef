@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/recipe-book.main.iml" filepath="$PROJECT_DIR$/.idea/modules/recipe-book.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/recipe-book.test.iml" filepath="$PROJECT_DIR$/.idea/modules/recipe-book.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/root.iml" filepath="$PROJECT_DIR$/root.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui/ui.iml" filepath="$PROJECT_DIR$/ui/ui.iml" />
     </modules>
   </component>
