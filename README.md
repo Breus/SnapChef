@@ -157,6 +157,8 @@ pnpm dev
 
 The frontend will be available at http://localhost:5173.
 
+> **_Note:_** The UI application is configured to use environment variables from the `.env` file in the root directory of the project. This means you only need to maintain a single `.env` file at the project root, which will be used by both the backend and frontend applications.
+
 ## Packaging and Running the Application
 
 ### Backend

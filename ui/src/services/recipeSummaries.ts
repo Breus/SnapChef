@@ -1,22 +1,18 @@
-import type { Recipe } from "../models/Recipe.ts";
+import type { RecipeSummariesResponse } from "../models/RecipeSummariesResponse.ts";
+import type { RecipeSummary } from "../models/RecipeSummary.ts";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-/**
- * Fetches all recipes from the backend
- * @returns Promise<Recipe[]> A promise that resolves to an array of recipes
- */
-export const getAllRecipes = async (): Promise<Recipe[]> => {
+export const getAllRecipeSummaries = async (): Promise<RecipeSummary[]> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/recipes`);
+        const response = await fetch(`${API_BASE_URL}/recipes/summaries`);
 
         if (!response.ok) {
-            throw new Error(
-                `Failed to fetch recipes: ${response.status} ${response.statusText}`,
-            );
+            throw new Error(`Failed to fetch recipes: ${response.status} ${response.statusText}`);
         }
 
-        return await response.json();
+        const data: RecipeSummariesResponse = await response.json();
+        return data.recipeSummaries;
     } catch (error) {
         console.error("Error fetching recipes:", error);
         throw error;
@@ -28,11 +24,11 @@ export const getAllRecipes = async (): Promise<Recipe[]> => {
  * @param id The ID of the recipe to fetch
  * @returns Promise<Recipe> A promise that resolves to a recipe
  */
-export const getRecipeById = async (id: number): Promise<Recipe> => {
+export const getRecipeById = async (id: number): Promise<RecipeSummary> => {
     try {
         // Since the Quarkus endpoint doesn't have a specific endpoint for getting a recipe by ID,
         // we'll fetch all recipes and find the one with the matching ID
-        const recipes = await getAllRecipes();
+        const recipes = await getAllRecipeSummaries();
         const recipe = recipes.find((recipe) => recipe.id === id);
 
         if (!recipe) {
