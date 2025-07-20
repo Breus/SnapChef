@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.entity;
+package dev.blaauwendraad.recipe_book.data.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
@@ -30,9 +30,9 @@ public class UserAccountEntity extends PanacheEntityBase {
     @SuppressWarnings("NullAway.Init")
     public String passwordHash;
 
-    @Column(length = 100, unique = true, nullable = false)
+    @Column(name = "email_address", length = 100, unique = true, nullable = false)
     @SuppressWarnings("NullAway.Init")
-    public String email;
+    public String emailAddress;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

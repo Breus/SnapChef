@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.entity;
+package dev.blaauwendraad.recipe_book.data.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

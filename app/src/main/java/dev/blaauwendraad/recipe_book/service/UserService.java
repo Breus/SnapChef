@@ -6,7 +6,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class UserService {
 
-    public void registerUser(String username, String s, String password) throws UserRegistrationException {
+    public void registerUser(String username, String emailAddress, String password) throws UserRegistrationException {
+
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }

@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.entity;
+package dev.blaauwendraad.recipe_book.data.entity;
 
 public enum RoleName {
     admin("admin"),

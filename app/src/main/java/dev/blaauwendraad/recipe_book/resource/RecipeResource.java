@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -58,14 +59,14 @@ public class RecipeResource {
     public RecipeResponse getRecipe(@PathParam("id") Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
         if (recipe == null) {
-            throw new jakarta.ws.rs.NotFoundException("Recipe not found with id: " + id);
+            throw new NotFoundException("Recipe not found with id: " + id);
         }
 
         return new RecipeResponse(new RecipeDto(
                 recipe.id().intValue(),
                 recipe.title(),
                 recipe.description(),
-                recipe.author().username(),
+                recipe.author() == null ? null : recipe.author().username(),
                 recipe.ingredients().stream()
                         .map(ingredient -> new IngredientDto(ingredient.name(), ingredient.quantity()))
                         .toList(),

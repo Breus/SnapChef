@@ -1,5 +1,7 @@
-package dev.blaauwendraad.recipe_book.entity;
+package dev.blaauwendraad.recipe_book.data;
 
+import dev.blaauwendraad.recipe_book.data.entity.RecipeEntity;
+import dev.blaauwendraad.recipe_book.data.entity.UserAccountEntity;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.quarkus.test.junit.QuarkusTest;
@@ -53,7 +55,7 @@ class RecipeEntityTest {
         UserAccountEntity user = new UserAccountEntity();
         user.username = "testuser";
         user.passwordHash = "hash";
-        user.email = "test@example.com";
+        user.emailAddress = "test@example.com";
         user.persist();
 
         RecipeEntity recipe = new RecipeEntity();

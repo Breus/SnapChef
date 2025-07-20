@@ -6,6 +6,8 @@ import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +24,7 @@ public class UserResource {
 
     @POST
     @Path("/register")
-    public Response register(UserRegistrationRequest registrationRequest) {
+    public Response register(@Valid @NotNull UserRegistrationRequest registrationRequest) {
         try {
             userService.registerUser(
                     registrationRequest.username(), registrationRequest.emailAddress(), registrationRequest.password());

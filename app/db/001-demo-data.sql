@@ -1,4 +1,4 @@
-INSERT INTO user_account (id, username, password_hash, email) VALUES
+INSERT INTO user_account (id, username, password_hash, email_address) VALUES
   (1, 'Robert', 'demo-hash', 'robert@example.com'),
   (2, 'Breus', 'demo-hash', 'breus@example.com'),
   (3, 'ChefMaster', 'demo-hash', 'chef@example.com'),

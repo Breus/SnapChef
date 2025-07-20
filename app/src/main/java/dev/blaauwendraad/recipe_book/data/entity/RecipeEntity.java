@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.entity;
+package dev.blaauwendraad.recipe_book.data.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.annotation.Nullable;
@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,9 +38,9 @@ public class RecipeEntity extends PanacheEntityBase {
 
     @OneToMany(mappedBy = "recipe")
     @OrderBy("position ASC")
-    public List<IngredientEntity> ingredients;
+    public List<IngredientEntity> ingredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe")
     @OrderBy("position ASC")
-    public List<PreparationStepEntity> preparationSteps;
+    public List<PreparationStepEntity> preparationSteps = new ArrayList<>();
 }
