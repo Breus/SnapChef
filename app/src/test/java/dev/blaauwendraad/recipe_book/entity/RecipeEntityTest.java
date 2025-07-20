@@ -4,13 +4,12 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.MountableFile;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @QuarkusTest
 @QuarkusTestResource(RecipeEntityTest.PostgresTestResource.class)
@@ -22,25 +21,18 @@ class RecipeEntityTest {
         @Override
         public Map<String, String> start() {
             postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/000-init.sql"),
-                    "/docker-entrypoint-initdb.d/000-init.sql"
-            );
+                    MountableFile.forHostPath("db/000-init.sql"), "/docker-entrypoint-initdb.d/000-init.sql");
             postgres.withCopyFileToContainer(
                     MountableFile.forHostPath("db/schema/account.sql"),
-                    "/docker-entrypoint-initdb.d/schema/account.sql"
-            );
+                    "/docker-entrypoint-initdb.d/schema/account.sql");
             postgres.withCopyFileToContainer(
                     MountableFile.forHostPath("db/schema/ingredient.sql"),
-                    "/docker-entrypoint-initdb.d/schema/ingredient.sql"
-            );
+                    "/docker-entrypoint-initdb.d/schema/ingredient.sql");
             postgres.withCopyFileToContainer(
                     MountableFile.forHostPath("db/schema/preparation_step.sql"),
-                    "/docker-entrypoint-initdb.d/schema/preparation_step.sql"
-            );
+                    "/docker-entrypoint-initdb.d/schema/preparation_step.sql");
             postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/recipe.sql"),
-                    "/docker-entrypoint-initdb.d/schema/recipe.sql"
-            );
+                    MountableFile.forHostPath("db/schema/recipe.sql"), "/docker-entrypoint-initdb.d/schema/recipe.sql");
             postgres.start();
             Map<String, String> config = new HashMap<>();
             config.put("quarkus.datasource.jdbc.url", postgres.getJdbcUrl());

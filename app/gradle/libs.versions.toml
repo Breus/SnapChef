@@ -23,3 +23,4 @@ testcontainers-postgresql = { module = "org.testcontainers:postgresql", version 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }
 errorprone = { id = "net.ltgt.errorprone", version.ref = "errorprone-plugin" }
+spotless = { id = "com.diffplug.spotless", version = "7.1.0" }

@@ -5,6 +5,7 @@ plugins {
     java
     alias(libs.plugins.quarkus)
     alias(libs.plugins.errorprone)
+    alias(libs.plugins.spotless)
 }
 
 repositories {
@@ -36,6 +37,13 @@ dependencies {
 
 group = "dev.blaauwendraad"
 version = "1.0.0-SNAPSHOT"
+
+spotless {
+    java {
+        palantirJavaFormat("2.72.0")
+        target("src/**/*.java")
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21

@@ -14,7 +14,6 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
 import java.util.List;
 
 @Path("/recipes")
@@ -32,9 +31,15 @@ public class RecipeResource {
     @Path("/summaries")
     @Produces(MediaType.APPLICATION_JSON)
     public RecipeSummariesResponse listRecipe() {
-        return new RecipeSummariesResponse(recipeService.getAllRecipeSummaries().stream().map(recipeSummary ->
-                new RecipeSummaryDto(recipeSummary.id(), recipeSummary.title(), recipeSummary.description(), new RecipeAuthorDto(recipeSummary.author().id(), recipeSummary.author().username()))
-        ).toList());
+        return new RecipeSummariesResponse(recipeService.getAllRecipeSummaries().stream()
+                .map(recipeSummary -> new RecipeSummaryDto(
+                        recipeSummary.id(),
+                        recipeSummary.title(),
+                        recipeSummary.description(),
+                        new RecipeAuthorDto(
+                                recipeSummary.author().id(),
+                                recipeSummary.author().username())))
+                .toList());
     }
 
     @POST

@@ -3,7 +3,6 @@ package dev.blaauwendraad.recipe_book.resource;
 import dev.blaauwendraad.recipe_book.dto.IngredientDTO;
 import dev.blaauwendraad.recipe_book.dto.PreparationStepDTO;
 import dev.blaauwendraad.recipe_book.dto.RecipeDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +11,16 @@ import java.util.List;
  * It provides static methods to access the mock data.
  */
 public class RecipeMockData {
-    
+
     /**
      * Returns a list of mock recipes with their ingredients and preparation steps.
-     * 
+     *
      * @return List of RecipeDTO objects
      */
     public static List<RecipeDTO> getMockRecipes() {
         // Create a list to hold our mocked recipes
         List<RecipeDTO> recipes = new ArrayList<>();
-        
+
         // Create ingredients for first recipe - Classic Chocolate Chip Cookies
         List<IngredientDTO> cookiesIngredients = new ArrayList<>();
         cookiesIngredients.add(new IngredientDTO("All-purpose flour", "2 1/4 cups", 1));
@@ -33,29 +32,30 @@ public class RecipeMockData {
         cookiesIngredients.add(new IngredientDTO("Eggs", "2 large", 7));
         cookiesIngredients.add(new IngredientDTO("Vanilla extract", "2 tsp", 8));
         cookiesIngredients.add(new IngredientDTO("Chocolate chips", "2 cups", 9));
-        
+
         // Create preparation steps for first recipe
         List<PreparationStepDTO> cookiesSteps = new ArrayList<>();
         cookiesSteps.add(new PreparationStepDTO("Preheat oven to 375°F (190°C).", 1));
         cookiesSteps.add(new PreparationStepDTO("In a medium bowl, whisk together flour, baking soda, and salt.", 2));
-        cookiesSteps.add(new PreparationStepDTO("In a large bowl, cream together butter and both sugars until light and fluffy.", 3));
+        cookiesSteps.add(new PreparationStepDTO(
+                "In a large bowl, cream together butter and both sugars until light and fluffy.", 3));
         cookiesSteps.add(new PreparationStepDTO("Beat in eggs one at a time, then add vanilla extract.", 4));
         cookiesSteps.add(new PreparationStepDTO("Gradually mix in the flour mixture until just combined.", 5));
         cookiesSteps.add(new PreparationStepDTO("Fold in chocolate chips.", 6));
         cookiesSteps.add(new PreparationStepDTO("Drop rounded tablespoons of dough onto ungreased baking sheets.", 7));
         cookiesSteps.add(new PreparationStepDTO("Bake for 9-11 minutes or until golden brown around edges.", 8));
-        cookiesSteps.add(new PreparationStepDTO("Cool on baking sheet for 2 minutes before transferring to wire rack.", 9));
-        
+        cookiesSteps.add(
+                new PreparationStepDTO("Cool on baking sheet for 2 minutes before transferring to wire rack.", 9));
+
         // Create first recipe - Classic Chocolate Chip Cookies
         RecipeDTO cookies = new RecipeDTO(
-            1,
-            "Classic Chocolate Chip Cookies",
-            "Soft and chewy chocolate chip cookies that are perfect for any occasion. A family favorite recipe passed down through generations.",
-            "John Doe",
-            cookiesIngredients,
-            cookiesSteps
-        );
-        
+                1,
+                "Classic Chocolate Chip Cookies",
+                "Soft and chewy chocolate chip cookies that are perfect for any occasion. A family favorite recipe passed down through generations.",
+                "John Doe",
+                cookiesIngredients,
+                cookiesSteps);
+
         // Create ingredients for second recipe - Homemade Pizza Margherita
         List<IngredientDTO> pizzaIngredients = new ArrayList<>();
         pizzaIngredients.add(new IngredientDTO("Pizza dough", "1 ball", 1));
@@ -65,7 +65,7 @@ public class RecipeMockData {
         pizzaIngredients.add(new IngredientDTO("Olive oil", "2 tbsp", 5));
         pizzaIngredients.add(new IngredientDTO("Salt", "to taste", 6));
         pizzaIngredients.add(new IngredientDTO("Black pepper", "to taste", 7));
-        
+
         // Create preparation steps for second recipe
         List<PreparationStepDTO> pizzaSteps = new ArrayList<>();
         pizzaSteps.add(new PreparationStepDTO("Preheat oven to 500°F (260°C) with pizza stone if available.", 1));
@@ -77,17 +77,16 @@ public class RecipeMockData {
         pizzaSteps.add(new PreparationStepDTO("Bake for 10-12 minutes until crust is golden and cheese is bubbly.", 7));
         pizzaSteps.add(new PreparationStepDTO("Remove from oven and immediately top with fresh basil leaves.", 8));
         pizzaSteps.add(new PreparationStepDTO("Let cool for 2-3 minutes before slicing and serving.", 9));
-        
+
         // Create second recipe - Homemade Pizza Margherita
         RecipeDTO pizza = new RecipeDTO(
-            2,
-            "Homemade Pizza Margherita", 
-            "Authentic Italian pizza with fresh tomatoes, mozzarella, and basil. Simple ingredients that create an amazing flavor combination.",
-            "Maria Rossi",
-            pizzaIngredients,
-            pizzaSteps
-        );
-        
+                2,
+                "Homemade Pizza Margherita",
+                "Authentic Italian pizza with fresh tomatoes, mozzarella, and basil. Simple ingredients that create an amazing flavor combination.",
+                "Maria Rossi",
+                pizzaIngredients,
+                pizzaSteps);
+
         // Create ingredients for third recipe - Creamy Chicken Alfredo
         List<IngredientDTO> alfredoIngredients = new ArrayList<>();
         alfredoIngredients.add(new IngredientDTO("Fettuccine pasta", "1 lb", 1));
@@ -99,11 +98,13 @@ public class RecipeMockData {
         alfredoIngredients.add(new IngredientDTO("Salt", "to taste", 7));
         alfredoIngredients.add(new IngredientDTO("Black pepper", "to taste", 8));
         alfredoIngredients.add(new IngredientDTO("Fresh parsley", "2 tbsp chopped", 9));
-        
+
         // Create preparation steps for third recipe
         List<PreparationStepDTO> alfredoSteps = new ArrayList<>();
-        alfredoSteps.add(new PreparationStepDTO("Cook fettuccine according to package directions. Reserve 1 cup pasta water.", 1));
-        alfredoSteps.add(new PreparationStepDTO("Season chicken with salt and pepper, then cook in large skillet until golden and cooked through.", 2));
+        alfredoSteps.add(new PreparationStepDTO(
+                "Cook fettuccine according to package directions. Reserve 1 cup pasta water.", 1));
+        alfredoSteps.add(new PreparationStepDTO(
+                "Season chicken with salt and pepper, then cook in large skillet until golden and cooked through.", 2));
         alfredoSteps.add(new PreparationStepDTO("Remove chicken and let rest, then slice into strips.", 3));
         alfredoSteps.add(new PreparationStepDTO("In same skillet, melt butter and sauté garlic for 1 minute.", 4));
         alfredoSteps.add(new PreparationStepDTO("Add heavy cream and bring to gentle simmer.", 5));
@@ -111,17 +112,16 @@ public class RecipeMockData {
         alfredoSteps.add(new PreparationStepDTO("Add cooked pasta and chicken to sauce, tossing to combine.", 7));
         alfredoSteps.add(new PreparationStepDTO("Add pasta water as needed to achieve desired consistency.", 8));
         alfredoSteps.add(new PreparationStepDTO("Garnish with fresh parsley and serve immediately.", 9));
-        
+
         // Create third recipe - Creamy Chicken Alfredo
         RecipeDTO alfredo = new RecipeDTO(
-            3,
-            "Creamy Chicken Alfredo",
-            "Rich and creamy pasta dish with tender chicken and a luxurious alfredo sauce. Perfect for a comforting dinner.",
-            "Chef James",
-            alfredoIngredients,
-            alfredoSteps
-        );
-        
+                3,
+                "Creamy Chicken Alfredo",
+                "Rich and creamy pasta dish with tender chicken and a luxurious alfredo sauce. Perfect for a comforting dinner.",
+                "Chef James",
+                alfredoIngredients,
+                alfredoSteps);
+
         // Create ingredients for fourth recipe - Fresh Garden Salad
         List<IngredientDTO> saladIngredients = new ArrayList<>();
         saladIngredients.add(new IngredientDTO("Mixed greens", "6 cups", 1));
@@ -133,33 +133,34 @@ public class RecipeMockData {
         saladIngredients.add(new IngredientDTO("Dijon mustard", "1 tsp", 7));
         saladIngredients.add(new IngredientDTO("Salt", "to taste", 8));
         saladIngredients.add(new IngredientDTO("Black pepper", "to taste", 9));
-        
+
         // Create preparation steps for fourth recipe
         List<PreparationStepDTO> saladSteps = new ArrayList<>();
         saladSteps.add(new PreparationStepDTO("Wash and dry all vegetables thoroughly.", 1));
-        saladSteps.add(new PreparationStepDTO("In a large bowl, combine mixed greens, tomatoes, cucumber, and red onion.", 2));
-        saladSteps.add(new PreparationStepDTO("In a small bowl, whisk together olive oil, balsamic vinegar, and Dijon mustard.", 3));
+        saladSteps.add(
+                new PreparationStepDTO("In a large bowl, combine mixed greens, tomatoes, cucumber, and red onion.", 2));
+        saladSteps.add(new PreparationStepDTO(
+                "In a small bowl, whisk together olive oil, balsamic vinegar, and Dijon mustard.", 3));
         saladSteps.add(new PreparationStepDTO("Season dressing with salt and pepper to taste.", 4));
         saladSteps.add(new PreparationStepDTO("Drizzle dressing over salad just before serving.", 5));
         saladSteps.add(new PreparationStepDTO("Toss gently to coat all ingredients evenly.", 6));
         saladSteps.add(new PreparationStepDTO("Serve immediately for best texture and flavor.", 7));
-        
+
         // Create fourth recipe - Fresh Garden Salad
         RecipeDTO salad = new RecipeDTO(
-            4,
-            "Fresh Garden Salad",
-            "Light and refreshing salad with mixed greens, vegetables, and a simple vinaigrette. Perfect as a side dish or light meal.",
-            "John Doe",
-            saladIngredients,
-            saladSteps
-        );
-        
+                4,
+                "Fresh Garden Salad",
+                "Light and refreshing salad with mixed greens, vegetables, and a simple vinaigrette. Perfect as a side dish or light meal.",
+                "John Doe",
+                saladIngredients,
+                saladSteps);
+
         // Add recipes to the list
         recipes.add(cookies);
         recipes.add(pizza);
         recipes.add(alfredo);
         recipes.add(salad);
-        
+
         return recipes;
     }
 }
