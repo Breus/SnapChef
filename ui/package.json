@@ -1,47 +1,42 @@
 {
-  "name": "ui",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview",
-    "lint:js": "eslint \"src/**/*.{js,ts,vue}\"",
-    "lint:style": "stylelint \"src/**/*.{css,scss,vue}\"",
-    "format": "prettier --write src/",
-    "lint": "pnpm lint:js && pnpm lint:style",
-    "check:format": "prettier --check .",
-    "check": "pnpm lint && pnpm check:format",
-    "fix:all": "npm run lint:js -- --fix && npm run lint:style -- --fix && npm run format"
-  },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
-    "tailwindcss": "^4.1.11",
-    "vue": "^3.5.17",
-    "vue-router": "^4.5.1"
-  },
-  "devDependencies": {
-    "@eslint/css": "^0.9.0",
-    "@eslint/js": "^9.30.1",
-    "@eslint/json": "^0.12.0",
-    "@vitejs/plugin-vue": "^6.0.0",
-    "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.30.1",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-vue": "^10.3.0",
-    "globals": "^16.3.0",
-    "prettier": "3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.13",
-    "stylelint": "^16.21.1",
-    "stylelint-config-recommended": "^16.0.0",
-    "stylelint-config-recommended-vue": "^1.6.1",
-    "stylelint-config-standard": "^38.0.0",
-    "stylelint-config-tailwindcss": "^1.0.0",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.0",
-    "vue-tsc": "^2.2.10"
-  },
-  "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
+    "name": "ui",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vue-tsc -b && vite build",
+        "preview": "vite preview",
+        "lint": "biome lint src/ && eslint \"src/**/*.vue\" && stylelint \"src/**/*.{css,scss,vue}\"",
+        "format": "biome format --write src/",
+        "fix": "biome check --write . && eslint \"src/**/*.vue\" --fix && stylelint \"src/**/*.{css,scss,vue}\" --fix"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.11",
+        "tailwindcss": "^4.1.11",
+        "vue": "^3.5.17",
+        "vue-router": "^4.5.1"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.1.2",
+        "@eslint/css": "^0.9.0",
+        "@eslint/js": "^9.30.1",
+        "@eslint/json": "^0.12.0",
+        "@vitejs/plugin-vue": "^6.0.0",
+        "@vue/tsconfig": "^0.7.0",
+        "eslint": "^9.30.1",
+        "eslint-plugin-vue": "^10.3.0",
+        "globals": "^16.3.0",
+        "stylelint": "^16.21.1",
+        "stylelint-config-recommended": "^16.0.0",
+        "stylelint-config-recommended-vue": "^1.6.1",
+        "stylelint-config-standard": "^38.0.0",
+        "stylelint-config-tailwindcss": "^1.0.0",
+        "typescript": "~5.8.3",
+        "typescript-eslint": "^8.35.1",
+        "vite": "^7.0.0",
+        "vite-plugin-checker": "^0.10.0",
+        "vue-tsc": "^2.2.10"
+    },
+    "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }

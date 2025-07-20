@@ -1,8 +1,23 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
+import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vite";
+import checker from "vite-plugin-checker";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), tailwindcss()],
+    plugins: [
+        vue(),
+        tailwindcss(),
+        checker({
+            biome: {
+                command: "check",
+            },
+            stylelint: {
+                lintCommand: 'stylelint "./src/**/*.{css,scss,vue}"',
+                watchPath: "./src",
+            },
+            typescript: true,
+            vueTsc: true,
+        }),
+    ],
 });

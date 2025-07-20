@@ -57,6 +57,8 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 * [Vite](https://vitejs.dev/)
 * [pnpm](https://pnpm.io/)
 * [Node.js](https://nodejs.org/en/)
+* [Biome](https://biomejs.dev/)
+* [ESLint](https://eslint.org/)
 
 ## Getting Started
 

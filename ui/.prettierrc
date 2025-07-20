@@ -1,7 +1,0 @@
-{
-    "semi": true,
-    "bracketSpacing": true,
-    "plugins": [
-        "prettier-plugin-tailwindcss"
-    ]
-}
