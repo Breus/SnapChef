@@ -105,21 +105,91 @@ project-root/
 └── README.md
 ```
 
-## Running the application in dev mode
+## Getting Started
 
-You can run your application in dev mode that enables live coding using:
+### Environment Setup
+
+1. Copy the example environment file to create your own:
 
 ```shell script
+cp .env.example .env
+```
+
+2. Modify the `.env` file with your preferred settings if needed. The default values should work for local development.
+
+### Running with Docker Compose
+
+The easiest way to run the entire application stack (database, backend, and database admin tool) is using Docker Compose:
+
+```shell script
+docker compose up -d
+```
+
+This will start:
+- PostgreSQL database on port 5432
+- PgAdmin on port 8081 (accessible at http://localhost:8081)
+- Quarkus backend on port 8080 (accessible at http://localhost:8080)
+
+To stop all services:
+
+```shell script
+docker compose down
+```
+
+### Running the Backend in Development Mode
+
+If you prefer to run the backend in development mode for live coding:
+
+1. Make sure the PostgreSQL database is running (you can use Docker Compose for just the database):
+
+```shell script
+# Uncomment the quarkus_app service in docker-compose.override.yml first
+docker compose up -d postgres pg_admin
+```
+
+2. Navigate to the app directory and run:
+
+```shell script
+cd app
 ./gradlew quarkusDev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+The backend will be available at http://localhost:8080.
 
-## Packaging and running the application
+> **_NOTE:_**  Quarkus ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
-The application can be packaged using:
+### Running the Frontend
+
+To run the frontend development server:
+
+1. Navigate to the ui directory:
 
 ```shell script
+cd ui
+```
+
+2. Install dependencies (if you haven't already):
+
+```shell script
+pnpm install
+```
+
+3. Start the development server:
+
+```shell script
+pnpm dev
+```
+
+The frontend will be available at http://localhost:5173.
+
+## Packaging and Running the Application
+
+### Backend
+
+The backend application can be packaged using:
+
+```shell script
+cd app
 ./gradlew build
 ```
 
@@ -135,3 +205,14 @@ If you want to build an _über-jar_, execute the following command:
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
+
+### Frontend
+
+To build the frontend for production:
+
+```shell script
+cd ui
+pnpm build
+```
+
+This will generate static files in the `ui/dist` directory that can be served by any web server.
