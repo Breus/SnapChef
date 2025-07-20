@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,15 +19,19 @@ import java.util.Set;
 public class UserAccountEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SuppressWarnings("NullAway.Init")
     public Long id;
 
     @Column(length = 50, unique = true, nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public String username;
 
     @Column(name = "password_hash", columnDefinition = "text", nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public String passwordHash;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100, unique = true, nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -34,5 +39,5 @@ public class UserAccountEntity extends PanacheEntityBase {
             name = "user_account_role",
             joinColumns = @JoinColumn(name = "user_account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    public Set<RoleEntity> roles;
+    public Set<RoleEntity> roles = new HashSet<>();
 }

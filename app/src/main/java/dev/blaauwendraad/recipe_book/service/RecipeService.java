@@ -16,7 +16,9 @@ public class RecipeService {
                         recipeEntity.id,
                         recipeEntity.title,
                         recipeEntity.description,
-                        new Author(recipeEntity.author.id, recipeEntity.author.username)))
+                        recipeEntity.author == null
+                                ? null
+                                : new Author(recipeEntity.author.id, recipeEntity.author.username)))
                 .collect(Collectors.toList());
     }
 }

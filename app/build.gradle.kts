@@ -18,6 +18,7 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
+    implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("io.quarkus:quarkus-elytron-security-jdbc")
     implementation("io.quarkus:quarkus-elytron-security")
     implementation(libs.quarkus.rest)
@@ -91,7 +92,7 @@ tasks.withType<JavaCompile>().configureEach {
             "MissingSummary",
         )
         option("NullAway:JSpecifyMode")
-        option("NullAway:AnnotatedPackages", "dev.blaauwendraad.masker")
+        option("NullAway:AnnotatedPackages", "dev.blaauwendraad")
         excludedPaths = ".*/build/generated/.*"
     }
     options.encoding = "UTF-8"

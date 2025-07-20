@@ -39,9 +39,11 @@ public class RecipeResource {
                         recipeSummary.id(),
                         recipeSummary.title(),
                         recipeSummary.description(),
-                        new RecipeAuthorDto(
-                                recipeSummary.author().id(),
-                                recipeSummary.author().username())))
+                        recipeSummary.author() == null
+                                ? null
+                                : new RecipeAuthorDto(
+                                        recipeSummary.author().id(),
+                                        recipeSummary.author().username())))
                 .toList());
     }
 

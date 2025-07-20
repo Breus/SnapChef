@@ -1,3 +1,5 @@
 package dev.blaauwendraad.recipe_book.resource.model;
 
-public record RecipeSummaryDto(Long id, String title, String description, RecipeAuthorDto author) {}
+import jakarta.annotation.Nullable;
+
+public record RecipeSummaryDto(Long id, String title, @Nullable String description, @Nullable RecipeAuthorDto author) {}

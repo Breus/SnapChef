@@ -15,15 +15,19 @@ import jakarta.persistence.Table;
 public class PreparationStepEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SuppressWarnings("NullAway.Init")
     public Long id;
 
     @ManyToOne
-    @JoinColumn(name = "recipe_id", referencedColumnName = "id")
+    @JoinColumn(name = "recipe_id", referencedColumnName = "id", nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public RecipeEntity recipe;
 
     @Column(columnDefinition = "text", nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public String description;
 
     @Column(nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public Integer position = 0;
 }

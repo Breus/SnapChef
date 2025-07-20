@@ -1,6 +1,7 @@
 package dev.blaauwendraad.recipe_book.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,15 +16,19 @@ import jakarta.persistence.Table;
 public class RecipeEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SuppressWarnings("NullAway.Init")
     public Long id;
 
     @Column(nullable = false)
+    @SuppressWarnings("NullAway.Init")
     public String title;
 
     @Column(columnDefinition = "text")
+    @Nullable
     public String description;
 
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @Nullable
     public UserAccountEntity author;
 }
