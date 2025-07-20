@@ -122,7 +122,7 @@ cp .env.example .env
 The easiest way to run the entire application stack (database, backend, and database admin tool) is using Docker Compose:
 
 ```shell script
-docker compose up -d
+docker-compose up -d
 ```
 
 This will start:
@@ -133,7 +133,7 @@ This will start:
 To stop all services:
 
 ```shell script
-docker compose down
+docker-compose down
 ```
 
 ### Running the Backend in Development Mode
@@ -144,7 +144,7 @@ If you prefer to run the backend in development mode for live coding:
 
 ```shell script
 # Uncomment the quarkus_app service in docker-compose.override.yml first
-docker compose up -d postgres pg_admin
+docker-compose up -d postgres pg_admin
 ```
 
 2. Navigate to the app directory and run:
