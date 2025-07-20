@@ -1,7 +1,7 @@
 package dev.blaauwendraad.recipe_book.resource;
 
-import dev.blaauwendraad.recipe_book.dto.RecipeDTO;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeAuthorDto;
+import dev.blaauwendraad.recipe_book.resource.model.RecipeDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummaryDto;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
@@ -14,6 +14,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
@@ -44,11 +45,19 @@ public class RecipeResource {
                 .toList());
     }
 
+    @GET
+    @Path("/{id}")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public RecipeDto getRecipe(@PathParam("id") Long id) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public List<RecipeDTO> add(RecipeDTO recipe) {
+    public List<RecipeDto> add(RecipeDto recipe) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -56,7 +65,7 @@ public class RecipeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public List<RecipeDTO> remove(RecipeDTO recipe) {
+    public List<RecipeDto> remove(RecipeDto recipe) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }
