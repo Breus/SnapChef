@@ -25,5 +25,5 @@ public class RecipeEntity extends PanacheEntityBase {
 
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
-    public AccountEntity author;
+    public UserAccountEntity author;
 }

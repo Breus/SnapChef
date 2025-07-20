@@ -5,6 +5,8 @@ import dev.blaauwendraad.recipe_book.resource.model.RecipeAuthorDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummaryDto;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -19,7 +21,6 @@ import java.util.List;
 @Path("/recipes")
 @ApplicationScoped
 public class RecipeResource {
-    private final List<RecipeDTO> recipes = RecipeMockData.getMockRecipes();
     private final RecipeService recipeService;
 
     @Inject
@@ -29,6 +30,7 @@ public class RecipeResource {
 
     @GET
     @Path("/summaries")
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     public RecipeSummariesResponse listRecipe() {
         return new RecipeSummariesResponse(recipeService.getAllRecipeSummaries().stream()
@@ -45,16 +47,16 @@ public class RecipeResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "USER"})
     public List<RecipeDTO> add(RecipeDTO recipe) {
-        recipes.add(recipe);
-        return recipes;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "USER"})
     public List<RecipeDTO> remove(RecipeDTO recipe) {
-        recipes.removeIf(existingRecipe -> existingRecipe.id().equals(recipe.id()));
-        return recipes;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

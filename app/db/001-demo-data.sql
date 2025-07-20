@@ -1,9 +1,26 @@
-INSERT INTO account (id, username, password_hash, email) VALUES
-  (1, 'Robbiebobbie', 'demo-hash', 'demo@example.com'),
-  (2, 'ChefMaster', 'demo-hash', 'chef@example.com'),
-  (3, 'FoodLover', 'demo-hash', 'food@example.com'),
-  (4, 'KitchenPro', 'demo-hash', 'kitchen@example.com')
+INSERT INTO user_account (id, username, password_hash, email) VALUES
+  (1, 'Robert', 'demo-hash', 'robert@example.com'),
+  (2, 'Breus', 'demo-hash', 'breus@example.com'),
+  (3, 'ChefMaster', 'demo-hash', 'chef@example.com'),
+  (4, 'FoodLover', 'demo-hash', 'food@example.com'),
+  (5, 'KitchenPro', 'demo-hash', 'kitchen@example.com')
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO role (id, name) VALUES
+  (1, 'admin'),
+  (2, 'user')
+ON CONFLICT (id) DO NOTHING;
+
+-- Map users to roles
+INSERT INTO user_account_role (user_account_id, role_id) VALUES
+  (1, 1), -- Robert: admin
+  (1, 2), -- Robert: user
+  (2, 1), -- Breus: admin
+  (2, 2), -- Breus: user
+  (3, 2), -- ChefMaster: user
+  (4, 2), -- FoodLover: user
+  (5, 2)  -- KitchenPro: user
+ON CONFLICT (user_account_id, role_id) DO NOTHING;
 
 INSERT INTO recipe (id, title, description, author_id) VALUES
   (1, 'Spaghetti Bolognese', 'Classic Italian pasta dish.', 1),

@@ -18,6 +18,8 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
+    implementation("io.quarkus:quarkus-elytron-security-jdbc")
+    implementation("io.quarkus:quarkus-elytron-security")
     implementation(libs.quarkus.rest)
     implementation(libs.quarkus.rest.jackson)
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))

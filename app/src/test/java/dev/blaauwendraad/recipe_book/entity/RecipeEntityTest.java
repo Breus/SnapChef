@@ -23,8 +23,8 @@ class RecipeEntityTest {
             postgres.withCopyFileToContainer(
                     MountableFile.forHostPath("db/000-init.sql"), "/docker-entrypoint-initdb.d/000-init.sql");
             postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/account.sql"),
-                    "/docker-entrypoint-initdb.d/schema/account.sql");
+                    MountableFile.forHostPath("db/schema/user_account.sql"),
+                    "/docker-entrypoint-initdb.d/schema/user_account.sql");
             postgres.withCopyFileToContainer(
                     MountableFile.forHostPath("db/schema/ingredient.sql"),
                     "/docker-entrypoint-initdb.d/schema/ingredient.sql");
@@ -50,7 +50,7 @@ class RecipeEntityTest {
     @Test
     @Transactional
     void persistRecipe() {
-        AccountEntity user = new AccountEntity();
+        UserAccountEntity user = new UserAccountEntity();
         user.username = "testuser";
         user.passwordHash = "hash";
         user.email = "test@example.com";
