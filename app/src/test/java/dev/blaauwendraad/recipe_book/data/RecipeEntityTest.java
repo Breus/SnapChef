@@ -1,7 +1,7 @@
 package dev.blaauwendraad.recipe_book.data;
 
-import dev.blaauwendraad.recipe_book.data.entity.RecipeEntity;
-import dev.blaauwendraad.recipe_book.data.entity.UserAccountEntity;
+import dev.blaauwendraad.recipe_book.data.model.RecipeEntity;
+import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.quarkus.test.junit.QuarkusTest;

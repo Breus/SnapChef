@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.data.entity;
+package dev.blaauwendraad.recipe_book.data.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
@@ -11,8 +11,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "preparation_step")
-public class PreparationStepEntity extends PanacheEntityBase {
+@Table(name = "ingredient")
+public class IngredientEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SuppressWarnings("NullAway.Init")
@@ -23,9 +23,13 @@ public class PreparationStepEntity extends PanacheEntityBase {
     @SuppressWarnings("NullAway.Init")
     public RecipeEntity recipe;
 
-    @Column(columnDefinition = "text", nullable = false)
+    @Column(length = 255, nullable = false)
     @SuppressWarnings("NullAway.Init")
-    public String description;
+    public String name;
+
+    @Column(length = 100, nullable = false)
+    @SuppressWarnings("NullAway.Init")
+    public String quantity;
 
     @Column(nullable = false)
     @SuppressWarnings("NullAway.Init")

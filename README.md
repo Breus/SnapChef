@@ -49,6 +49,7 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 * [Quarkus](https://quarkus.io/)
 * [Gradle](https://gradle.org/)
 * [Hibernate ORM](https://hibernate.org/orm/)
+* [Hibernate Validator](https://hibernate.org/validator/)
 
 ### Frontend
 

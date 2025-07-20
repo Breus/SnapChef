@@ -1,6 +1,6 @@
 package dev.blaauwendraad.recipe_book.service;
 
-import dev.blaauwendraad.recipe_book.data.entity.RecipeEntity;
+import dev.blaauwendraad.recipe_book.data.model.RecipeEntity;
 import dev.blaauwendraad.recipe_book.service.model.Author;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;

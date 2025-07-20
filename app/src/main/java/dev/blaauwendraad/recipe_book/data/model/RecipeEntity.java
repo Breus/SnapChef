@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.data.entity;
+package dev.blaauwendraad.recipe_book.data.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.annotation.Nullable;
