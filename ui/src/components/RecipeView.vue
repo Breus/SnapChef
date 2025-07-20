@@ -1,24 +1,43 @@
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import type { Recipe } from "../models/Recipe.ts";
+import { getRecipeById } from "../services/recipeSummaries.ts";
+
+const route = useRoute();
+const recipe = ref<Recipe | null>(null);
+const isLoading = ref<boolean>(true);
+const error = ref<string | null>(null);
+
+const fetchRecipe = async () => {
+    try {
+        isLoading.value = true;
+        const recipeId = parseInt(route.params.id as string);
+        recipe.value = await getRecipeById(recipeId);
+        error.value = null;
+    } catch (err) {
+        console.error("Failed to load recipe:", err);
+        error.value = "Failed to load recipe. Please try again later.";
+        recipe.value = null;
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+onMounted(() => {
+    fetchRecipe();
+});
+</script>
+
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-6">
-                <button
-                    @click="$router.push('/')"
-                    class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50"
-                >
-                    <svg
-                        class="mr-2 h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M15 19l-7-7 7-7"
-                        />
+                <button @click="$router.push('/')"
+                        class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                     Back to Recipes
                 </button>
@@ -40,10 +59,8 @@
                 <div class="mb-4 text-6xl">❌</div>
                 <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
                 <p class="text-gray-600">{{ error }}</p>
-                <button
-                    @click="fetchRecipe"
-                    class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700"
-                >
+                <button @click="fetchRecipe"
+                        class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700">
                     Try Again
                 </button>
             </div>
@@ -82,21 +99,11 @@
                             Ingredients
                         </h2>
                         <ul class="space-y-2">
-                            <li
-                                v-for="ingredient in sortedIngredients"
-                                :key="ingredient.id"
-                                class="flex items-start"
-                            >
-                                <span
-                                    class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"
-                                ></span>
+                            <li v-for="ingredient in recipe.ingredients" :key="ingredient.id" class="flex items-start">
+                                <span class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></span>
                                 <div>
-                                    <span class="font-medium text-gray-900">{{
-                                        ingredient.quantity
-                                    }}</span>
-                                    <span class="ml-2 text-gray-700">{{
-                                        ingredient.name
-                                    }}</span>
+                                    <span class="font-medium text-gray-900">{{ ingredient.quantity }}</span>
+                                    <span class="ml-2 text-gray-700">{{ ingredient.name }}</span>
                                 </div>
                             </li>
                         </ul>
@@ -108,15 +115,9 @@
                             Instructions
                         </h2>
                         <ol class="space-y-4">
-                            <li
-                                v-for="step in sortedSteps"
-                                :key="step.id"
-                                class="flex items-start"
-                            >
-                                <span
-                                    class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white"
-                                >
-                                    {{ step.position }}
+                            <li v-for="(step, number) in recipe.steps" :key="step.id" class="flex items-start">
+                                <span class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
+                                    {{ number + 1 }}
                                 </span>
                                 <p class="leading-relaxed text-gray-700">
                                     {{ step.description }}
@@ -129,46 +130,3 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { getRecipeById } from "../api/recipes";
-import type { Recipe } from "../models/Recipe.ts";
-
-const route = useRoute();
-const recipe = ref<Recipe | null>(null);
-const isLoading = ref<boolean>(true);
-const error = ref<string | null>(null);
-
-const sortedIngredients = computed(() => {
-    if (!recipe.value) return [];
-    return [...recipe.value.ingredients].sort(
-        (a, b) => a.position - b.position,
-    );
-});
-
-const sortedSteps = computed(() => {
-    if (!recipe.value) return [];
-    return [...recipe.value.steps].sort((a, b) => a.position - b.position);
-});
-
-const fetchRecipe = async () => {
-    try {
-        isLoading.value = true;
-        const recipeId = parseInt(route.params.id as string);
-        recipe.value = await getRecipeById(recipeId);
-        error.value = null;
-    } catch (err) {
-        console.error("Failed to load recipe:", err);
-        error.value = "Failed to load recipe. Please try again later.";
-        recipe.value = null;
-    } finally {
-        isLoading.value = false;
-    }
-};
-
-onMounted(() => {
-    fetchRecipe();
-});
-</script>
