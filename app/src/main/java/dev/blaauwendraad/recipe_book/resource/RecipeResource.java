@@ -1,10 +1,14 @@
 package dev.blaauwendraad.recipe_book.resource;
 
+import dev.blaauwendraad.recipe_book.resource.model.IngredientDto;
+import dev.blaauwendraad.recipe_book.resource.model.PreparationStepDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeAuthorDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeDto;
+import dev.blaauwendraad.recipe_book.resource.model.RecipeResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummaryDto;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
+import dev.blaauwendraad.recipe_book.service.model.Recipe;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -51,8 +55,23 @@ public class RecipeResource {
     @Path("/{id}")
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public RecipeDto getRecipe(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public RecipeResponse getRecipe(@PathParam("id") Long id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        if (recipe == null) {
+            throw new jakarta.ws.rs.NotFoundException("Recipe not found with id: " + id);
+        }
+
+        return new RecipeResponse(new RecipeDto(
+                recipe.id().intValue(),
+                recipe.title(),
+                recipe.description(),
+                recipe.author().username(),
+                recipe.ingredients().stream()
+                        .map(ingredient -> new IngredientDto(ingredient.name(), ingredient.quantity()))
+                        .toList(),
+                recipe.preparationSteps().stream()
+                        .map(step -> new PreparationStepDto(step.description()))
+                        .toList()));
     }
 
     @POST

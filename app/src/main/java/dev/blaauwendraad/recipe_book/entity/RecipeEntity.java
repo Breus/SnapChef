@@ -9,7 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "recipe")
@@ -31,4 +34,12 @@ public class RecipeEntity extends PanacheEntityBase {
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     @Nullable
     public UserAccountEntity author;
+
+    @OneToMany(mappedBy = "recipe")
+    @OrderBy("position ASC")
+    public List<IngredientEntity> ingredients;
+
+    @OneToMany(mappedBy = "recipe")
+    @OrderBy("position ASC")
+    public List<PreparationStepEntity> preparationSteps;
 }
