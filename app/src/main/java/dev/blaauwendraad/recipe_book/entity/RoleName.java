@@ -1,6 +1,16 @@
 package dev.blaauwendraad.recipe_book.entity;
 
 public enum RoleName {
-    ADMIN,
-    USER
+    admin("admin"),
+    user("user");
+
+    RoleName(String name) {
+        this.name = name;
+    }
+
+    private final String name;
+
+    public String getName() {
+        return name;
+    }
 }

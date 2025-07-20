@@ -47,7 +47,7 @@ public class RecipeResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "USER"})
+    @RolesAllowed({"admin", "user"})
     public List<RecipeDTO> add(RecipeDTO recipe) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -55,7 +55,7 @@ public class RecipeResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "USER"})
+    @RolesAllowed({"admin", "user"})
     public List<RecipeDTO> remove(RecipeDTO recipe) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
