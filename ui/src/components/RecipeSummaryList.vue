@@ -39,18 +39,18 @@ onMounted(() => {
             </div>
 
             <!-- Search Bar -->
-            <div class="mx-auto mb-8 max-w-md">
-                <div class="relative">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                    <input v-model="searchQuery" type="text" placeholder="Search recipes, ingredients, or authors..."
-                           class="block w-full rounded-md border border-gray-300 bg-white py-2 pr-3 pl-10 leading-5 placeholder-gray-500 focus:border-blue-500 focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:outline-none"/>
-                </div>
-            </div>
+<!--            <div class="mx-auto mb-8 max-w-md">-->
+<!--                <div class="relative">-->
+<!--                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">-->
+<!--                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
+<!--                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>-->
+<!--                        </svg>-->
+<!--                    </div>-->
+<!--                    <input v-model="searchQuery" type="text" placeholder="Search recipes, ingredients, or authors..."-->
+<!--                           class="block w-full rounded-md border border-gray-300 bg-white py-2 pr-3 pl-10 leading-5 placeholder-gray-500 focus:border-blue-500 focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:outline-none"/>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <!-- Loading State -->
             <div v-if="isLoading" class="py-12 text-center">
