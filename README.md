@@ -27,95 +27,68 @@ to, and it offers flexibility: it can be very simple but can also become highly 
 - [ ] Add authentication/authorization
 
 ## TODO longer term
-- [ ] Add JavaFormatting (pre-commit hook?)
 - [ ] Add resiliency patterns such as rate limiters on endpoints
 - [ ] Set-up continuous integration / deployment (Github actions)
 
-## Used Technologies
+## Tech Stack
 
 ### Infrastructure
 
-* Container orchestration: Docker-compose
+* [Docker-compose](https://docs.docker.com/compose/)
+* [Pre-commit](https://pre-commit.com/)
+* [Spotless](https://spotless.dev/)
 
-### Database
+### Persistence 
 
-* PostgreSQL
+* [PostgreSQL](https://www.postgresql.org/)
+* [PgAdmin](https://www.pgadmin.org/)
 
 ### Backend
 
-* Java
-* Web stack: Quarkus imperative, HotSpot
-* Serializer: Jackson
-* Build tool: Gradle
-* ORM: Hibernate ORM, and Panache
+* [Java](https://www.oracle.com/java/) 
+* [Quarkus](https://quarkus.io/)
+* [Gradle](https://gradle.org/)
+* [Hibernate ORM](https://hibernate.org/orm/)
 
 ### Frontend
 
-* TypeScript
-* JavaScript Framework: VueJs
-* CSS Framework: Tailwind
-* Asset building: Vite
-* Node package manager: pnpm
-
-## Repository layout
-
-```plain text
-project-root/
-├── app/ ← Quarkus application
-│ ├── build.gradle
-│ ├── settings.gradle
-│ ├── src/
-│ │ ├── main/
-│ │ │ ├── java/
-│ │ │ ├── resources/
-│ │ │ └── docker/ ← Quarkus-specific Docker files
-│ │ └── test/
-│ └── db/ ← Database schema and data
-│ ├── schema/
-│ └── data/
-│
-├── ui/ ← The headless Vue.js frontend
-│ ├── src/
-│ │ ├── api/ ← API clients talking to Quarkus
-│ │ ├── assets/
-│ │ ├── components/
-│ │ ├── models/ 
-│ │ ├── router/ 
-│ │ ├── App.vue
-│ │ ├── main.ts
-│ │ ├── style.css
-│ │ └── vite-env.d.ts ← TypeScript environment definitions
-│ ├── .editorconfig
-│ ├── .gitignore
-│ ├── .prettierignore
-│ ├── .prettierrc
-│ ├── .eslint.config.js
-│ ├── index.html
-│ ├── package.json
-│ ├── pnpm-lock.yaml
-│ ├── pnpm-workspace.yaml
-│ ├── stylelint.config.js
-│ ├── tsconfig.app.json ← TypeScript configuration for the app
-│ ├── tsconfig.json ← TypeScript configuration for the entire project
-│ ├── tsconfig.node.json ← TypeScript configuration for Node.js
-│ └── vite.config.ts
-│
-├── docker-compose.override.yml
-├── docker-compose.yml ← Compose backend/frontend/db
-└── README.md
-```
+* [Tailwind CSS](https://tailwindcss.com/)
+* [Vue.js](https://vuejs.org/)
+* [Vite](https://vitejs.dev/)
+* [pnpm](https://pnpm.io/)
+* [Node.js](https://nodejs.org/en/)
 
 ## Getting Started
 
-### Environment Setup
+### Local Development Environment Setup
 
-1. Copy the example environment file to create your own:
+1. Install the required tools:
 
+   - [Docker Desktop (for Docker Compose)](https://docs.docker.com/get-docker/)
+   - [Java 21 JDK](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+   - [Node.js](https://nodejs.org/en/download/) (version 22 or higher)
+   - [pnpm](https://pnpm.io/installation) 
+   - [pre-commit](https://pre-commit.com/#install) (for required code formatting)
+
+2. Install the required pre-commit hooks by running:
+```shell
+pre-commit install
+```
+
+3. Copy the example `.env` file to create your own: `cp .env.example .env`
+
+   This file contains environment variables used by the application. It is essential to set up the database connection and other configurations.
 ```shell script
 cp .env.example .env
 ```
+4. Modify the `.env` by entering the correct credentials. The other default values should work for local development.
 
-2. Modify the `.env` file with your preferred settings if needed. The default values should work for local development.
+5. For easier database access, copy the example `.pgpass` to create your own:
+```shell script
+cp .pgpass.example .pgpass
+```
+
+6. Modify the `.pgpass` file with the correct database credentials.
 
 ### Running with Docker Compose
 
@@ -140,23 +113,23 @@ docker-compose down
 
 If you prefer to run the backend in development mode for live coding:
 
-1. Make sure the PostgreSQL database is running (you can use Docker Compose for just the database):
+1. Uncomment `quarkus_app: !reset null` in `docker compose.override.yml` to disable the Docker container for the Quarkus 
+   app, allowing you to run it directly on your host machine in development mode.
 
-```shell script
-# Uncomment the quarkus_app service in docker-compose.override.yml first
-docker-compose up -d postgres pg_admin
-```
+2. Make sure the PostgreSQL database is running (now `docker compose up` will only start the database and PgAdmin):
 
-2. Navigate to the app directory and run:
+3. Navigate to the `app` directory and run:
 
 ```shell script
 cd app
-./gradlew quarkusDev
+./gradlew quarkus dev
 ```
+
+or you can use `quarkus dev` if you have the Quarkus CLI installed.
 
 The backend will be available at http://localhost:8080.
 
-> **_NOTE:_**  Quarkus ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_Note:_**  Quarkus ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
 ### Running the Frontend
 

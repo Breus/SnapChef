@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: spotless-apply
+        name: Run Gradle Spotless
+        entry: bash -c "cd app && ./gradlew spotlessApply && git add -u"
+        language: system
+        types: [java]
