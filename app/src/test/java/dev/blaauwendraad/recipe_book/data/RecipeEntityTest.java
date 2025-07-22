@@ -28,6 +28,11 @@ class RecipeEntityTest {
                     MountableFile.forHostPath("db/schema/user_account.sql"),
                     "/docker-entrypoint-initdb.d/schema/user_account.sql");
             postgres.withCopyFileToContainer(
+                    MountableFile.forHostPath("db/schema/user_account_role.sql"),
+                    "/docker-entrypoint-initdb.d/schema/user_account_role.sql");
+            postgres.withCopyFileToContainer(
+                    MountableFile.forHostPath("db/schema/role.sql"), "/docker-entrypoint-initdb.d/schema/role.sql");
+            postgres.withCopyFileToContainer(
                     MountableFile.forHostPath("db/schema/ingredient.sql"),
                     "/docker-entrypoint-initdb.d/schema/ingredient.sql");
             postgres.withCopyFileToContainer(
