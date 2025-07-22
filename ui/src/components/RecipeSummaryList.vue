@@ -36,6 +36,9 @@ onMounted(() => {
                 <h1 class="mb-4 text-4xl font-bold text-gray-900">
                     Recipe Book
                 </h1>
+                <button @click="$router.push('/recipe/create')" class="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-green-700">
+                    Create Recipe
+                </button>
             </div>
 
             <!-- Search Bar -->

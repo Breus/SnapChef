@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import type { Recipe } from "../models/Recipe.ts";
-import { getRecipeById } from "../services/recipeSummaries.ts";
+import { getRecipeById } from "../services/recipes.ts";
 
 const route = useRoute();
 const recipe = ref<Recipe | null>(null);
