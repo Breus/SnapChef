@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
-import { createRecipe } from "../services/recipes.ts";
+import { createRecipe } from "../api/recipeApi.ts";
+import type Ingredient from "../models/domain/Ingredient.ts";
+import type PreparationStep from "../models/domain/PreparationStep.ts";
+import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 
 const router = useRouter();
 
@@ -10,8 +12,8 @@ const router = useRouter();
 const title = ref("");
 const description = ref("");
 const author = ref("");
-const ingredients = ref([{ name: "", quantity: "" }]);
-const steps = ref([{ description: "" }]);
+const ingredients = ref<Ingredient[]>([{ name: "", quantity: "" }]);
+const preparationSteps = ref<PreparationStep[]>([{ description: "" }]);
 
 // Form state
 const isSubmitting = ref(false);
@@ -29,15 +31,15 @@ const removeIngredient = (index: number) => {
     }
 };
 
-// Add a new step field
+// Add a new preparation step field
 const addStep = () => {
-    steps.value.push({ description: "" });
+    preparationSteps.value.push({ description: "" });
 };
 
-// Remove a step field
+// Remove a preparation step field
 const removeStep = (index: number) => {
-    if (steps.value.length > 1) {
-        steps.value.splice(index, 1);
+    if (preparationSteps.value.length > 1) {
+        preparationSteps.value.splice(index, 1);
     }
 };
 
@@ -57,24 +59,22 @@ const submitForm = async () => {
         if (ingredients.value.some((ing) => !ing.name.trim() || !ing.quantity.trim())) {
             throw new Error("All ingredient fields must be filled");
         }
-        if (steps.value.some((step) => !step.description.trim())) {
+        if (preparationSteps.value.some((step) => !step.description.trim())) {
             throw new Error("All step fields must be filled");
         }
 
-        // Create recipe object
-        const newRecipe = {
-            title: title.value,
-            description: description.value,
-            author: author.value,
+        const newRecipe: RecipeCreateDto = {
+            title: title.value.trim(),
+            description: description.value.trim(),
+            author: author.value.trim(),
             ingredients: ingredients.value,
-            steps: steps.value,
+            preparationSteps: preparationSteps.value,
         };
 
-        // Submit to API
-        const createdRecipe = await createRecipe(newRecipe);
+        const createdRecipeId = await createRecipe(newRecipe);
 
         // Navigate to the new recipe
-        router.push(`/recipe/${createdRecipe.id}`);
+        router.push(`/recipe/${createdRecipeId}`);
     } catch (err) {
         if (err instanceof Error) {
             error.value = err.message;
@@ -186,7 +186,7 @@ const submitForm = async () => {
                         </div>
                     </div>
 
-                    <!-- Steps Section -->
+                    <!-- Preparation Steps Section -->
                     <div>
                         <div class="mb-4 flex items-center justify-between">
                             <h2 class="text-xl font-semibold text-gray-900">Instructions</h2>
@@ -199,7 +199,7 @@ const submitForm = async () => {
                             </button>
                         </div>
 
-                        <div v-for="(step, index) in steps" :key="index" class="mb-3 flex items-start space-x-2">
+                        <div v-for="(step, index) in preparationSteps" :key="index" class="mb-3 flex items-start space-x-2">
                             <div class="mt-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
                                 {{ index + 1 }}
                             </div>
@@ -210,7 +210,7 @@ const submitForm = async () => {
                             </div>
                             <button type="button" @click="removeStep(index)"
                                     class="mt-2 rounded-md p-1 text-gray-400 hover:text-red-500"
-                                    :disabled="steps.length <= 1">
+                                    :disabled="preparationSteps.length <= 1">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>

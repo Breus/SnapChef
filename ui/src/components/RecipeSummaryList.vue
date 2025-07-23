@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import type { RecipeSummary } from "../models/RecipeSummary.ts";
-import { getAllRecipeSummaries } from "../services/recipeSummaries.ts";
+import { getAllRecipeSummaries } from "../api/recipeSummaryApi.ts";
+import type RecipeSummary from "../models/domain/RecipeSummary.ts";
 import RecipeSummaryComponent from "./RecipeSummary.vue";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);

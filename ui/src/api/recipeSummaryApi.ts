@@ -1,5 +1,5 @@
-import type { RecipeSummariesResponse } from "../models/RecipeSummariesResponse.ts";
-import type { RecipeSummary } from "../models/RecipeSummary.ts";
+import type RecipeSummary from "../models/domain/RecipeSummary.ts";
+import type RecipeSummariesResponse from "../models/dto/RecipeSummariesResponse.ts";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 

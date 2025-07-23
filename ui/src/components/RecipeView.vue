@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import type { Recipe } from "../models/Recipe.ts";
-import { getRecipeById } from "../services/recipes.ts";
+import { getRecipeById } from "../api/recipeApi.ts";
+import type Recipe from "../models/domain/Recipe.ts";
 
 const route = useRoute();
 const recipe = ref<Recipe | null>(null);

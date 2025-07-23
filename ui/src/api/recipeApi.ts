@@ -1,5 +1,7 @@
-import type { Recipe } from "../models/Recipe.ts";
-import type { RecipeResponse } from "../models/RecipeResponse.ts";
+import type Recipe from "../models/domain/Recipe.ts";
+import type CreateRecipeResponse from "../models/dto/CreateRecipeResponse.ts";
+import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
+import type RecipeResponse from "../models/dto/RecipeResponse.ts";
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -19,7 +21,7 @@ export const getRecipeById = async (id: number): Promise<Recipe> => {
     }
 };
 
-export const createRecipe = async (recipe: Recipe): Promise<Recipe> => {
+export const createRecipe = async (recipe: RecipeCreateDto): Promise<number> => {
     try {
         const response = await fetch(`${API_BASE_URL}/recipes`, {
             method: "POST",
@@ -33,8 +35,8 @@ export const createRecipe = async (recipe: Recipe): Promise<Recipe> => {
             throw new Error(`Failed to create recipe: ${response.status} ${response.statusText}`);
         }
 
-        const data: RecipeResponse = await response.json();
-        return data.recipe;
+        const data: CreateRecipeResponse = await response.json();
+        return data.recipeId;
     } catch (error) {
         console.error("Error creating recipe:", error);
         throw error;
