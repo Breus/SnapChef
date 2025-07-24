@@ -32,6 +32,7 @@ dependencies {
     testImplementation(libs.assertj.core)
     testImplementation(libs.testcontainers)
     testImplementation(libs.testcontainers.postgresql)
+    testImplementation(libs.restassured)
 
     implementation(libs.jspecify)
     errorprone(libs.nullaway)

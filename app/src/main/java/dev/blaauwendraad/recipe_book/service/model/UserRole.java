@@ -1,3 +1,6 @@
 package dev.blaauwendraad.recipe_book.service.model;
 
-public record Author(Long id, String authorName) {}
+public enum UserRole {
+    administrator,
+    user;
+}

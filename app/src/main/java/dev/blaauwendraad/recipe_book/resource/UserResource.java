@@ -1,16 +1,19 @@
 package dev.blaauwendraad.recipe_book.resource;
 
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
+import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationResponse;
 import dev.blaauwendraad.recipe_book.service.UserService;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
+import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Response;
 
 @Path("/users")
 @ApplicationScoped
@@ -24,20 +27,16 @@ public class UserResource {
 
     @POST
     @Path("/register")
-    public Response register(@Valid @NotNull UserRegistrationRequest registrationRequest) {
+    public UserRegistrationResponse register(@Valid @NotNull UserRegistrationRequest registrationRequest) {
         try {
-            userService.registerUser(
+            UserAccount userAccount = userService.registerUser(
                     registrationRequest.username(), registrationRequest.emailAddress(), registrationRequest.password());
-            return Response.status(Response.Status.CREATED).build();
+            return new UserRegistrationResponse(userAccount.id(), userAccount.username(), userAccount.emailAddress());
         } catch (UserRegistrationException e) {
             if (e instanceof UserRegistrationValidationException) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(e.getMessage())
-                        .build();
+                throw new BadRequestException(e.getMessage(), e);
             }
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred during user registration.")
-                    .build();
+            throw new InternalServerErrorException("An unexpected error occurred during user registration.", e);
         }
     }
 }

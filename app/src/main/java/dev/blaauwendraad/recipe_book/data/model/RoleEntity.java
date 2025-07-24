@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.data.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,14 +12,26 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "role")
-public class RoleEntity {
+public class RoleEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SuppressWarnings("NullAway.Init")
     public Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 50, unique = true, nullable = false)
+    @Column(name = "name", length = 50, unique = true, nullable = false)
     @SuppressWarnings("NullAway.Init")
-    public RoleName name;
+    public RoleName roleName;
+
+    public static RoleEntity findByName(RoleName name) {
+        return find("roleName", name).firstResult();
+    }
+
+    public static RoleEntity getUserRole() {
+        return findByName(RoleName.user);
+    }
+
+    public static RoleEntity getAdminRole() {
+        return findByName(RoleName.admin);
+    }
 }

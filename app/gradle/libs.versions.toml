@@ -17,6 +17,7 @@ assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 errorprone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
 nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
+restassured = { module = "io.rest-assured:rest-assured", version = "5.5.5" }
 testcontainers = { module = "org.testcontainers:testcontainers", version = "1.21.3" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version = "1.21.3" }
 

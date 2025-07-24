@@ -48,7 +48,7 @@ public class RecipeResource {
                                 ? null
                                 : new RecipeAuthorDto(
                                         recipeSummary.author().id(),
-                                        recipeSummary.author().username())))
+                                        recipeSummary.author().authorName())))
                 .toList());
     }
 
@@ -66,7 +66,7 @@ public class RecipeResource {
                 recipe.id().intValue(),
                 recipe.title(),
                 recipe.description(),
-                recipe.author() == null ? null : recipe.author().username(),
+                recipe.author() == null ? null : recipe.author().authorName(),
                 recipe.ingredients().stream()
                         .map(ingredient -> new IngredientDto(ingredient.name(), ingredient.quantity()))
                         .toList(),
