@@ -33,5 +33,5 @@ public class IngredientEntity extends PanacheEntityBase {
 
     @Column(nullable = false)
     @SuppressWarnings("NullAway.Init")
-    public Integer position = 0;
+    public Integer position;
 }
