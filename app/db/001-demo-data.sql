@@ -1,4 +1,4 @@
-INSERT INTO user_account (id, username, password_hash, email_address) VALUES
+INSERT INTO user_account (id, username, password_hash, email) VALUES
   (1, 'Robert', 'demo-hash', 'robert@example.com'),
   (2, 'Breus', 'demo-hash', 'breus@example.com'),
   (3, 'ChefMaster', 'demo-hash', 'chef@example.com'),
@@ -22,18 +22,18 @@ INSERT INTO user_account_role (user_account_id, role_id) VALUES
   (5, 2)  -- KitchenPro: user
 ON CONFLICT (user_account_id, role_id) DO NOTHING;
 
-INSERT INTO recipe (id, title, description, author_id) VALUES
-  (1, 'Spaghetti Bolognese', 'Classic Italian pasta dish.', 1),
-  (2, 'Chicken Curry', 'Spicy Indian-style curry with tender chicken.', 2),
-  (3, 'Caesar Salad', 'Classic romaine lettuce salad with creamy dressing.', 3),
-  (4, 'Chocolate Chip Cookies', 'Soft and chewy homemade cookies.', 4),
-  (5, 'Mushroom Risotto', 'Creamy Italian rice dish with mushrooms.', 2),
-  (6, 'Fish Tacos', 'Mexican-style fish tacos with fresh salsa.', 3),
-  (7, 'Greek Salad', 'Traditional Mediterranean salad with feta cheese.', 4),
-  (8, 'Beef Stir Fry', 'Quick and easy Asian-style beef dish.', 1),
-  (9, 'Banana Bread', 'Moist and delicious homemade bread.', 2),
-  (10, 'Vegetable Soup', 'Healthy and warming soup with mixed vegetables.', 3)
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO recipe (title, description, author_id) VALUES
+  ('Spaghetti Bolognese', 'Classic Italian pasta dish.', 1),
+  ('Chicken Curry', 'Spicy Indian-style curry with tender chicken.', 2),
+  ('Caesar Salad', 'Classic romaine lettuce salad with creamy dressing.', 3),
+  ('Chocolate Chip Cookies', 'Soft and chewy homemade cookies.', 4),
+  ('Mushroom Risotto', 'Creamy Italian rice dish with mushrooms.', 2),
+  ('Fish Tacos', 'Mexican-style fish tacos with fresh salsa.', 3),
+  ('Greek Salad', 'Traditional Mediterranean salad with feta cheese.', 4),
+  ('Beef Stir Fry', 'Quick and easy Asian-style beef dish.', 1),
+  ('Banana Bread', 'Moist and delicious homemade bread.', 2),
+  ( 'Vegetable Soup', 'Healthy and warming soup with mixed vegetables.', 3)
+ON CONFLICT DO NOTHING;
 
 INSERT INTO ingredient (id, name, quantity, position, recipe_id) VALUES
   (1, 'Spaghetti', '200g', 1, 1),
