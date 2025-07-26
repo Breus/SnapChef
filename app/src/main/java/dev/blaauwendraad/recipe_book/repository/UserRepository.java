@@ -25,26 +25,17 @@ public class UserRepository {
 
     public UserAccount findById(Long id) {
         UserAccountEntity user = UserAccountEntity.findById(id);
-        if (user == null) {
-            return null;
-        }
         return toUserAccount(user);
     }
 
     public UserAccount findByUsername(String username) {
         UserAccountEntity user = UserAccountEntity.find("username", username).firstResult();
-        if (user == null) {
-            return null;
-        }
         return toUserAccount(user);
     }
 
     public UserAccount findByEmail(String emailAddress) {
         UserAccountEntity user =
                 UserAccountEntity.find("emailAddress", emailAddress).firstResult();
-        if (user == null) {
-            return null;
-        }
         return toUserAccount(user);
     }
 

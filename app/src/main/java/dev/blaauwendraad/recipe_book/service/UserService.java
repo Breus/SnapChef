@@ -1,12 +1,10 @@
 package dev.blaauwendraad.recipe_book.service;
 
 import dev.blaauwendraad.recipe_book.data.model.RoleEntity;
-import dev.blaauwendraad.recipe_book.data.model.RoleName;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
-import dev.blaauwendraad.recipe_book.service.model.UserRole;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -40,12 +38,5 @@ public class UserService {
         }
         String hashPassword = BcryptUtil.bcryptHash(password);
         return userRepository.createUser(username, hashPassword, emailAddress, Set.of(RoleEntity.getUserRole()));
-    }
-
-    private static UserRole toUserRole(RoleEntity roleEntity) {
-        return switch (roleEntity.roleName) {
-            case RoleName.admin -> UserRole.administrator;
-            case RoleName.user -> UserRole.user;
-        };
     }
 }
