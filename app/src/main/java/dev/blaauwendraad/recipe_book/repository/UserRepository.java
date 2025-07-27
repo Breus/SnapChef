@@ -4,6 +4,7 @@ import dev.blaauwendraad.recipe_book.data.model.RoleEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import dev.blaauwendraad.recipe_book.service.model.UserRole;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.Set;
@@ -19,24 +20,26 @@ public class UserRepository {
         user.emailAddress = emailAddress;
         user.roles = roles;
         user.persist();
-
         return toUserAccount(user);
     }
 
+    @Nullable
     public UserAccount findById(Long id) {
         UserAccountEntity user = UserAccountEntity.findById(id);
-        return toUserAccount(user);
+        return user == null ? null : toUserAccount(user);
     }
 
+    @Nullable
     public UserAccount findByUsername(String username) {
         UserAccountEntity user = UserAccountEntity.find("username", username).firstResult();
-        return toUserAccount(user);
+        return user == null ? null : toUserAccount(user);
     }
 
+    @Nullable
     public UserAccount findByEmail(String emailAddress) {
         UserAccountEntity user =
                 UserAccountEntity.find("emailAddress", emailAddress).firstResult();
-        return toUserAccount(user);
+        return user == null ? null : toUserAccount(user);
     }
 
     private static UserAccount toUserAccount(UserAccountEntity userAccountEntity) {

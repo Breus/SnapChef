@@ -9,6 +9,7 @@ import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,35 +49,31 @@ class UserResourceTest {
                 .body("emailAddress", is("test@example.com"));
     }
 
-    // First fix error handling in the JAX-RS application to be able to test for errors
-    //    @Test
-    //    void registerUser_DuplicateUsername_Returns400() {
-    //        UserRegistrationRequest request = new UserRegistrationRequest(
-    //                "testuser",
-    //                "test@example.com",
-    //                "Password123!"
-    //        );
-    //
-    //        // Register first user
-    //        given()
-    //                .contentType(ContentType.JSON)
-    //                .body(request)
-    //                .post("/users/register");
-    //
-    //        // Try to register second user with same username
-    //        UserRegistrationRequest duplicateRequest = new UserRegistrationRequest(
-    //                "testuser",
-    //                "different@example.com",
-    //                "Password123!"
-    //        );
-    //
-    //        given()
-    //                .contentType(ContentType.JSON)
-    //                .body(duplicateRequest)
-    //                .when()
-    //                .post("/users/register")
-    //                .then()
-    //                .statusCode(400)
-    //                .body("message", is("Username is already in use."));
-    //    }
+    @Test
+    void registerUser_DuplicateUsername_Returns400() {
+        UserRegistrationRequest request = new UserRegistrationRequest("testuser", "test@example.com", "Password123!");
+
+        // Register the first user successfully
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .post("/users/register")
+                .then()
+                .statusCode(200);
+
+        // Try to register second user with same username
+        UserRegistrationRequest duplicateRequest =
+                new UserRegistrationRequest("testuser", "different@example.com", "Password123!");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(duplicateRequest)
+                .when()
+                .post("/users/register")
+                .then()
+                .statusCode(400)
+                .body("title", is("Failed to register new user."))
+                .body("detail", is("Invalid user provided: Username is already in use."))
+                .body("status", is(400));
+    }
 }

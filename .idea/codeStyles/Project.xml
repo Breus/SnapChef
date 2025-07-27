@@ -7,5 +7,8 @@
     <TypeScriptCodeStyleSettings version="0">
       <option name="SPACES_WITHIN_IMPORTS" value="true" />
     </TypeScriptCodeStyleSettings>
+    <codeStyleSettings language="JAVA">
+      <option name="SOFT_MARGINS" value="120" />
+    </codeStyleSettings>
   </code_scheme>
 </component>
