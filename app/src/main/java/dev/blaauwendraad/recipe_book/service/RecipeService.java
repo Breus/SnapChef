@@ -6,10 +6,10 @@ import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
 import dev.blaauwendraad.recipe_book.service.model.Recipe;
 import dev.blaauwendraad.recipe_book.service.model.RecipeSummary;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.Nullable;
 
 @ApplicationScoped
 public class RecipeService {

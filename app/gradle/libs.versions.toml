@@ -2,7 +2,6 @@
 assertj = "3.27.3"
 errorprone = "2.39.0"
 errorprone-plugin = "4.3.0"
-jspecify = "1.0.0"
 nullaway = "0.12.7"
 quarkus = "3.24.1"
 testcontainers = "1.21.3"
@@ -10,7 +9,6 @@ testcontainers = "1.21.3"
 [libraries]
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 errorprone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
-jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version = "5.18.0" }
 nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
 quarkus-arc = { module = "io.quarkus:quarkus-arc", version.ref = "quarkus" }

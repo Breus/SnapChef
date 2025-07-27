@@ -23,7 +23,6 @@ dependencies {
 
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
-    implementation(libs.jspecify)
     implementation(libs.quarkus.arc)
     implementation(libs.quarkus.elytron.security)
     implementation(libs.quarkus.elytron.security.jdbc)
@@ -94,7 +93,6 @@ tasks.withType<JavaCompile>().configureEach {
             "StringCaseLocaleUsage",
             "MissingSummary",
         )
-        option("NullAway:JSpecifyMode")
         option("NullAway:AnnotatedPackages", "dev.blaauwendraad")
         excludedPaths = ".*/build/generated/.*"
     }
