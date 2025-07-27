@@ -1,27 +1,32 @@
 [versions]
-quarkus = "3.24.1"
 assertj = "3.27.3"
-jspecify = "1.0.0"
 errorprone = "2.39.0"
-nullaway = "0.12.7"
 errorprone-plugin = "4.3.0"
+jspecify = "1.0.0"
+nullaway = "0.12.7"
+quarkus = "3.24.1"
+testcontainers = "1.21.3"
 
 [libraries]
-quarkus-rest = { module = "io.quarkus:quarkus-rest", version.ref = "quarkus" }
-quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson", version.ref = "quarkus" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+errorprone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version = "5.18.0" }
+nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
 quarkus-arc = { module = "io.quarkus:quarkus-arc", version.ref = "quarkus" }
+quarkus-elytron-security = { module = "io.quarkus:quarkus-elytron-security", version.ref = "quarkus" }
+quarkus-elytron-security-jdbc = { module = "io.quarkus:quarkus-elytron-security-jdbc", version.ref = "quarkus" }
 quarkus-hibernate-orm-panache = { module = "io.quarkus:quarkus-hibernate-orm-panache", version.ref = "quarkus" }
+quarkus-hibernate-validator = { module = "io.quarkus:quarkus-hibernate-validator", version.ref = "quarkus" }
 quarkus-jdbc-postgresql = { module = "io.quarkus:quarkus-jdbc-postgresql", version.ref = "quarkus" }
 quarkus-junit5 = { module = "io.quarkus:quarkus-junit5", version.ref = "quarkus" }
-assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
-jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
-errorprone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
-nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
+quarkus-rest = { module = "io.quarkus:quarkus-rest", version.ref = "quarkus" }
+quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson", version.ref = "quarkus" }
 restassured = { module = "io.rest-assured:rest-assured", version = "5.5.5" }
-testcontainers = { module = "org.testcontainers:testcontainers", version = "1.21.3" }
-testcontainers-postgresql = { module = "org.testcontainers:postgresql", version = "1.21.3" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 
 [plugins]
-quarkus = { id = "io.quarkus", version.ref = "quarkus" }
 errorprone = { id = "net.ltgt.errorprone", version.ref = "errorprone-plugin" }
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }
 spotless = { id = "com.diffplug.spotless", version = "7.1.0" }

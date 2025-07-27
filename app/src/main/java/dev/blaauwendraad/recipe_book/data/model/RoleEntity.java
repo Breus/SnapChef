@@ -22,16 +22,4 @@ public class RoleEntity extends PanacheEntityBase {
     @Column(name = "name", length = 50, unique = true, nullable = false)
     @SuppressWarnings("NullAway.Init")
     public RoleName roleName;
-
-    public static RoleEntity findByName(RoleName name) {
-        return find("roleName", name).firstResult();
-    }
-
-    public static RoleEntity getUserRole() {
-        return findByName(RoleName.user);
-    }
-
-    public static RoleEntity getAdminRole() {
-        return findByName(RoleName.admin);
-    }
 }

@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
+import java.net.URI;
 
 @Path("/users")
 @ApplicationScoped
@@ -24,10 +26,13 @@ public class UserResource {
 
     @POST
     @Path("/register")
-    public UserRegistrationResponse register(@Valid @NotNull UserRegistrationRequest registrationRequest)
+    public Response register(@Valid @NotNull UserRegistrationRequest registrationRequest)
             throws UserRegistrationException {
         UserAccount userAccount = userService.registerUser(
                 registrationRequest.username(), registrationRequest.emailAddress(), registrationRequest.password());
-        return new UserRegistrationResponse(userAccount.id(), userAccount.username(), userAccount.emailAddress());
+        return Response.created(URI.create("/users/" + userAccount.id()))
+                .entity(new UserRegistrationResponse(
+                        userAccount.id(), userAccount.username(), userAccount.emailAddress()))
+                .build();
     }
 }

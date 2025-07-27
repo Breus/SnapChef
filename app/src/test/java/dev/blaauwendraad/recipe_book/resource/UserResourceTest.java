@@ -12,6 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +44,7 @@ class UserResourceTest {
                 .when()
                 .post("/users/register")
                 .then()
-                .statusCode(200)
+                .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
                 .body("username", is("testuser"))
                 .body("emailAddress", is("test@example.com"));
@@ -59,7 +60,7 @@ class UserResourceTest {
                 .body(request)
                 .post("/users/register")
                 .then()
-                .statusCode(200);
+                .statusCode(Response.Status.CREATED.getStatusCode());
 
         // Try to register second user with same username
         UserRegistrationRequest duplicateRequest =
@@ -71,9 +72,9 @@ class UserResourceTest {
                 .when()
                 .post("/users/register")
                 .then()
-                .statusCode(400)
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                 .body("title", is("Failed to register new user."))
                 .body("detail", is("Invalid user provided: Username is already in use."))
-                .body("status", is(400));
+                .body("status", is(Response.Status.BAD_REQUEST.getStatusCode()));
     }
 }

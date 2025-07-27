@@ -2,10 +2,10 @@ import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.kotlin.dsl.errorprone
 
 plugins {
-    java
-    alias(libs.plugins.quarkus)
     alias(libs.plugins.errorprone)
+    alias(libs.plugins.quarkus)
     alias(libs.plugins.spotless)
+    java
 }
 
 repositories {
@@ -18,25 +18,27 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
-    implementation("io.quarkus:quarkus-hibernate-validator")
-    implementation("io.quarkus:quarkus-elytron-security-jdbc")
-    implementation("io.quarkus:quarkus-elytron-security")
-    implementation(libs.quarkus.rest)
-    implementation(libs.quarkus.rest.jackson)
-    implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
-    implementation(libs.quarkus.arc)
-    implementation(libs.quarkus.hibernate.orm.panache)
-    implementation(libs.quarkus.jdbc.postgresql)
+    errorprone(libs.errorprone.core)
+    errorprone(libs.nullaway)
 
-    testImplementation(libs.quarkus.junit5)
-    testImplementation(libs.assertj.core)
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.postgresql)
-    testImplementation(libs.restassured)
+    implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
     implementation(libs.jspecify)
-    errorprone(libs.nullaway)
-    errorprone(libs.errorprone.core)
+    implementation(libs.quarkus.arc)
+    implementation(libs.quarkus.elytron.security)
+    implementation(libs.quarkus.elytron.security.jdbc)
+    implementation(libs.quarkus.hibernate.orm.panache)
+    implementation(libs.quarkus.hibernate.validator)
+    implementation(libs.quarkus.jdbc.postgresql)
+    implementation(libs.quarkus.rest)
+    implementation(libs.quarkus.rest.jackson)
+
+    testImplementation(libs.assertj.core)
+    testImplementation(libs.mockito.junit)
+    testImplementation(libs.quarkus.junit5)
+    testImplementation(libs.restassured)
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.postgresql)
 }
 
 group = "dev.blaauwendraad"

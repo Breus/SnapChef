@@ -1,10 +1,10 @@
 package dev.blaauwendraad.recipe_book.service;
 
-import dev.blaauwendraad.recipe_book.data.model.RoleEntity;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
+import dev.blaauwendraad.recipe_book.service.model.UserRole;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,7 +12,6 @@ import java.util.Set;
 
 @ApplicationScoped
 public class UserService {
-
     private final UserRepository userRepository;
 
     @Inject
@@ -37,6 +36,6 @@ public class UserService {
             throw new UserRegistrationValidationException("Username is already in use.");
         }
         String hashPassword = BcryptUtil.bcryptHash(password);
-        return userRepository.createUser(username, hashPassword, emailAddress, Set.of(RoleEntity.getUserRole()));
+        return userRepository.createUser(username, hashPassword, emailAddress, Set.of(UserRole.user));
     }
 }
