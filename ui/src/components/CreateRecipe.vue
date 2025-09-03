@@ -11,7 +11,6 @@ const router = useRouter();
 // Form data
 const title = ref("");
 const description = ref("");
-const author = ref("");
 const ingredients = ref<Ingredient[]>([{ name: "", quantity: "" }]);
 const preparationSteps = ref<PreparationStep[]>([{ description: "" }]);
 
@@ -53,9 +52,6 @@ const submitForm = async () => {
         if (!title.value.trim()) {
             throw new Error("Title is required");
         }
-        if (!author.value.trim()) {
-            throw new Error("Author is required");
-        }
         if (ingredients.value.some((ing) => !ing.name.trim() || !ing.quantity.trim())) {
             throw new Error("All ingredient fields must be filled");
         }
@@ -66,7 +62,6 @@ const submitForm = async () => {
         const newRecipe: RecipeCreateDto = {
             title: title.value.trim(),
             description: description.value.trim(),
-            author: author.value.trim(),
             ingredients: ingredients.value,
             preparationSteps: preparationSteps.value,
         };
@@ -142,13 +137,6 @@ const submitForm = async () => {
                             <textarea v-model="description" id="description" rows="3"
                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                       placeholder="Brief description of your recipe"></textarea>
-                        </div>
-
-                        <div>
-                            <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Author</label>
-                            <input v-model="author" type="text" id="author"
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                   placeholder="Your name" required />
                         </div>
                     </div>
 

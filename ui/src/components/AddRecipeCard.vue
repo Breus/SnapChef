@@ -6,7 +6,7 @@ const router = useRouter();
 
 function handleClick() {
     if (props.isLoggedIn) {
-        router.push("/recipe/create")
+        router.push("/recipe/create");
     } else {
         router.push("/login");
     }
