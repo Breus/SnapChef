@@ -32,27 +32,27 @@ onMounted(() => {
 
 <template>
     <div class="min-h-screen bg-gray-50">
-    <div class="sticky top-0 z-20 bg-white shadow w-full">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3">
-            <span class="text-2xl font-bold text-gray-900">Recipe Book</span>
-            <div>
-                <template v-if="user">
-                    <span class="mr-4 text-gray-700">Logged in as {{ user }}</span>
-                    <button @click="logout"
-                        class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300">
-                        Log Out
-                    </button>
-                </template>
-                <template v-else>
-                    <button @click="$router.push('/login')"
-                        class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                        Log In
-                    </button>
-                </template>
+        <div class="sticky top-0 z-20 bg-white shadow w-full">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3">
+                <span class="text-2xl font-bold text-gray-900">Recipe Book</span>
+                <div>
+                    <template v-if="user">
+                        <span class="mr-4 text-gray-700">Logged in as {{ user }}</span>
+                        <button @click="logout"
+                            class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300">
+                            Log Out
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button @click="$router.push('/login')"
+                            class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                            Log In
+                        </button>
+                    </template>
+                </div>
             </div>
         </div>
-    </div>
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto mt-5 max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Search Bar -->
             <!--            <div class="mx-auto mb-8 max-w-md">-->
             <!--                <div class="relative">-->

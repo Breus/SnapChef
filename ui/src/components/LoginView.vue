@@ -81,6 +81,7 @@ const submitForm = async () => {
             <!-- Form Header -->
             <div class="mb-8 text-center">
                 <h1 class="text-3xl font-bold text-gray-900">Login Your Account</h1>
+                <h2 class="text-1xl text-gray-400">Add your own recipes, save your favorites, and build your personal recipe book!</h2>
             </div>
             <div v-if="error" class="mb-6 rounded-md bg-red-50 p-4">
                 <div class="flex">
@@ -99,7 +100,6 @@ const submitForm = async () => {
             <form @submit.prevent="submitForm" class="overflow-hidden rounded-lg bg-white shadow-lg">
                 <div class="p-6">
                     <div class="mb-8">
-                        <h2 class="mb-4 text-xl font-semibold text-gray-900">Enter Your Credentials</h2>
                         <div class="mb-4">
                             <label for="emailaddress"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-mail</label>
