@@ -1,14 +1,18 @@
 package dev.blaauwendraad.recipe_book.service;
 
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
+import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import dev.blaauwendraad.recipe_book.service.model.UserRole;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserService {
@@ -37,5 +41,34 @@ public class UserService {
         }
         String hashPassword = BcryptUtil.bcryptHash(password);
         return userRepository.createUser(username, hashPassword, emailAddress, Set.of(UserRole.user));
+    }
+
+    /**
+     * Logs in a user with the provided e-mail address and password and returns an authentication authToken.
+     *
+     * @param emailAddress the e-mail address of the user
+     * @param password the password of the user
+     * @throws UserLoginException if there is an error during user login
+     */
+    public AuthenticationDetails login(String emailAddress, String password) throws UserLoginException {
+        UserAccount userAccount = validateCredentials(emailAddress, password);
+        return new AuthenticationDetails(
+                userAccount.username(),
+                userAccount.emailAddress(),
+                Jwt.issuer("https://recipe-book.blaauwendraad.dev")
+                        .upn(userAccount.emailAddress())
+                        .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
+                        .sign());
+    }
+
+    private UserAccount validateCredentials(String emailAddress, String password) throws UserLoginException {
+        UserAccount userAccount = userRepository.findByEmail(emailAddress);
+        if (userAccount == null) {
+            throw new UserLoginException("No user account found for the provided email address.");
+        }
+        if (!BcryptUtil.matches(password, userAccount.passwordHash())) {
+            throw new UserLoginException("Invalid password provided.");
+        }
+        return userAccount;
     }
 }

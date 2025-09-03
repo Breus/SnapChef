@@ -125,7 +125,7 @@ If you prefer to run the backend in development mode for live coding:
 
 ```shell script
 cd app
-./gradlew quarkus dev
+./gradlew quarkusDev
 ```
 
 or you can use `quarkus dev` if you have the Quarkus CLI installed.

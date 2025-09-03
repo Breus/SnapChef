@@ -1,10 +1,15 @@
 package dev.blaauwendraad.recipe_book.resource;
 
+import dev.blaauwendraad.recipe_book.resource.model.LoginAttemptRequest;
+import dev.blaauwendraad.recipe_book.resource.model.LoginResponse;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationResponse;
 import dev.blaauwendraad.recipe_book.service.UserService;
+import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
+import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -25,6 +30,17 @@ public class UserResource {
     }
 
     @POST
+    @PermitAll
+    @Path("/login")
+    public LoginResponse login(@Valid @NotNull LoginAttemptRequest loginAttemptRequest) throws UserLoginException {
+        AuthenticationDetails loginDetails = userService.login(
+                loginAttemptRequest.loginCredentials().emailAddress(),
+                loginAttemptRequest.loginCredentials().password());
+        return new LoginResponse(loginDetails.username(), loginDetails.emailAddress(), loginDetails.authToken());
+    }
+
+    @POST
+    @PermitAll
     @Path("/register")
     public Response register(@Valid @NotNull UserRegistrationRequest registrationRequest)
             throws UserRegistrationException {

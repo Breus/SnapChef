@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import CreateRecipe from "../components/CreateRecipe.vue";
+import Login from "../components/LoginView.vue";
 import RecipeSummaryList from "../components/RecipeSummaryList.vue";
 import RecipeView from "../components/RecipeView.vue";
 
@@ -19,6 +20,11 @@ const routes = [
         component: CreateRecipe,
         name: "CreateRecipe",
         path: "/recipe/create",
+    },
+    {
+        component: Login,
+        name: "Login",
+        path: "/login",
     },
 ];
 

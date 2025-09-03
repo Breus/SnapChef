@@ -1,9 +1,10 @@
-INSERT INTO user_account (id, username, password_hash, email) VALUES
-  (1, 'Robert', 'demo-hash', 'robert@example.com'),
-  (2, 'Breus', 'demo-hash', 'breus@example.com'),
-  (3, 'ChefMaster', 'demo-hash', 'chef@example.com'),
-  (4, 'FoodLover', 'demo-hash', 'food@example.com'),
-  (5, 'KitchenPro', 'demo-hash', 'kitchen@example.com')
+-- The password_hash for all these users is 'password123' hashed using bcrypt
+INSERT INTO user_account (id, username, password_hash, email_address) VALUES
+  (1, 'Robert', '$2a$10$JPQ/pnZqC8efUOi3M9ZqReeNDR7IkA1Ry973r.IK020zHSuP4P.KC', 'robert@example.com'),
+  (2, 'Breus', '$2a$10$JPQ/pnZqC8efUOi3M9ZqReeNDR7IkA1Ry973r.IK020zHSuP4P.KC', 'breus@example.com'),
+  (3, 'ChefMaster', '$2a$10$JPQ/pnZqC8efUOi3M9ZqReeNDR7IkA1Ry973r.IK020zHSuP4P.KC', 'chef@example.com'),
+  (4, 'FoodLover', '$2a$10$JPQ/pnZqC8efUOi3M9ZqReeNDR7IkA1Ry973r.IK020zHSuP4P.KC', 'food@example.com'),
+  (5, 'KitchenPro', '$2a$10$JPQ/pnZqC8efUOi3M9ZqReeNDR7IkA1Ry973r.IK020zHSuP4P.KC', 'kitchen@example.com')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO role (id, name) VALUES

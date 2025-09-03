@@ -22,8 +22,9 @@ public class UserRegistrationExceptionMapper implements ExceptionMapper<UserRegi
         var statusCode = exception instanceof UserRegistrationValidationException
                 ? Response.Status.BAD_REQUEST.getStatusCode()
                 : Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-        var exceptionMessage =
-                exception.getMessage() != null ? exception.getMessage() : "An unexpected error occurred.";
+        var exceptionMessage = exception.getMessage() != null
+                ? exception.getMessage()
+                : "An unexpected error occurred while trying to register.";
         return new ErrorResponse(exceptionMessage, exception.getDetailMessage(), statusCode);
     }
 }

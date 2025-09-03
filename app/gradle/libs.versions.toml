@@ -20,6 +20,7 @@ quarkus-jdbc-postgresql = { module = "io.quarkus:quarkus-jdbc-postgresql", versi
 quarkus-junit5 = { module = "io.quarkus:quarkus-junit5", version.ref = "quarkus" }
 quarkus-rest = { module = "io.quarkus:quarkus-rest", version.ref = "quarkus" }
 quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson", version.ref = "quarkus" }
+quarkus-smallrye-jwt = { group = "io.quarkus", name = "quarkus-smallrye-jwt", version.ref = "quarkus" }
 restassured = { module = "io.rest-assured:rest-assured", version = "5.5.5" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }

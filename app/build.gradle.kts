@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.quarkus.hibernate.orm.panache)
     implementation(libs.quarkus.hibernate.validator)
     implementation(libs.quarkus.jdbc.postgresql)
+    implementation(libs.quarkus.smallrye.jwt)
     implementation(libs.quarkus.rest)
     implementation(libs.quarkus.rest.jackson)
 

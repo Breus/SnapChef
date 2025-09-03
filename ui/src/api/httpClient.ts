@@ -1,3 +1,5 @@
+import type ErrorResponseBody from "../models/dto/ErrorResponseBody.ts";
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 // Types for HTTP client
@@ -17,6 +19,12 @@ export interface HttpClient {
     delete<T>(path: string, config?: RequestConfig): Promise<T>;
     patch<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
     request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+}
+
+function isErrorResponseBody(obj: unknown): obj is ErrorResponseBody {
+    if (typeof obj !== "object" || obj === null) return false;
+    const o = obj as Record<string, unknown>;
+    return typeof o.title === "string" && typeof o.detail === "string" && typeof o.status === "number";
 }
 
 // Error class for HTTP errors
@@ -84,7 +92,7 @@ class FetchHttpClient implements HttpClient {
             // Handle non-JSON responses
             const contentType = response.headers.get("content-type");
             // Use a union type to handle both JSON objects and plain text responses
-            let responseData: object | string;
+            let responseData: object | string | ErrorResponseBody;
 
             if (contentType?.includes("application/json")) {
                 responseData = await response.json();
@@ -93,8 +101,11 @@ class FetchHttpClient implements HttpClient {
             }
 
             if (!response.ok) {
+                if (isErrorResponseBody(responseData)) {
+                    responseData.statusText = responseData.title;
+                }
                 // Explicitly specify the type parameter to match the responseData type
-                throw new HttpError<object | string>(
+                throw new HttpError<object | string | ErrorResponseBody>(
                     response.status,
                     response.statusText,
                     `Request failed: ${response.status} ${response.statusText}`,
