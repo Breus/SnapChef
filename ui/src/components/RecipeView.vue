@@ -60,7 +60,7 @@ onMounted(() => {
                 <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
                 <p class="text-gray-600">{{ error }}</p>
                 <button @click="fetchRecipe"
-                        class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700">
+                        class="mt-4 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-green-700">
                     Try Again
                 </button>
             </div>
@@ -100,7 +100,7 @@ onMounted(() => {
                         </h2>
                         <ul class="space-y-2">
                             <li v-for="ingredient in recipe.ingredients" :key="ingredient.id" class="flex items-start">
-                                <span class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></span>
+                                <span class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-green-600"></span>
                                 <div>
                                     <span class="font-medium text-gray-900">{{ ingredient.quantity }}</span>
                                     <span class="ml-2 text-gray-700">{{ ingredient.name }}</span>
@@ -116,7 +116,7 @@ onMounted(() => {
                         </h2>
                         <ol class="space-y-4">
                             <li v-for="(step, number) in recipe.steps" :key="step.id" class="flex items-start">
-                                <span class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
+                                <span class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
                                     {{ number + 1 }}
                                 </span>
                                 <p class="leading-relaxed text-gray-700">

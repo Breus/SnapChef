@@ -33,20 +33,20 @@ onMounted(() => {
 
 <template>
     <div class="min-h-screen bg-gray-50">
-        <div class="sticky top-0 z-20 bg-white shadow w-full">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3">
-                <span class="text-2xl font-bold text-gray-900">Recipe Book</span>
+        <div class="sticky top-0 z-20 w-full bg-green-700 shadow-lg">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
+                <span class="text-2xl font-bold text-white tracking-tight">Recipe Book</span>
                 <div>
                     <template v-if="user">
-                        <span class="mr-4 text-gray-700">Logged in as {{ user }}</span>
+                        <span class="mr-4 text-green-100">Logged in as {{ user }}</span>
                         <button @click="logout"
-                            class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300">
+                            class="rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log Out
                         </button>
                     </template>
                     <template v-else>
                         <button @click="$router.push('/login')"
-                            class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                            class="rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log In
                         </button>
                     </template>
