@@ -17,7 +17,7 @@ function isErrorResponse(obj: unknown): obj is ErrorResponseBody {
 }
 
 const submitLogin = async (loginCredentials: LoginCredentials): Promise<AuthenticationDetails> => {
-    return (await post("/users/login", { loginCredentials })) 
+    return await post("/users/login", { loginCredentials });
 };
 
 // Form data

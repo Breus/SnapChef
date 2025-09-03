@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { getAllRecipeSummaries } from "../api/recipeSummaryApi.ts";
 import type RecipeSummary from "../models/domain/RecipeSummary.ts";
 import RecipeSummaryComponent from "./RecipeSummary.vue";
+import AddRecipeCard from "./AddRecipeCard.vue";
 import { useAuth } from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
@@ -91,6 +92,7 @@ onMounted(() => {
 
             <!-- Recipe Grid -->
             <div v-else-if="recipeSummaries.length > 0" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <AddRecipeCard :isLoggedIn="!!user" />
                 <div v-for="recipeSummary in recipeSummaries" :key="recipeSummary.id"
                     class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
                     <RecipeSummaryComponent :recipeSummary="recipeSummary" />
