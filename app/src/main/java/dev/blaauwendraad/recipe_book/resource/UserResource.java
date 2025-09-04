@@ -36,7 +36,8 @@ public class UserResource {
         AuthenticationDetails loginDetails = userService.login(
                 loginAttemptRequest.loginCredentials().emailAddress(),
                 loginAttemptRequest.loginCredentials().password());
-        return new LoginResponse(loginDetails.username(), loginDetails.emailAddress(), loginDetails.authToken());
+        return new LoginResponse(
+                loginDetails.userId(), loginDetails.username(), loginDetails.emailAddress(), loginDetails.authToken());
     }
 
     @POST

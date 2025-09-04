@@ -1,8 +1,8 @@
 package dev.blaauwendraad.recipe_book.service;
 
+import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
-import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,17 +32,28 @@ class UserServiceTest {
     void cannotRegisterUserWithExistingUsername() {
         // Given
         var duplicateUserName = "testuser";
+        var userAccountEntity = new UserAccountEntity();
+        userAccountEntity.id = 1L;
+        userAccountEntity.username = duplicateUserName;
+        userAccountEntity.emailAddress = "test@example.com";
+        userAccountEntity.passwordHash = "fakehash";
+        userAccountEntity.roles = Set.of();
+
         Mockito.when(userRepository.findByUsername(duplicateUserName))
                 .thenReturn(null) // first registration: username not taken
-                .thenReturn(new UserAccount(1L, duplicateUserName, "test@example.com", "fakehash", Set.of()));
+                .thenReturn(userAccountEntity);
 
+        Mockito.when(userRepository.createUser(
+                        Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anySet()))
+                .thenReturn(userAccountEntity);
         // When, Then
         // First registration of this username should succeed
         Assertions.assertThatNoException()
-                .isThrownBy(() -> userService.registerUser(duplicateUserName, "password123", "some-mail@example.com"));
+                .isThrownBy(
+                        () -> userService.registerUser(duplicateUserName, "some-mail@example.com", "Fakepassword123"));
         // Second registration of the same username should throw an exception
         Assertions.assertThatThrownBy(
-                        () -> userService.registerUser(duplicateUserName, "differentpassword", "different@example.com"))
+                        () -> userService.registerUser(duplicateUserName, "different@example.com", "someFakePassword"))
                 .isInstanceOf(UserRegistrationValidationException.class)
                 .hasMessageContaining("Failed to register new user.")
                 .hasFieldOrPropertyWithValue("detailMessage", "Invalid user provided: Username is already in use.");

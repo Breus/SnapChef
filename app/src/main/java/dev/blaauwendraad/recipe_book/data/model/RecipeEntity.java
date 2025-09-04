@@ -2,6 +2,7 @@ package dev.blaauwendraad.recipe_book.data.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,11 +37,11 @@ public class RecipeEntity extends PanacheEntityBase {
     @Nullable
     public UserAccountEntity author;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     @OrderBy("position ASC")
     public List<IngredientEntity> ingredients = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     @OrderBy("position ASC")
     public List<PreparationStepEntity> preparationSteps = new ArrayList<>();
 }

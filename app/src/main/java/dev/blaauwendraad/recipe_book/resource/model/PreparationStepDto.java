@@ -1,3 +1,5 @@
 package dev.blaauwendraad.recipe_book.resource.model;
 
-public record PreparationStepDto(String description) {}
+import jakarta.validation.constraints.NotBlank;
+
+public record PreparationStepDto(@NotBlank String description) {}

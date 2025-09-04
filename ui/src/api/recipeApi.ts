@@ -14,9 +14,12 @@ export const getRecipeById = async (id: number): Promise<Recipe> => {
     }
 };
 
-export const createRecipe = async (recipe: RecipeCreateDto): Promise<number> => {
+export const createRecipe = async (recipe: RecipeCreateDto, authToken: string): Promise<number> => {
     try {
-        const data = await post<CreateRecipeResponse>("recipes", { recipe });
+        const headers = {
+            Authorization: `Bearer ${authToken}`,
+        };
+        const data = await post<CreateRecipeResponse>("recipes", recipe, { headers });
         return data.recipeId;
     } catch (error) {
         console.error("Error creating recipe:", error);

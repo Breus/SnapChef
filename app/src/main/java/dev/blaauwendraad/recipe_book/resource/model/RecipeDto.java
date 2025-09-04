@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import java.util.List;
 
 public record RecipeDto(
-        Integer id,
+        Long id,
         String title,
         @Nullable String description,
         @Nullable String author,

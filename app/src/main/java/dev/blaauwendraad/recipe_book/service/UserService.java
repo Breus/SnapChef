@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.service;
 
+import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
@@ -24,7 +25,7 @@ public class UserService {
     }
 
     /**
-     * Registers a new user with the provided authorName, email address, and passwordadas
+     * Registers a new user with the provided authorName, email address, and password.
      *
      * @param username the authorName of the new user
      * @param emailAddress the email address of the new user
@@ -40,7 +41,7 @@ public class UserService {
             throw new UserRegistrationValidationException("Username is already in use.");
         }
         String hashPassword = BcryptUtil.bcryptHash(password);
-        return userRepository.createUser(username, hashPassword, emailAddress, Set.of(UserRole.user));
+        return toUserAccount(userRepository.createUser(username, hashPassword, emailAddress, Set.of(UserRole.user)));
     }
 
     /**
@@ -53,22 +54,39 @@ public class UserService {
     public AuthenticationDetails login(String emailAddress, String password) throws UserLoginException {
         UserAccount userAccount = validateCredentials(emailAddress, password);
         return new AuthenticationDetails(
+                userAccount.id(),
                 userAccount.username(),
                 userAccount.emailAddress(),
                 Jwt.issuer("https://recipe-book.blaauwendraad.dev")
-                        .upn(userAccount.emailAddress())
+                        .upn(userAccount.id().toString())
+                        .claim("email", userAccount.emailAddress())
+                        .claim("username", userAccount.username())
                         .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
                         .sign());
     }
 
     private UserAccount validateCredentials(String emailAddress, String password) throws UserLoginException {
-        UserAccount userAccount = userRepository.findByEmail(emailAddress);
-        if (userAccount == null) {
+        UserAccountEntity userAccountEntity = userRepository.findByEmail(emailAddress);
+        if (userAccountEntity == null) {
             throw new UserLoginException("No user account found for the provided email address.");
         }
-        if (!BcryptUtil.matches(password, userAccount.passwordHash())) {
+        if (!BcryptUtil.matches(password, userAccountEntity.passwordHash)) {
             throw new UserLoginException("Invalid password provided.");
         }
-        return userAccount;
+        return toUserAccount(userAccountEntity);
+    }
+
+    private static UserAccount toUserAccount(UserAccountEntity userAccountEntity) {
+        return new UserAccount(
+                userAccountEntity.id,
+                userAccountEntity.username,
+                userAccountEntity.emailAddress,
+                userAccountEntity.passwordHash,
+                userAccountEntity.roles.stream()
+                        .map(role -> switch (role.roleName) {
+                            case admin -> UserRole.admin;
+                            case user -> UserRole.user;
+                        })
+                        .collect(Collectors.toSet()));
     }
 }
