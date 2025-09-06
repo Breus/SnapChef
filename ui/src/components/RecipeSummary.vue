@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useAuth } from "../auth/useAuth";
+
 defineProps(["recipeSummary"]);
+const { userId } = useAuth();
 </script>
 
 <template>
@@ -17,7 +20,8 @@ defineProps(["recipeSummary"]);
             <div class="mb-4 flex items-center justify-start text-sm text-gray-500">
                 <div class="flex items-center">
                     <span class="mr-1">By </span>
-                    <span>{{ recipeSummary.author.username }}</span>
+                    <span v-if="recipeSummary.author.userId === userId"> {{ recipeSummary.author.userName }} (Me)</span>
+                    <span v-else>{{ recipeSummary.author.userName }}</span>
                 </div>
             </div>
         </div>

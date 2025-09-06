@@ -8,7 +8,7 @@ import { useAuth } from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
 const searchQuery = ref<string>("");
-const { user, logout } = useAuth();
+const { userName, logout } = useAuth();
 const isLoading = ref<boolean>(true);
 const error = ref<string | null>(null);
 
@@ -37,8 +37,8 @@ onMounted(() => {
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
                 <span class="text-2xl font-bold text-white tracking-tight">Recipe Book</span>
                 <div>
-                    <template v-if="user">
-                        <span class="mr-4 text-green-100">Logged in as {{ user }}</span>
+                    <template v-if="userName">
+                        <span class="mr-4 text-green-100">Logged in as {{ userName }}</span>
                         <button @click="logout"
                             class="rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log Out
@@ -92,7 +92,7 @@ onMounted(() => {
 
             <!-- Recipe Grid -->
             <div v-else-if="recipeSummaries.length > 0" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <AddRecipeCard :isLoggedIn="!!user" />
+                <AddRecipeCard :isLoggedIn="!!userName" />
                 <div v-for="recipeSummary in recipeSummaries" :key="recipeSummary.id"
                     class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
                     <RecipeSummaryComponent :recipeSummary="recipeSummary" />

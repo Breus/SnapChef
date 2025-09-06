@@ -28,7 +28,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.util.List;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Path("/recipes")
@@ -57,7 +57,7 @@ public class RecipeResource {
                         recipeSummary.author() == null
                                 ? null
                                 : new RecipeAuthorDto(
-                                        recipeSummary.author().id(),
+                                        recipeSummary.author().id().toString(),
                                         recipeSummary.author().authorName())))
                 .toList());
     }
@@ -69,14 +69,17 @@ public class RecipeResource {
     public RecipeResponse getRecipe(@PathParam("id") Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
         if (recipe == null) {
-            throw new NotFoundException("Recipe not found with id: " + id);
+            throw new NotFoundException("Recipe not found with userId: " + id);
         }
 
         return new RecipeResponse(new RecipeDto(
                 recipe.id(),
                 recipe.title(),
                 recipe.description(),
-                recipe.author() == null ? null : recipe.author().authorName(),
+                recipe.author() == null
+                        ? null
+                        : new RecipeAuthorDto(
+                                recipe.author().id().toString(), recipe.author().authorName()),
                 recipe.ingredients().stream()
                         .map(ingredient -> new IngredientDto(ingredient.name(), ingredient.quantity()))
                         .toList(),
@@ -104,10 +107,12 @@ public class RecipeResource {
     }
 
     @DELETE
+    @Path("/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public List<RecipeDto> remove(RecipeDto recipe) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public Response remove(@PathParam("id") Long recipeId) {
+        recipeService.removeRecipe(recipeId, Long.valueOf(jwt.getClaim("upn")));
+        return Response.noContent().build();
     }
 }

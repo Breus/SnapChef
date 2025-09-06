@@ -40,18 +40,18 @@ class UserServiceTest {
         userAccountEntity.roles = Set.of();
 
         Mockito.when(userRepository.findByUsername(duplicateUserName))
-                .thenReturn(null) // first registration: username not taken
+                .thenReturn(null) // first registration: userName not taken
                 .thenReturn(userAccountEntity);
 
         Mockito.when(userRepository.createUser(
                         Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anySet()))
                 .thenReturn(userAccountEntity);
         // When, Then
-        // First registration of this username should succeed
+        // First registration of this userName should succeed
         Assertions.assertThatNoException()
                 .isThrownBy(
                         () -> userService.registerUser(duplicateUserName, "some-mail@example.com", "Fakepassword123"));
-        // Second registration of the same username should throw an exception
+        // Second registration of the same userName should throw an exception
         Assertions.assertThatThrownBy(
                         () -> userService.registerUser(duplicateUserName, "different@example.com", "someFakePassword"))
                 .isInstanceOf(UserRegistrationValidationException.class)

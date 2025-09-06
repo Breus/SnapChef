@@ -7,6 +7,6 @@ public record RecipeDto(
         Long id,
         String title,
         @Nullable String description,
-        @Nullable String author,
+        @Nullable RecipeAuthorDto author,
         List<IngredientDto> ingredients,
         List<PreparationStepDto> steps) {}

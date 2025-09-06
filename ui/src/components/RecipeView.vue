@@ -2,12 +2,14 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getRecipeById } from "../api/recipeApi.ts";
+import { useAuth } from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 
 const route = useRoute();
 const recipe = ref<Recipe | null>(null);
 const isLoading = ref<boolean>(true);
 const error = ref<string | null>(null);
+const { userId } = useAuth();
 
 const fetchRecipe = async () => {
     try {
@@ -88,7 +90,8 @@ onMounted(() => {
                     </p>
                     <div class="flex items-center text-sm text-gray-500">
                         <span class="mr-1">By </span>
-                        <span class="font-medium">{{ recipe.author }}</span>
+                        <span v-if="recipe.author.userId === userId" class="font-medium">{{ recipe.author.userName }} (Me)</span>
+                        <span v-else class="font-medium">{{ recipe.author.userName }}</span>
                     </div>
                 </div>
 

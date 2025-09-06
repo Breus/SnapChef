@@ -68,7 +68,7 @@ public class RecipeService {
             List<PreparationStep> steps) {
         UserAccountEntity userAccountEntity = userRepository.findById(authorId);
         if (userAccountEntity == null) {
-            throw new IllegalArgumentException("Author with id " + authorId + " does not exist");
+            throw new IllegalArgumentException("Author with userId " + authorId + " does not exist");
         }
         RecipeEntity recipeEntity = new RecipeEntity();
         recipeEntity.title = title;
@@ -99,5 +99,21 @@ public class RecipeService {
         recipeEntity.preparationSteps = preparationStepEntities;
         recipeEntity.persist();
         return recipeEntity.id;
+    }
+
+    public void removeRecipe(Long recipeId, Long upn) {
+        UserAccountEntity userAccount = userRepository.findById(upn);
+        if (userAccount == null) {
+            throw new IllegalArgumentException("User with userId " + upn + " does not exist");
+        }
+        RecipeEntity recipeEntity = RecipeEntity.findById(recipeId);
+        if (recipeEntity == null) {
+            throw new IllegalArgumentException("Recipe with userId " + recipeId + " does not exist");
+        }
+        if (recipeEntity.author == null || !recipeEntity.author.id.equals(upn)) {
+            throw new IllegalArgumentException(
+                    "User with userId " + upn + " is not the author of the recipe with userId " + recipeId);
+        }
+        recipeEntity.delete();
     }
 }

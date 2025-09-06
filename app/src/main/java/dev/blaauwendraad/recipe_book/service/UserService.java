@@ -60,7 +60,7 @@ public class UserService {
                 Jwt.issuer("https://recipe-book.blaauwendraad.dev")
                         .upn(userAccount.id().toString())
                         .claim("email", userAccount.emailAddress())
-                        .claim("username", userAccount.username())
+                        .claim("userName", userAccount.username())
                         .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
                         .sign());
     }

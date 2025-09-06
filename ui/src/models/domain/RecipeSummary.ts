@@ -3,7 +3,7 @@ export default interface RecipeSummary {
     title: string;
     description: string;
     author: {
-        id: number;
-        username: string;
+        userId: string;
+        userName: string;
     };
 }

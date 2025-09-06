@@ -1,20 +1,25 @@
 import { ref } from "vue";
 
-const user = ref<string | null>(localStorage.getItem("username"));
+const userId = ref<string | null>(localStorage.getItem("userId"));
+const userName = ref<string | null>(localStorage.getItem("userName"));
 const authToken = ref<string | null>(localStorage.getItem("authToken"));
 
 export function useAuth() {
-    function login(username: string, token: string) {
-        user.value = username;
-        localStorage.setItem("username", username);
+    function login(userIdArg: string, userNameArg: string, token: string) {
+        userId.value = userIdArg;
+        localStorage.setItem("userId", userIdArg);
+        userName.value = userNameArg;
+        localStorage.setItem("userName", userNameArg);
         authToken.value = token;
         localStorage.setItem("authToken", token);
     }
     function logout() {
-        user.value = null;
+        userId.value = null;
+        localStorage.removeItem("userId");
+        userName.value = null;
         localStorage.removeItem("username");
         authToken.value = null;
         localStorage.removeItem("authToken");
     }
-    return { user, authToken, login, logout };
+    return { userId, userName, authToken, login, logout };
 }

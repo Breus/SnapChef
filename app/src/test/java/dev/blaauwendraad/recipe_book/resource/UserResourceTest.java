@@ -46,7 +46,7 @@ class UserResourceTest {
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
-                .body("username", is("testuser"))
+                .body("userName", is("testuser"))
                 .body("emailAddress", is("test@example.com"));
     }
 
@@ -62,7 +62,7 @@ class UserResourceTest {
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
 
-        // Try to register second user with same username
+        // Try to register second user with same userName
         UserRegistrationRequest duplicateRequest =
                 new UserRegistrationRequest("testuser", "different@example.com", "Password123!");
 

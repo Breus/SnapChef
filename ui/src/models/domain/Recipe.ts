@@ -5,7 +5,10 @@ export default interface Recipe {
     id: number;
     title: string;
     description: string;
-    author: string;
+    author: {
+        userId: string;
+        userName: string;
+    };
     ingredients: Ingredient[];
     preparationSteps: PreparationStep[];
 }

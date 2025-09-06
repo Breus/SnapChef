@@ -47,7 +47,7 @@ const submitForm = async () => {
         };
 
         let authDetails = await submitLogin(loginCredentials);
-        login(authDetails.username, authDetails.authToken);
+        login(authDetails.userId, authDetails.username, authDetails.authToken);
         // Navigate back to the homepage after successful login
         router.push("/");
     } catch (err) {
