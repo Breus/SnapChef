@@ -10,13 +10,15 @@
 </style>
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
-import { getRecipeById } from "../api/recipeApi.ts";
+import { useRoute, useRouter } from "vue-router";
+import { getRecipeById, deleteRecipeById } from "../api/recipeApi.ts";
 import { useAuth } from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 
 const route = useRoute();
+const router = useRouter();
 const recipe = ref<Recipe | null>(null);
+const showDeleteModal = ref(false);
 const isLoading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const { userId } = useAuth();
@@ -36,6 +38,31 @@ const fetchRecipe = async () => {
     }
 };
 
+const deleteRecipe = async () => {
+    showDeleteModal.value = true;
+};
+
+const confirmDelete = async () => {
+    if (!recipe.value) return;
+    try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) {
+            throw new Error("You must be logged in to create a recipe.");
+        }
+        await deleteRecipeById(recipe.value.id, authToken);
+        router.push("/");
+    } catch (err) {
+        alert("Failed to delete recipe.");
+        console.error(err);
+    } finally {
+        showDeleteModal.value = false;
+    }
+};
+
+const cancelDelete = () => {
+    showDeleteModal.value = false;
+};
+
 onMounted(() => {
     fetchRecipe();
 });
@@ -47,7 +74,7 @@ onMounted(() => {
             <!-- Back Button -->
             <div class="mb-6">
                 <button @click="$router.push('/')"
-                    class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50">
+                    class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50 cursor-pointer transition-colors duration-150">
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -88,11 +115,31 @@ onMounted(() => {
                 </p>
             </div>
 
+            <!--- Delete Recipe Modal -->
+            <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+                    <h2 class="text-xl font-bold text-red-700 mb-4">Delete Recipe</h2>
+                    <p class="mb-6 text-gray-700">
+                        Are you sure you want to delete this recipe? This action cannot be undone.
+                    </p>
+                    <div class="flex justify-end space-x-3">
+                        <button @click="cancelDelete"
+                            class="cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                            Cancel
+                        </button>
+                        <button @click="confirmDelete"
+                            class="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recipe Content -->
             <div v-else class="overflow-hidden rounded-lg bg-white shadow-lg">
                 <!-- Recipe Header -->
                 <div class="relative border-b border-gray-300 px-6 py-8 group">
-                    <button v-if="recipe.author.userId === userId" @click="deleteRecipe"
+                    <button v-if="recipe && recipe.author && recipe.author.userId === userId" @click="deleteRecipe"
                         class="absolute top-6 right-6 p-0 bg-transparent shadow-none hover:bg-transparent"
                         title="Delete Recipe">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -103,16 +150,19 @@ onMounted(() => {
                         </svg>
                     </button>
                     <h1 class="mb-4 text-3xl font-bold text-gray-900">
-                        {{ recipe.title }}
+                        {{ recipe?.title }}
                     </h1>
                     <p class="mb-4 text-lg text-gray-600">
-                        {{ recipe.description }}
+                        {{ recipe?.description }}
                     </p>
                     <div class="flex items-center text-sm text-gray-500">
                         <span class="mr-1">By </span>
-                        <span v-if="recipe.author.userId === userId" class="font-medium">{{ recipe.author.userName }}
-                            (Me)</span>
-                        <span v-else class="font-medium">{{ recipe.author.userName }}</span>
+                        <span v-if="recipe && recipe.author && recipe.author.userId === userId" class="font-medium">
+                            {{ recipe.author.userName }} (Me)
+                        </span>
+                        <span v-else-if="recipe && recipe.author" class="font-medium">
+                            {{ recipe.author.userName }}
+                        </span>
                     </div>
                 </div>
 
@@ -123,7 +173,8 @@ onMounted(() => {
                             Ingredients
                         </h2>
                         <ul class="space-y-2">
-                            <li v-for="ingredient in recipe.ingredients" :key="ingredient.id" class="flex items-start">
+                            <li v-for="ingredient in recipe?.ingredients || []" :key="ingredient.id"
+                                class="flex items-start">
                                 <span class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-green-600"></span>
                                 <div>
                                     <span class="font-medium text-gray-900">{{ ingredient.quantity }}</span>
@@ -139,7 +190,7 @@ onMounted(() => {
                             Instructions
                         </h2>
                         <ol class="space-y-4">
-                            <li v-for="(step, number) in recipe.steps" :key="step.id" class="flex items-start">
+                            <li v-for="(step, number) in recipe?.steps || []" :key="step.id" class="flex items-start">
                                 <span
                                     class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
                                     {{ number + 1 }}

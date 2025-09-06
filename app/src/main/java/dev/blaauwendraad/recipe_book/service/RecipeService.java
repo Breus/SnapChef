@@ -101,6 +101,7 @@ public class RecipeService {
         return recipeEntity.id;
     }
 
+    @Transactional
     public void removeRecipe(Long recipeId, Long upn) {
         UserAccountEntity userAccount = userRepository.findById(upn);
         if (userAccount == null) {

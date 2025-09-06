@@ -40,13 +40,13 @@ onMounted(() => {
                     <template v-if="userName">
                         <span class="mr-4 text-green-100">Logged in as {{ userName }}</span>
                         <button @click="logout"
-                            class="rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
+                            class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log Out
                         </button>
                     </template>
                     <template v-else>
                         <button @click="$router.push('/login')"
-                            class="rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
+                            class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log In
                         </button>
                     </template>

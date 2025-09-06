@@ -107,7 +107,7 @@ public class RecipeResource {
     }
 
     @DELETE
-    @Path("/{userId}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
