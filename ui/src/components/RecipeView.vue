@@ -1,3 +1,13 @@
+<style>
+.trash-icon {
+    filter: grayscale(1) brightness(2);
+    transition: filter 0.15s;
+}
+
+.group:hover .trash-icon {
+    filter: none;
+}
+</style>
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -37,9 +47,9 @@ onMounted(() => {
             <!-- Back Button -->
             <div class="mb-6">
                 <button @click="$router.push('/')"
-                        class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50">
+                    class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50">
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                     Back to Recipes
                 </button>
@@ -62,7 +72,7 @@ onMounted(() => {
                 <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
                 <p class="text-gray-600">{{ error }}</p>
                 <button @click="fetchRecipe"
-                        class="mt-4 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-green-700">
+                    class="mt-4 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-green-700">
                     Try Again
                 </button>
             </div>
@@ -81,7 +91,17 @@ onMounted(() => {
             <!-- Recipe Content -->
             <div v-else class="overflow-hidden rounded-lg bg-white shadow-lg">
                 <!-- Recipe Header -->
-                <div class="border-b border-gray-200 px-6 py-8">
+                <div class="relative border-b border-gray-300 px-6 py-8 group">
+                    <button v-if="recipe.author.userId === userId" @click="deleteRecipe"
+                        class="absolute top-6 right-6 p-0 bg-transparent shadow-none hover:bg-transparent"
+                        title="Delete Recipe">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6 text-gray-400 hover:text-black transition-colors duration-150 cursor-pointer">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                    </button>
                     <h1 class="mb-4 text-3xl font-bold text-gray-900">
                         {{ recipe.title }}
                     </h1>
@@ -90,7 +110,8 @@ onMounted(() => {
                     </p>
                     <div class="flex items-center text-sm text-gray-500">
                         <span class="mr-1">By </span>
-                        <span v-if="recipe.author.userId === userId" class="font-medium">{{ recipe.author.userName }} (Me)</span>
+                        <span v-if="recipe.author.userId === userId" class="font-medium">{{ recipe.author.userName }}
+                            (Me)</span>
                         <span v-else class="font-medium">{{ recipe.author.userName }}</span>
                     </div>
                 </div>
@@ -119,7 +140,8 @@ onMounted(() => {
                         </h2>
                         <ol class="space-y-4">
                             <li v-for="(step, number) in recipe.steps" :key="step.id" class="flex items-start">
-                                <span class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
+                                <span
+                                    class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
                                     {{ number + 1 }}
                                 </span>
                                 <p class="leading-relaxed text-gray-700">
