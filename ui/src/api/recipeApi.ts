@@ -2,7 +2,7 @@ import type Recipe from "../models/domain/Recipe.ts";
 import type CreateRecipeResponse from "../models/dto/CreateRecipeResponse.ts";
 import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 import type RecipeResponse from "../models/dto/RecipeResponse.ts";
-import { del, get, post } from "./httpClient.ts";
+import { del, get, post, put } from "./httpClient.ts";
 
 export const getRecipeById = async (id: number): Promise<Recipe> => {
     try {
@@ -26,6 +26,18 @@ export const createRecipe = async (recipe: RecipeCreateDto, authToken: string): 
         throw error;
     }
 };
+
+export const updateRecipe = async (id: number, recipe: RecipeCreateDto, authToken: string): Promise<void> => {
+    try {
+        const headers = {
+            Authorization: `Bearer ${authToken}`,
+        };
+        await put<void>(`recipes/${id}`, recipe, { headers });
+    } catch (error) {
+        console.error("Error updating recipe:", error);
+        throw error;
+    }
+}
 
 export const deleteRecipeById = async (id: number, authToken: string): Promise<void> => {
     try {

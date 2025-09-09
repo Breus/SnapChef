@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { createRecipe } from "../api/recipeApi.ts";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { createRecipe, getRecipeById, updateRecipe } from "../api/recipeApi.ts";
 import type Ingredient from "../models/domain/Ingredient.ts";
 import type PreparationStep from "../models/domain/PreparationStep.ts";
 import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
+import type Recipe from "../models/domain/Recipe.ts";
 
 const router = useRouter();
+const route = useRoute();
+const isEditMode = !!route.params.id;
+const recipeId = route.params.id as string | undefined;
 
 // Form data
 const title = ref("");
@@ -42,6 +46,20 @@ const removeStep = (index: number) => {
     }
 };
 
+onMounted(async () => {
+    if (isEditMode && recipeId) {
+        try {
+            const recipe: Recipe = await getRecipeById(Number(recipeId));
+            title.value = recipe.title;
+            description.value = recipe.description;
+            ingredients.value = recipe.ingredients;
+            preparationSteps.value = recipe.steps;
+        } catch (err) {
+            error.value = "Failed to load recipe for editing.";
+        }
+    }
+});
+
 const submitForm = async () => {
     try {
         isSubmitting.value = true;
@@ -72,23 +90,36 @@ const submitForm = async () => {
         if (!authToken) {
             throw new Error("You must be logged in to create a recipe.");
         }
-        const createdRecipeId = await createRecipe(newRecipe, authToken);
-
-        // Navigate to the new recipe
-        router.push(`/recipe/${createdRecipeId}`);
+        let goToRecipeId: number;
+        if (isEditMode && recipeId) {
+            // Update existing recipe
+            await updateRecipe(Number(recipeId), newRecipe, authToken);
+            goToRecipeId = Number(recipeId);
+        } else {
+            const createdRecipeId = await createRecipe(newRecipe, authToken);
+            goToRecipeId = createdRecipeId;
+        }
+        router.push(`/recipe/${goToRecipeId}`);
     } catch (err) {
         if (err instanceof Error) {
             error.value = err.message;
         } else {
             error.value = "An unexpected error occurred";
         }
-        console.error("Error creating recipe:", err);
+        console.error("Failed to save recipe:", err);
     } finally {
         isSubmitting.value = false;
     }
 };
-</script>
 
+const cancelEdit = () => {
+    if (isEditMode && recipeId) {
+        router.push(`/recipe/${recipeId}`);
+    } else {
+        router.push("/");
+    }
+};
+</script>
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -225,14 +256,14 @@ const submitForm = async () => {
                 <!-- Form Actions -->
                 <div class="bg-gray-50 px-6 py-4">
                     <div class="flex justify-end space-x-3">
-                        <button type="button" @click="$router.push('/')"
+                        <button type="button" @click="cancelEdit"
                             class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                             Cancel
                         </button>
                         <button type="submit"
                             class="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                             :disabled="isSubmitting">
-                            {{ isSubmitting ? 'Creating...' : 'Create Recipe' }}
+                            {{ isSubmitting ? 'Saving recipe...' : isEditMode ? 'Update Recipe' : 'Create Recipe' }}
                         </button>
                     </div>
                 </div>

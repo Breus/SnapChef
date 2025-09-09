@@ -22,6 +22,11 @@ const routes = [
         path: "/recipe/create",
     },
     {
+        component: CreateRecipe,
+        name: "EditRecipe",
+        path: "/recipe/:id/edit",
+    },
+    {
         component: Login,
         name: "Login",
         path: "/login",

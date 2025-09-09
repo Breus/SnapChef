@@ -1,7 +1,5 @@
 package dev.blaauwendraad.recipe_book.resource;
 
-import dev.blaauwendraad.recipe_book.resource.model.CreateRecipeRequestDto;
-import dev.blaauwendraad.recipe_book.resource.model.CreateRecipeResponseDto;
 import dev.blaauwendraad.recipe_book.resource.model.IngredientDto;
 import dev.blaauwendraad.recipe_book.resource.model.PreparationStepDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeAuthorDto;
@@ -9,6 +7,8 @@ import dev.blaauwendraad.recipe_book.resource.model.RecipeDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummaryDto;
+import dev.blaauwendraad.recipe_book.resource.model.SaveRecipeRequestDto;
+import dev.blaauwendraad.recipe_book.resource.model.SaveRecipeResponseDto;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
@@ -24,6 +24,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -48,7 +49,7 @@ public class RecipeResource {
     @Path("/summaries")
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public RecipeSummariesResponse listRecipe() {
+    public RecipeSummariesResponse getRecipeSummaries() {
         return new RecipeSummariesResponse(recipeService.getAllRecipeSummaries().stream()
                 .map(recipeSummary -> new RecipeSummaryDto(
                         recipeSummary.id(),
@@ -63,10 +64,10 @@ public class RecipeResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/{recipeId}")
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public RecipeResponse getRecipe(@PathParam("id") Long id) {
+    public RecipeResponse getRecipe(@PathParam("recipeId") Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
         if (recipe == null) {
             throw new NotFoundException("Recipe not found with userId: " + id);
@@ -92,7 +93,7 @@ public class RecipeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public CreateRecipeResponseDto add(@NotNull @Valid CreateRecipeRequestDto newRecipe) {
+    public SaveRecipeResponseDto createRecipe(@NotNull @Valid SaveRecipeRequestDto newRecipe) {
         Long recipeId = recipeService.createRecipe(
                 newRecipe.title(),
                 newRecipe.description(),
@@ -103,16 +104,37 @@ public class RecipeResource {
                 newRecipe.preparationSteps().stream()
                         .map(stepDto -> new PreparationStep(stepDto.description()))
                         .toList());
-        return new CreateRecipeResponseDto(recipeId);
+        return new SaveRecipeResponseDto(recipeId);
+    }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{recipeId}")
+    @RolesAllowed({"admin", "user"})
+    public SaveRecipeResponseDto updateRecipe(
+            @PathParam("recipeId") Long recipeId, @NotNull @Valid SaveRecipeRequestDto updatedRecipe) {
+        recipeService.updateRecipe(
+                recipeId,
+                updatedRecipe.title(),
+                updatedRecipe.description(),
+                Long.valueOf(jwt.getClaim("upn")),
+                updatedRecipe.ingredients().stream()
+                        .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
+                        .toList(),
+                updatedRecipe.preparationSteps().stream()
+                        .map(stepDto -> new PreparationStep(stepDto.description()))
+                        .toList());
+        return new SaveRecipeResponseDto(recipeId);
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("/{recipeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public Response remove(@PathParam("id") Long recipeId) {
-        recipeService.removeRecipe(recipeId, Long.valueOf(jwt.getClaim("upn")));
+    public Response deleteRecipe(@PathParam("recipeId") Long recipeId) {
+        recipeService.deleteRecipe(recipeId, Long.valueOf(jwt.getClaim("upn")));
         return Response.noContent().build();
     }
 }

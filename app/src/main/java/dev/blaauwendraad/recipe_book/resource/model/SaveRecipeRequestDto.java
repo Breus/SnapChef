@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
-public record CreateRecipeRequestDto(
+public record SaveRecipeRequestDto(
         @NotBlank String title,
         @NotBlank String description,
         @NotEmpty List<@Valid IngredientDto> ingredients,

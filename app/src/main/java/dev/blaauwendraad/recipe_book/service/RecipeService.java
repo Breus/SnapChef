@@ -63,46 +63,18 @@ public class RecipeService {
     public Long createRecipe(
             String title,
             String description,
-            Long authorId,
+            Long authorUserId,
             List<Ingredient> ingredients,
-            List<PreparationStep> steps) {
-        UserAccountEntity userAccountEntity = userRepository.findById(authorId);
+            List<PreparationStep> preparationSteps) {
+        UserAccountEntity userAccountEntity = userRepository.findById(authorUserId);
         if (userAccountEntity == null) {
-            throw new IllegalArgumentException("Author with userId " + authorId + " does not exist");
+            throw new IllegalArgumentException("Author with userId " + authorUserId + " does not exist");
         }
-        RecipeEntity recipeEntity = new RecipeEntity();
-        recipeEntity.title = title;
-        recipeEntity.description = description;
-        recipeEntity.author = userAccountEntity;
-
-        List<IngredientEntity> ingredientsEntities = new ArrayList<>();
-        for (int position = 0; position < ingredients.size(); position++) {
-            var ingredient = ingredients.get(position);
-            var ingredientEntity = new IngredientEntity();
-            ingredientEntity.recipe = recipeEntity;
-            ingredientEntity.name = ingredient.name();
-            ingredientEntity.position = position;
-            ingredientEntity.quantity = ingredient.quantity();
-            ingredientsEntities.add(ingredientEntity);
-        }
-        recipeEntity.ingredients = ingredientsEntities;
-
-        List<PreparationStepEntity> preparationStepEntities = new ArrayList<>();
-        for (int position = 0; position < steps.size(); position++) {
-            var step = steps.get(position);
-            var preparationStepEntity = new PreparationStepEntity();
-            preparationStepEntity.recipe = recipeEntity;
-            preparationStepEntity.description = step.description();
-            preparationStepEntity.position = position;
-            preparationStepEntities.add(preparationStepEntity);
-        }
-        recipeEntity.preparationSteps = preparationStepEntities;
-        recipeEntity.persist();
-        return recipeEntity.id;
+        return persistRecipeEntity(null, userAccountEntity, title, description, ingredients, preparationSteps);
     }
 
     @Transactional
-    public void removeRecipe(Long recipeId, Long upn) {
+    public void deleteRecipe(Long recipeId, Long upn) {
         UserAccountEntity userAccount = userRepository.findById(upn);
         if (userAccount == null) {
             throw new IllegalArgumentException("User with userId " + upn + " does not exist");
@@ -116,5 +88,63 @@ public class RecipeService {
                     "User with userId " + upn + " is not the author of the recipe with userId " + recipeId);
         }
         recipeEntity.delete();
+    }
+
+    @Transactional
+    public void updateRecipe(
+            Long recipeId,
+            String title,
+            String description,
+            Long authorUserId,
+            List<Ingredient> ingredients,
+            List<PreparationStep> preparationSteps) {
+        UserAccountEntity userAccountEntity = userRepository.findById(authorUserId);
+        if (userAccountEntity == null) {
+            throw new IllegalArgumentException("Author with userId " + authorUserId + " does not exist");
+        }
+        RecipeEntity recipeEntity = RecipeEntity.findById(recipeId);
+        persistRecipeEntity(recipeEntity, null, title, description, ingredients, preparationSteps);
+    }
+
+    @Transactional
+    Long persistRecipeEntity(
+            @Nullable RecipeEntity existingRecipeEntity,
+            @Nullable UserAccountEntity userAccountEntity,
+            String title,
+            String description,
+            List<Ingredient> ingredients,
+            List<PreparationStep> preparationSteps) {
+        RecipeEntity recipeEntity = existingRecipeEntity != null ? existingRecipeEntity : new RecipeEntity();
+        recipeEntity.title = title;
+        recipeEntity.description = description;
+        if (userAccountEntity == null && recipeEntity.author == null) {
+            throw new IllegalArgumentException("Recipe must have an author");
+        } else if (userAccountEntity != null) {
+            recipeEntity.author = userAccountEntity;
+        }
+        List<IngredientEntity> ingredientsEntities = new ArrayList<>();
+        for (int position = 0; position < ingredients.size(); position++) {
+            var ingredient = ingredients.get(position);
+            var ingredientEntity = new IngredientEntity();
+            ingredientEntity.recipe = recipeEntity;
+            ingredientEntity.name = ingredient.name();
+            ingredientEntity.position = position;
+            ingredientEntity.quantity = ingredient.quantity();
+            ingredientsEntities.add(ingredientEntity);
+        }
+        recipeEntity.ingredients = ingredientsEntities;
+
+        List<PreparationStepEntity> preparationStepEntities = new ArrayList<>();
+        for (int position = 0; position < preparationSteps.size(); position++) {
+            var step = preparationSteps.get(position);
+            var preparationStepEntity = new PreparationStepEntity();
+            preparationStepEntity.recipe = recipeEntity;
+            preparationStepEntity.description = step.description();
+            preparationStepEntity.position = position;
+            preparationStepEntities.add(preparationStepEntity);
+        }
+        recipeEntity.preparationSteps = preparationStepEntities;
+        recipeEntity.persist();
+        return recipeEntity.id;
     }
 }
