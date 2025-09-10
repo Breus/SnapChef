@@ -2,10 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth } from "../auth/useAuth.ts";
-import { HttpError, post } from "../api/httpClient.ts";
+import { HttpError } from "../api/httpClient.ts";
+import { submitLogin } from "../api/userApi.ts";
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 import type LoginCredentials from "../auth/LoginCredentials.ts";
-import type AuthenticationDetails from "../auth/AuthenticationDetails.ts";
 
 const router = useRouter();
 const { login } = useAuth();
@@ -15,10 +15,6 @@ function isErrorResponse(obj: unknown): obj is ErrorResponseBody {
     const o = obj as Record<string, unknown>;
     return typeof o.title === "string" && typeof o.detail === "string" && typeof o.status === "number";
 }
-
-const submitLogin = async (loginCredentials: LoginCredentials): Promise<AuthenticationDetails> => {
-    return await post("/users/login", { loginCredentials });
-};
 
 // Form data
 const emailaddress = ref("");
@@ -81,7 +77,8 @@ const submitForm = async () => {
             <!-- Form Header -->
             <div class="mb-8 text-center">
                 <h1 class="text-3xl font-bold text-gray-900">Login Your Account</h1>
-                <h2 class="text-1xl text-gray-400">Add your own recipes, save your favorites, and build your personal recipe book!</h2>
+                <h2 class="text-1xl text-gray-400">Add your own recipes, save your favorites, and build your personal
+                    recipe book!</h2>
             </div>
             <div v-if="error" class="mb-6 rounded-md bg-red-50 p-4">
                 <div class="flex">

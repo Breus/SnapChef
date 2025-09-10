@@ -40,4 +40,11 @@ public class UserAccountEntity extends PanacheEntityBase {
             joinColumns = @JoinColumn(name = "user_account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<RoleEntity> roles = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_favorite_recipe",
+            joinColumns = @JoinColumn(name = "user_account_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id"))
+    public Set<RecipeEntity> favoriteRecipes = new HashSet<>();
 }

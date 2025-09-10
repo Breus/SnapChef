@@ -1,17 +1,8 @@
-<style>
-.trash-icon {
-    filter: grayscale(1) brightness(2);
-    transition: filter 0.15s;
-}
-
-.group:hover .trash-icon {
-    filter: none;
-}
-</style>
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getRecipeById, deleteRecipeById } from "../api/recipeApi.ts";
+import { getUserFavoriteRecipesIds } from "../api/userApi.ts";
 import { useAuth } from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 
@@ -22,6 +13,7 @@ const showDeleteModal = ref(false);
 const isLoading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const { userId } = useAuth();
+const userFavorites = ref<number[]>([]);
 
 const fetchRecipe = async () => {
     try {
@@ -67,8 +59,27 @@ const cancelDelete = () => {
     showDeleteModal.value = false;
 };
 
-onMounted(() => {
-    fetchRecipe();
+const favoriteRecipe = async () => {
+    alert("Feature not implemented yet.");
+};
+
+const fetchUserFavorites = async () => {
+    if (!userId || userId.value === null) {
+        return;
+    }
+    try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) return;
+        const ids = await getUserFavoriteRecipesIds(userId.value, authToken);
+        userFavorites.value = ids;
+    } catch (err) {
+        console.error("Failed to fetch favorites:", err);
+    }
+};
+
+onMounted(async () => {
+    await fetchUserFavorites();
+    await fetchRecipe();
 });
 </script>
 
@@ -144,6 +155,21 @@ onMounted(() => {
                 <!-- Recipe Header -->
                 <div class="relative border-b border-gray-300 px-6 py-8 group">
                     <div class="absolute top-6 right-6 flex space-x-2">
+                        <button @click="favoriteRecipe" class="p-0 bg-transparent shadow-none hover:bg-transparent"
+                            title="Favorite Recipe">
+                            <svg v-if="recipe && userFavorites.includes(recipe.id)" xmlns="http://www.w3.org/2000/svg"
+                                :fill="'#16a34a'" stroke="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                class="w-6 h-6 transition-colors duration-150 cursor-pointer">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor"
+                                class="w-6 h-6 text-gray-400 hover:text-green-600 transition-colors duration-150 cursor-pointer">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
                         <button v-if="recipe && recipe.author && recipe.author.userId === userId" @click="editRecipe"
                             class="p-0 bg-transparent shadow-none hover:bg-transparent" title="Edit Recipe">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

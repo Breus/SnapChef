@@ -37,7 +37,7 @@ export const updateRecipe = async (id: number, recipe: RecipeCreateDto, authToke
         console.error("Error updating recipe:", error);
         throw error;
     }
-}
+};
 
 export const deleteRecipeById = async (id: number, authToken: string): Promise<void> => {
     try {

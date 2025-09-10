@@ -1,13 +1,13 @@
 import { ref } from "vue";
 
-const userId = ref<string | null>(localStorage.getItem("userId"));
+const userId = ref<number | null>(localStorage.getItem("userId") ? parseInt(localStorage.getItem("userId")!) : null);
 const userName = ref<string | null>(localStorage.getItem("userName"));
 const authToken = ref<string | null>(localStorage.getItem("authToken"));
 
 export function useAuth() {
-    function login(userIdArg: string, userNameArg: string, token: string) {
+    function login(userIdArg: number, userNameArg: string, token: string) {
         userId.value = userIdArg;
-        localStorage.setItem("userId", userIdArg);
+        localStorage.setItem("userId", userIdArg.toString());
         userName.value = userNameArg;
         localStorage.setItem("userName", userNameArg);
         authToken.value = token;

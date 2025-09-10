@@ -24,6 +24,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public Set<Long> getUserFavoriteRecipes(Long userId) {
+        return userRepository.findById(userId).favoriteRecipes.stream()
+                .map(r -> r.id)
+                .collect(Collectors.toSet());
+    }
+
     /**
      * Registers a new user with the provided authorName, email address, and password.
      *
