@@ -3,7 +3,7 @@ assertj = "3.27.3"
 errorprone = "2.39.0"
 errorprone-plugin = "4.3.0"
 nullaway = "0.12.7"
-quarkus = "3.24.1"
+quarkus = "3.26.3"
 testcontainers = "1.21.3"
 
 [libraries]
