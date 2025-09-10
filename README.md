@@ -1,4 +1,4 @@
-# SnapChef - Everyday meals made simple.
+# SnapChef - When cooking is not a hobby
 
 SnapChef isn’t just another recipe book app, instead it’s designed for real life. Whether you don’t enjoy cooking,
 quickly want to prepare a healthy meal, or simply don’t have time to cook as a hobby, SnapChef helps you get meals on
