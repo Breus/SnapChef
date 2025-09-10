@@ -17,7 +17,7 @@
 
 ### Infrastructure
 
-* [Docker-compose](https://docs.docker.com/compose/)
+* [docker compose](https://docs.docker.com/compose/)
 * [Pre-commit](https://pre-commit.com/)
 * [Spotless](https://spotless.dev/)
 
@@ -87,7 +87,7 @@ The easiest way to run the entire application stack (database, backend, and data
 Compose:
 
 ```shell script
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start:
@@ -99,7 +99,7 @@ This will start:
 To stop all services:
 
 ```shell script
-docker-compose down
+docker compose down
 ```
 
 ### Running the Backend in Development Mode
@@ -164,17 +164,17 @@ cd app
 ```
 
 It produces the `quarkus-run.jar` file in the `build/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
+Be aware that it’s not a _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
 
 The application is now runnable using `java -jar build/quarkus-app/quarkus-run.jar`.
 
-If you want to build an _über-jar_, execute the following command:
+If you want to build a _über-jar_, execute the following command:
 
 ```shell script
 ./gradlew build -Dquarkus.package.jar.type=uber-jar
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
+The application, packaged as a _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
 
 ### Frontend
 

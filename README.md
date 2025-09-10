@@ -1,7 +1,7 @@
-# Quicook – Your Everyday Recipe Companion
+# SnapChef - Everyday meals made simple.
 
-Quicook isn’t just another recipe book app, instead it’s designed for real life. Whether you don’t enjoy cooking,
-quickly want to prepare a healthy meal, or simply don’t have time to cook as a hobby, Quicook helps you get meals on
+SnapChef isn’t just another recipe book app, instead it’s designed for real life. Whether you don’t enjoy cooking,
+quickly want to prepare a healthy meal, or simply don’t have time to cook as a hobby, SnapChef helps you get meals on
 the table quickly, healthy, and stress-free. The focus is on simplicity, speed, and practicality for daily cooking and
 grocery shopping.
 
