@@ -6,7 +6,7 @@ export default interface Recipe {
     title: string;
     description: string;
     author: {
-        userId: string;
+        userId: number;
         userName: string;
     };
     ingredients: Ingredient[];

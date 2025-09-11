@@ -20,7 +20,7 @@ const { userId } = useAuth();
             <div class="mb-4 flex items-center justify-start text-sm text-gray-500">
                 <div class="flex items-center">
                     <span class="mr-1">By </span>
-                    <span v-if="recipeSummary.author.userId === userId"> {{ recipeSummary.author.userName }} (Me)</span>
+                    <span v-if="recipeSummary.author.userId == userId"> {{ recipeSummary.author.userName }} (Me)</span>
                     <span v-else>{{ recipeSummary.author.userName }}</span>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getRecipeById, deleteRecipeById } from "../api/recipeApi.ts";
+import { deleteRecipeById, getRecipeById } from "../api/recipeApi.ts";
 import { getUserFavoriteRecipesIds } from "../api/userApi.ts";
 import { useAuth } from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
@@ -12,7 +12,7 @@ const recipe = ref<Recipe | null>(null);
 const showDeleteModal = ref(false);
 const isLoading = ref<boolean>(true);
 const error = ref<string | null>(null);
-const { userId } = useAuth();
+const {userId} = useAuth();
 const userFavorites = ref<number[]>([]);
 
 const fetchRecipe = async () => {
@@ -43,7 +43,8 @@ const confirmDelete = async () => {
     try {
         const authToken = localStorage.getItem("authToken");
         if (!authToken) {
-            throw new Error("You must be logged in to create a recipe.");
+            alert("You must be logged in to delete a recipe.");
+            return;
         }
         await deleteRecipeById(recipe.value.id, authToken);
         router.push("/");
@@ -69,9 +70,10 @@ const fetchUserFavorites = async () => {
     }
     try {
         const authToken = localStorage.getItem("authToken");
-        if (!authToken) return;
-        const ids = await getUserFavoriteRecipesIds(userId.value, authToken);
-        userFavorites.value = ids;
+        if (!authToken) {
+            return; // do nothing if a user is not logged in
+        }
+        userFavorites.value = await getUserFavoriteRecipesIds(userId.value, authToken);
     } catch (err) {
         console.error("Failed to fetch favorites:", err);
     }
@@ -139,11 +141,11 @@ onMounted(async () => {
                     </p>
                     <div class="flex justify-end space-x-3">
                         <button @click="cancelDelete"
-                            class="cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                                class="cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
                             Cancel
                         </button>
                         <button @click="confirmDelete"
-                            class="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700">
+                                class="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700">
                             Delete
                         </button>
                     </div>
@@ -170,7 +172,7 @@ onMounted(async () => {
                                     d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                             </svg>
                         </button>
-                        <button v-if="recipe && recipe.author && recipe.author.userId === userId" @click="editRecipe"
+                        <button v-if="recipe && recipe.author && recipe.author.userId == userId" @click="editRecipe"
                             class="p-0 bg-transparent shadow-none hover:bg-transparent" title="Edit Recipe">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor"
@@ -179,7 +181,7 @@ onMounted(async () => {
                                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                             </svg>
                         </button>
-                        <button v-if="recipe && recipe.author && recipe.author.userId === userId" @click="deleteRecipe"
+                        <button v-if="recipe && recipe.author && recipe.author.userId == userId" @click="deleteRecipe"
                             class="p-0 bg-transparent shadow-none hover:bg-transparent" title="Delete Recipe">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor"
@@ -213,7 +215,7 @@ onMounted(async () => {
                             Ingredients
                         </h2>
                         <ul class="space-y-2">
-                            <li v-for="ingredient in recipe?.ingredients || []" :key="ingredient.id"
+                            <li v-for="ingredient in recipe?.ingredients || []" :key="ingredient.name"
                                 class="flex items-start">
                                 <span class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-green-600"></span>
                                 <div>
@@ -230,7 +232,8 @@ onMounted(async () => {
                             Instructions
                         </h2>
                         <ol class="space-y-4">
-                            <li v-for="(step, number) in recipe?.steps || []" :key="step.id" class="flex items-start">
+                            <li v-for="(step, number) in recipe?.preparationSteps || []" :key="step.description"
+                                class="flex items-start">
                                 <span
                                     class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
                                     {{ number + 1 }}

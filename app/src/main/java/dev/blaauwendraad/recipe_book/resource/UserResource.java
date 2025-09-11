@@ -56,10 +56,7 @@ public class UserResource {
                 loginAttemptRequest.loginCredentials().emailAddress(),
                 loginAttemptRequest.loginCredentials().password());
         return new LoginResponse(
-                loginDetails.userId().toString(),
-                loginDetails.username(),
-                loginDetails.emailAddress(),
-                loginDetails.authToken());
+                loginDetails.userId(), loginDetails.username(), loginDetails.emailAddress(), loginDetails.authToken());
     }
 
     @POST

@@ -1,5 +1,5 @@
 export default interface AuthenticationDetails {
-    userId: string;
+    userId: number;
     username: string;
     emailAddress: string;
     authToken: string;
