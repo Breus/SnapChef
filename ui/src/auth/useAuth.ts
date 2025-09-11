@@ -1,6 +1,7 @@
 import { ref } from "vue";
 
-const userId = ref<number | null>(localStorage.getItem("userId") ? parseInt(localStorage.getItem("userId")!) : null);
+const storedUserId = localStorage.getItem("userId");
+const userId = ref<number | null>(storedUserId !== null ? parseInt(storedUserId) : null);
 const userName = ref<string | null>(localStorage.getItem("userName"));
 const authToken = ref<string | null>(localStorage.getItem("authToken"));
 
