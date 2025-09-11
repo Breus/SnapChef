@@ -1,5 +1,6 @@
 ## TODO short term
 
+- [ ] Add local JWT key generation to CONTRIBUTING.md
 - [ ] Add SonarQube integration
 - [ ] Deploy on quicoock.blaauwendraad.dev manually and prepare entire environment
 - [ ] Get rid of Spotless but keep code formatter and corresponding pre-commit hooks
@@ -48,38 +49,25 @@
 
 ### Local Development Environment Setup
 
-1. Install the required tools:
+1. Install the required, non-prepackaged tools:
 
-    - [Docker Desktop (for Docker Compose)](https://docs.docker.com/get-docker/)
-    - [Java 21 JDK](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
-    - [Node.js](https://nodejs.org/en/download/) (version 22 or higher)
-    - [pnpm](https://pnpm.io/installation)
-    - [pre-commit](https://pre-commit.com/#install) (for required code formatting)
-
-2. Install the required pre-commit hooks by running:
-
-```shell
-pre-commit install
-```
-
-3. Copy the example `.env` file to create your own: `cp .env.example .env`
-
-   This file contains environment variables used by the application. It is essential to set up the database connection
-   and other configurations.
-
-```shell script
-cp .env.example .env
-```
-
-4. Modify the `.env` by entering the correct credentials. The other default values should work for local development.
-
-5. For easier database access, copy the example `.pgpass` to create your own:
-
-```shell script
-cp .pgpass.example .pgpass
-```
-
-6. Modify the `.pgpass` file with the correct database credentials.
+    - [Docker Desktop](https://docs.docker.com/get-docker/) (for Docker Compose)
+    - [Java 21 JDK](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) (to build the backend
+      Quarkus application)
+    - [Node.js](https://nodejs.org/en/download/) (for frontend development tooling, version 22 or higher)
+    - [pnpm](https://pnpm.io/installation) (for frontend package management)
+    - [Python 3.13](https://www.python.org/downloads/) (for local dev environment auto-setup scripts)
+    - [pre-commit](https://pre-commit.com/#install) (for automatic, required code formatting)
+2. Run the `setup.py`, which will:
+    1. Install the pre-commit hooks
+    2. Generate a local RSA key pair for user authentication (JWT signing)
+    3. Copy the example `.env.example` file to `.env`. This file contains environment variables used by the application.
+       **Note**: You still need to modify the `.env` file with the correct credentials.
+    4. Copy the example `.pgpass.example` file to `.pgpass`. **Note**: You still need to modify the `.pgpass` file with
+       the
+       correct database credentials.
+3. Modify the generated `.env` and `.pgpass` files by entering the correct credentials. The other default values should
+   work for local development.
 
 ### Running with Docker Compose
 
@@ -102,6 +90,9 @@ To stop all services:
 docker compose down
 ```
 
+**Note:** By default, the `docker-compose-override.yml` file configures the Quarkus application to be ignored by Docker
+Compose because for local development it is more convenient to run it directly on your host machine using quarkusDev.
+
 ### Running the Backend in Development Mode
 
 If you prefer to run the backend in development mode for live coding:
@@ -111,10 +102,9 @@ If you prefer to run the backend in development mode for live coding:
 
 2. Make sure the PostgreSQL database is running (now `docker compose up` will only start the database and PgAdmin):
 
-3. Navigate to the `app` directory and run:
+3. From to the `app` directory run:
 
 ```shell script
-cd app
 ./gradlew quarkusDev
 ```
 
@@ -126,21 +116,15 @@ The backend will be available at http://localhost:8080.
 
 ### Running the Frontend
 
-To run the frontend development server:
+To run the frontend development server, from the `ui` directory:
 
-1. Navigate to the ui directory:
-
-```shell script
-cd ui
-```
-
-2. Install dependencies (if you haven't already):
+1. Install the frontend dependencies (if you haven't already):
 
 ```shell script
 pnpm install
 ```
 
-3. Start the development server:
+2. Start the development server:
 
 ```shell script
 pnpm dev
