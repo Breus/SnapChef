@@ -45,8 +45,9 @@ group = "dev.blaauwendraad"
 version = "1.0.0-SNAPSHOT"
 
 spotless {
+    ratchetFrom("origin/main")
     java {
-        palantirJavaFormat("2.72.0")
+        palantirJavaFormat(libs.versions.palantir.java.format.get())
         target("src/**/*.java")
     }
 }
