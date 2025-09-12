@@ -1,18 +1,18 @@
 ## TODO short term
 
-- [ ] Add local JWT key generation to CONTRIBUTING.md
-- [ ] Add SonarQube integration
-- [ ] Deploy on quicoock.blaauwendraad.dev manually and prepare entire environment
-- [ ] Get rid of Spotless but keep code formatter and corresponding pre-commit hooks
-- [ ] Replace Biome with Prettier for code formatting
-- [ ] Add unit and integration tests for backend and frontend
+
 - [ ] Finish favorite functionality
 - [ ] Finish shopping list functionality
+- [ ] Implement caching on APIs
+- [ ] Deploy on snapchef.blaauwendraad.dev manually and prepare entire environment
+- [ ] Get rid of Spotless but keep code formatter and corresponding pre-commit hooks
+- [ ] Add unit and integration tests for backend and frontend
 
 ## TODO longer term
 
 - [ ] Add resiliency patterns such as rate limiters on endpoints
 - [ ] Set-up continuous integration / deployment using Github actions
+- [ ] Add SonarQube integration
 
 ## Technical Details
 
@@ -42,7 +42,6 @@
 * [Vite](https://vitejs.dev/)
 * [pnpm](https://pnpm.io/)
 * [Node.js](https://nodejs.org/en/)
-* [Biome](https://biomejs.dev/)
 * [ESLint](https://eslint.org/)
 
 ## Getting Started

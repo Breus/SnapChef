@@ -12,9 +12,6 @@ export default defineConfig({
         vue(),
         tailwindcss(),
         checker({
-            biome: {
-                command: "check",
-            },
             stylelint: {
                 lintCommand: 'stylelint "./src/**/*.{css,scss,vue}"',
                 watchPath: "./src",
