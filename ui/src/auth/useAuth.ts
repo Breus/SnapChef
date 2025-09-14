@@ -18,7 +18,7 @@ export function useAuth() {
         userId.value = null;
         localStorage.removeItem("userId");
         userName.value = null;
-        localStorage.removeItem("username");
+        localStorage.removeItem("userName");
         authToken.value = null;
         localStorage.removeItem("authToken");
     }
