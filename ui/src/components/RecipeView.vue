@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { deleteRecipeById, getRecipeById } from "../api/recipeApi.ts";
-import { getUserFavoriteRecipesIds } from "../api/userApi.ts";
+import { addRecipeToUserFavorites, getUserFavoriteRecipesIds, removeRecipeFromUserFavorites } from "../api/userApi.ts";
 import { useAuth } from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 
@@ -15,7 +15,7 @@ const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
 
 const error = ref<string | null>(null);
-const {userId} = useAuth();
+const {authToken, userId} = useAuth();
 const userFavorites = ref<number[]>([]);
 
 const fetchRecipe = async () => {
@@ -56,12 +56,11 @@ const deleteRecipe = async () => {
 const confirmDelete = async () => {
     if (!recipe.value) return;
     try {
-        const authToken = localStorage.getItem("authToken");
-        if (!authToken) {
+        if (!authToken || authToken.value === null) {
             alert("You must be logged in to delete a recipe.");
             return;
         }
-        await deleteRecipeById(recipe.value.id, authToken);
+        await deleteRecipeById(recipe.value.id, authToken.value);
         router.push("/");
     } catch (err) {
         alert("Failed to delete recipe.");
@@ -75,20 +74,50 @@ const cancelDelete = () => {
     showDeleteModal.value = false;
 };
 
-const favoriteRecipe = async () => {
-    alert("Feature not implemented yet.");
+
+const clickFavoriteRecipe = async () => {
+    if (userFavorites.value.includes(recipe.value?.id as number)) {
+        await unfavoriteRecipe(recipe.value?.id as number);
+    } else {
+        await favoriteRecipe(recipe.value?.id as number);
+    }
+}
+
+const favoriteRecipe = async (recipeId: number) => {
+    try {
+        if (!authToken || authToken.value === null || !userId || userId.value === null) {
+            router.push("/login");
+            return;
+        }
+        userFavorites.value = await addRecipeToUserFavorites(userId.value, recipeId, authToken.value);
+    } catch (err) {
+        console.error("Failed to favorite recipe:", err);
+        throw err;
+    }
 };
+
+const unfavoriteRecipe = async (recipeId: number) => {
+    try {
+        if (!authToken || authToken.value === null || !userId || userId.value === null) {
+            router.push("/login");
+            return;
+        }
+        userFavorites.value = await removeRecipeFromUserFavorites(userId.value, recipeId, authToken.value);
+    } catch (err) {
+        console.error("Failed to unfavorite recipe:", err);
+        throw err;
+    }
+}
 
 const fetchUserFavorites = async () => {
     if (!userId || userId.value === null) {
         return;
     }
     try {
-        const authToken = localStorage.getItem("authToken");
-        if (!authToken) {
+        if (!authToken || authToken.value === null) {
             return; // do nothing if a user is not logged in
         }
-        userFavorites.value = await getUserFavoriteRecipesIds(userId.value, authToken);
+        userFavorites.value = await getUserFavoriteRecipesIds(userId.value, authToken.value);
     } catch (err) {
         console.error("Failed to fetch favorites:", err);
     }
@@ -172,7 +201,7 @@ onMounted(async () => {
                 <!-- Recipe Header -->
                 <div class="relative border-b border-gray-300 px-6 py-8 group">
                     <div class="absolute top-6 right-6 flex space-x-2">
-                        <button @click="favoriteRecipe" class="p-0 bg-transparent shadow-none hover:bg-transparent"
+                        <button @click="clickFavoriteRecipe" class="p-0 bg-transparent shadow-none hover:bg-transparent"
                                 title="Favorite Recipe">
                             <svg v-if="recipe && userFavorites.includes(recipe.id)" xmlns="http://www.w3.org/2000/svg"
                                  :fill="'#16a34a'" stroke="none" viewBox="0 0 24 24" stroke-width="1.5"

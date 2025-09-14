@@ -1,5 +1,5 @@
 package dev.blaauwendraad.recipe_book.resource.model;
 
-import java.util.Set;
+import java.util.List;
 
-public record UserFavoriteRecipesResponse(Set<Long> favoriteRecipesIds) {}
+public record UserFavoriteRecipesResponse(List<Long> favoriteRecipesIds) {}

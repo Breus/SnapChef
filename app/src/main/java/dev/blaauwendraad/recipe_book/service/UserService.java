@@ -12,6 +12,7 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,18 +25,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Set<Long> getUserFavoriteRecipes(Long userId) {
-        return userRepository.findById(userId).favoriteRecipes.stream()
-                .map(r -> r.id)
-                .collect(Collectors.toSet());
-    }
-
     /**
      * Registers a new user with the provided authorName, email address, and password.
      *
-     * @param username the authorName of the new user
+     * @param username     the authorName of the new user
      * @param emailAddress the email address of the new user
-     * @param password the password for the new user
+     * @param password     the password for the new user
      * @throws UserRegistrationException if there is an error during registration
      */
     public UserAccount registerUser(String username, String emailAddress, String password)
@@ -54,7 +49,7 @@ public class UserService {
      * Logs in a user with the provided e-mail address and password and returns an authentication authToken.
      *
      * @param emailAddress the e-mail address of the user
-     * @param password the password of the user
+     * @param password     the password of the user
      * @throws UserLoginException if there is an error during user login
      */
     public AuthenticationDetails login(String emailAddress, String password) throws UserLoginException {
@@ -94,5 +89,23 @@ public class UserService {
                             case user -> UserRole.user;
                         })
                         .collect(Collectors.toSet()));
+    }
+
+    public List<Long> getUserFavoriteRecipes(Long userId) {
+        return userRepository.findById(userId).favoriteRecipes.stream()
+                .map(r -> r.id)
+                .toList();
+    }
+
+    public List<Long> addUserFavoriteRecipe(Long userId, Long recipeId) {
+        return userRepository.addFavoriteRecipe(userId, recipeId).favoriteRecipes.stream()
+                .map(r -> r.id)
+                .toList();
+    }
+
+    public List<Long> removeUserFavoriteRecipe(Long userId, Long recipeId) {
+        return userRepository.removeFavoriteRecipe(userId, recipeId).favoriteRecipes.stream()
+                .map(r -> r.id)
+                .toList();
     }
 }

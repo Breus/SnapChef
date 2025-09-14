@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.repository;
 
+import dev.blaauwendraad.recipe_book.data.model.RecipeEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.service.model.UserRole;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -17,6 +18,44 @@ public class UserRepository implements PanacheRepository<UserAccountEntity> {
     @Inject
     public UserRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+    }
+
+    @Transactional
+    public UserAccountEntity addFavoriteRecipe(Long userId, Long recipeId) {
+        UserAccountEntity userAccountEntity = UserAccountEntity.findById(userId);
+        if (userAccountEntity == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        RecipeEntity recipeEntity = RecipeEntity.findById(recipeId);
+        if (recipeEntity == null) {
+            throw new IllegalArgumentException("Recipe not found");
+        }
+        if (userAccountEntity.favoriteRecipes.contains(recipeEntity)) {
+            // do nothing, already a favorite recipe
+            return userAccountEntity;
+        }
+        userAccountEntity.favoriteRecipes.add(recipeEntity);
+        userAccountEntity.persist();
+        return userAccountEntity;
+    }
+
+    @Transactional
+    public UserAccountEntity removeFavoriteRecipe(Long userId, Long recipeId) {
+        UserAccountEntity userAccountEntity = UserAccountEntity.findById(userId);
+        if (userAccountEntity == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        RecipeEntity recipeEntity = RecipeEntity.findById(recipeId);
+        if (recipeEntity == null) {
+            throw new IllegalArgumentException("Recipe not found");
+        }
+        if (!userAccountEntity.favoriteRecipes.contains(recipeEntity)) {
+            // do nothing, not a favorite recipe
+            return userAccountEntity;
+        }
+        userAccountEntity.favoriteRecipes.remove(recipeEntity);
+        userAccountEntity.persist();
+        return userAccountEntity;
     }
 
     @Transactional

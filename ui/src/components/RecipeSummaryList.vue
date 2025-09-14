@@ -51,7 +51,7 @@ onMounted(() => {
     <div class="min-h-screen bg-gray-50">
         <div class="sticky top-0 z-20 w-full bg-green-700 shadow-lg">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
-                <span class="text-2xl font-bold text-white tracking-tight">Recipe Book</span>
+                <span class="text-2xl font-bold text-white tracking-tight">SnapChef</span>
                 <div>
                     <template v-if="userId && userName && authToken">
                         <span class="mr-4 text-green-100">Logged in as {{ userName }}</span>

@@ -47,11 +47,11 @@ class UserServiceTest {
                         Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anySet()))
                 .thenReturn(userAccountEntity);
         // When, Then
-        // First registration of this userName should succeed
+        // The first registration of this userName should succeed
         Assertions.assertThatNoException()
                 .isThrownBy(
                         () -> userService.registerUser(duplicateUserName, "some-mail@example.com", "Fakepassword123"));
-        // Second registration of the same userName should throw an exception
+        // The second registration of the same userName should throw an exception
         Assertions.assertThatThrownBy(
                         () -> userService.registerUser(duplicateUserName, "different@example.com", "someFakePassword"))
                 .isInstanceOf(UserRegistrationValidationException.class)
