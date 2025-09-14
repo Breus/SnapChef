@@ -10,11 +10,23 @@ const recipeSummaries = ref<RecipeSummary[]>([]);
 const searchQuery = ref<string>("");
 const { userId, userName, authToken, logout } = useAuth();
 const isLoading = ref<boolean>(true);
+const showLoading = ref<boolean>(false);
+let loadingTimer: number | null = null;
+
+
 const error = ref<string | null>(null);
 
 const fetchRecipeSummaries = async () => {
     try {
         isLoading.value = true;
+        if (loadingTimer) {
+            clearTimeout(loadingTimer);
+        }
+        loadingTimer = setTimeout(() => {
+            if (isLoading.value) {
+                showLoading.value = true;
+            }
+        }, 300);
         recipeSummaries.value = await getAllRecipeSummaries();
         error.value = null;
     } catch (err) {
@@ -23,6 +35,10 @@ const fetchRecipeSummaries = async () => {
         recipeSummaries.value = [];
     } finally {
         isLoading.value = false;
+        showLoading.value = false;
+        if (loadingTimer) {
+            clearTimeout(loadingTimer);
+        }
     }
 };
 
@@ -69,7 +85,7 @@ onMounted(() => {
             <!--            </div>-->
 
             <!-- Loading State -->
-            <div v-if="isLoading" class="py-12 text-center">
+            <div v-if="showLoading" class="py-12 text-center">
                 <div class="mb-4 text-6xl">⏳</div>
                 <h3 class="mb-2 text-xl font-medium text-gray-900">
                     Loading recipes...
@@ -91,7 +107,7 @@ onMounted(() => {
             </div>
 
             <!-- Recipe Grid -->
-            <div v-else-if="recipeSummaries.length > 0" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div v-else-if="!showLoading && recipeSummaries.length > 0" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                 <AddRecipeCard :isLoggedIn="!!userName" />
                 <div v-for="recipeSummary in recipeSummaries" :key="recipeSummary.id"
                     class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
@@ -100,7 +116,7 @@ onMounted(() => {
             </div>
 
             <!-- Empty State -->
-            <div v-else class="py-12 text-center">
+            <div v-else-if="!isLoading" class="py-12 text-center">
                 <div class="mb-4 text-6xl">🍳</div>
                 <h3 class="mb-2 text-xl font-medium text-gray-900">
                     No recipes found

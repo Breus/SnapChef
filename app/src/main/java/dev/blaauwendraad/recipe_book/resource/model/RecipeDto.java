@@ -9,4 +9,4 @@ public record RecipeDto(
         @Nullable String description,
         @Nullable RecipeAuthorDto author,
         List<IngredientDto> ingredients,
-        List<PreparationStepDto> steps) {}
+        List<PreparationStepDto> preparationSteps) {}
