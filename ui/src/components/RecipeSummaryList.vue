@@ -8,10 +8,38 @@ import { useAuth } from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
 const searchQuery = ref<string>("");
-const { userId, userName, authToken, logout } = useAuth();
+const {userId, userName, authToken, logout} = useAuth();
 const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
+
+
+// Recipe overvioew filtering
+enum RecipeFilterType {
+    All = "all",
+    Mine = "mine",
+    Favorites = "favorites"
+}
+
+const filterType = ref<RecipeFilterType>(RecipeFilterType.All);
+
+const filterOptions = [
+    {
+        value: RecipeFilterType.All,
+        label: "All Recipes",
+        icon: `<svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'/></svg>`
+    },
+    {
+        value: RecipeFilterType.Mine,
+        label: "My Recipes",
+        icon: `<svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.657 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z'/></svg>`
+    },
+    {
+        value: RecipeFilterType.Favorites,
+        label: "Favorited",
+        icon: `<svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'/></svg>`
+    }
+];
 
 
 const error = ref<string | null>(null);
@@ -46,6 +74,31 @@ onMounted(() => {
     fetchRecipeSummaries();
 });
 </script>
+<style scoped>
+.filter-btn {
+    box-shadow: 0 1px 2px rgb(16 185 129 / 8%);
+    cursor: pointer;
+    min-height: 35px;
+    font-size: 1rem;
+}
+
+@media (width <= 640px) {
+    .filter-btn {
+        width: 100%;
+        min-height: 45px;
+        margin-right: 0 !important;
+    }
+}
+
+.filter-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.filter-btn:not(:last-child) {
+    margin-right: 0.5rem;
+}
+</style>
 
 <template>
     <div class="min-h-screen bg-gray-50">
@@ -56,13 +109,13 @@ onMounted(() => {
                     <template v-if="userId && userName && authToken">
                         <span class="mr-4 text-green-100">Logged in as {{ userName }}</span>
                         <button @click="logout"
-                            class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
+                                class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log Out
                         </button>
                     </template>
                     <template v-else>
                         <button @click="$router.push('/login')"
-                            class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
+                                class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log In
                         </button>
                     </template>
@@ -84,6 +137,22 @@ onMounted(() => {
             <!--                </div>-->
             <!--            </div>-->
 
+            <div v-if="userId" class="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <button
+                    v-for="option in filterOptions"
+                    :key="option.value"
+                    :class="[
+            'filter-btn flex items-center px-4 py-2 rounded-full font-medium transition-all duration-200',
+            filterType === option.value
+                ? 'bg-green-600 text-white shadow-lg'
+                : 'bg-white text-green-700 border border-green-300 hover:bg-green-50']"
+                    :disabled="option.value !== RecipeFilterType.All && !userId"
+                    @click="filterType = option.value"
+                >
+                    <span class="mr-2" v-html="option.icon"></span>
+                    {{ option.label }}
+                </button>
+            </div>
             <!-- Loading State -->
             <div v-if="showLoading" class="py-12 text-center">
                 <div class="mb-4 text-6xl">⏳</div>
@@ -101,17 +170,18 @@ onMounted(() => {
                 <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
                 <p class="text-gray-600">{{ error }}</p>
                 <button @click="fetchRecipeSummaries"
-                    class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700">
+                        class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700">
                     Try Again
                 </button>
             </div>
 
             <!-- Recipe Grid -->
-            <div v-else-if="!showLoading && recipeSummaries.length > 0" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <AddRecipeCard :isLoggedIn="!!userName" />
+            <div v-else-if="!showLoading && recipeSummaries.length > 0"
+                 class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <AddRecipeCard :isLoggedIn="!!userName"/>
                 <div v-for="recipeSummary in recipeSummaries" :key="recipeSummary.id"
-                    class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
-                    <RecipeSummaryComponent :recipeSummary="recipeSummary" />
+                     class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
+                    <RecipeSummaryComponent :recipeSummary="recipeSummary"/>
                 </div>
             </div>
 
