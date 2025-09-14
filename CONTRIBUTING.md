@@ -5,7 +5,6 @@
 - [ ] Finish shopping list functionality
 - [ ] Implement caching on APIs
 - [ ] Deploy on snapchef.blaauwendraad.dev manually and prepare entire environment
-- [ ] Get rid of Spotless but keep code formatter and corresponding pre-commit hooks
 - [ ] Add unit and integration tests for backend and frontend
 
 ## TODO longer term

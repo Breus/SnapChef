@@ -63,7 +63,7 @@ public class UserService {
                 userAccount.id(),
                 userAccount.username(),
                 userAccount.emailAddress(),
-                Jwt.issuer("https://recipe-book.blaauwendraad.dev")
+                Jwt.issuer("https://snapchef.blaauwendraad.dev")
                         .upn(userAccount.id().toString())
                         .claim("email", userAccount.emailAddress())
                         .claim("userName", userAccount.username())
