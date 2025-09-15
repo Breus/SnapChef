@@ -1,10 +1,9 @@
 ## TODO short term
 
-
-- [ ] Finish favorite functionality
+- [ ] Add refreshing and refresh tokens for JWT tokens
+- [ ] Deploy on snapchef.blaauwendraad.dev manually and prepare entire environment
 - [ ] Finish shopping list functionality
 - [ ] Implement caching on APIs
-- [ ] Deploy on snapchef.blaauwendraad.dev manually and prepare entire environment
 - [ ] Add unit and integration tests for backend and frontend
 
 ## TODO longer term
@@ -13,35 +12,6 @@
 - [ ] Set-up continuous integration / deployment using Github actions
 - [ ] Add SonarQube integration
 
-## Technical Details
-
-### Infrastructure
-
-* [docker compose](https://docs.docker.com/compose/)
-* [Pre-commit](https://pre-commit.com/)
-* [Spotless](https://spotless.dev/)
-
-### Persistence
-
-* [PostgreSQL](https://www.postgresql.org/)
-* [PgAdmin](https://www.pgadmin.org/)
-
-### Backend
-
-* [Java](https://www.oracle.com/java/)
-* [Quarkus](https://quarkus.io/)
-* [Gradle](https://gradle.org/)
-* [Hibernate ORM](https://hibernate.org/orm/)
-* [Hibernate Validator](https://hibernate.org/validator/)
-
-### Frontend
-
-* [Tailwind CSS](https://tailwindcss.com/)
-* [Vue.js](https://vuejs.org/)
-* [Vite](https://vitejs.dev/)
-* [pnpm](https://pnpm.io/)
-* [Node.js](https://nodejs.org/en/)
-* [ESLint](https://eslint.org/)
 
 ## Getting Started
 
@@ -79,7 +49,6 @@ docker compose up -d
 This will start:
 
 - PostgreSQL database on port 5432
-- PgAdmin on port 8081 (accessible at http://localhost:8081)
 - Quarkus backend on port 8080 (accessible at http://localhost:8080)
 
 To stop all services:
@@ -98,7 +67,7 @@ If you prefer to run the backend in development mode for live coding:
 1. Uncomment `quarkus_app: !reset null` in `docker compose.override.yml` to disable the Docker container for the Quarkus
    app, allowing you to run it directly on your host machine in development mode.
 
-2. Make sure the PostgreSQL database is running (now `docker compose up` will only start the database and PgAdmin):
+2. Make sure the PostgreSQL database is running (now `docker compose up` will only start the database):
 
 3. From to the `app` directory run:
 

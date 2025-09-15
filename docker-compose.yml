@@ -14,24 +14,6 @@ services:
       - ./app/db/000-init.sql:/docker-entrypoint-initdb.d/000-init.sql
       - ./app/db/001-demo-data.sql:/docker-entrypoint-initdb.d/001-demo-data.sql
 
-  pg_admin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD:  ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: ${PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED:-True}
-      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE:-True}
-      PGPASS_FILE: /pgadmin4/.pgpass
-    ports:
-      - "8081:80"
-    depends_on:
-        - postgres
-    volumes:
-      - ./app/db/pgadmin-servers.json:/pgadmin4/servers.json:ro
-      - ./.pgpass:/pgadmin4/.pgpass:ro
-
   quarkus_app:
     build:
       context: .
