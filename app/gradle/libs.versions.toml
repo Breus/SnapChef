@@ -15,6 +15,7 @@ errorprone-core = { module = "com.google.errorprone:error_prone_core", version.r
 mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-junit" }
 nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
 quarkus-arc = { module = "io.quarkus:quarkus-arc", version.ref = "quarkus" }
+quarkus-elytron-security = { module = "io.quarkus:quarkus-elytron-security", version.ref = "quarkus" }
 quarkus-hibernate-orm-panache = { module = "io.quarkus:quarkus-hibernate-orm-panache", version.ref = "quarkus" }
 quarkus-hibernate-validator = { module = "io.quarkus:quarkus-hibernate-validator", version.ref = "quarkus" }
 quarkus-jdbc-postgresql = { module = "io.quarkus:quarkus-jdbc-postgresql", version.ref = "quarkus" }
