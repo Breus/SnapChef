@@ -1,4 +1,4 @@
-import type ErrorResponseBody from "../models/dto/ErrorResponseBody.ts";
+import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -21,13 +21,6 @@ export interface HttpClient {
     request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T>;
 }
 
-function isErrorResponseBody(obj: unknown): obj is ErrorResponseBody {
-    if (typeof obj !== "object" || obj === null) return false;
-    const o = obj as Record<string, unknown>;
-    return typeof o.title === "string" && typeof o.detail === "string" && typeof o.status === "number";
-}
-
-// Error class for HTTP errors
 /**
  * Represents an HTTP error with status code, status text, and optional response data.
  * @template T - The type of the response data. Defaults to unknown for type safety.
@@ -101,10 +94,6 @@ class FetchHttpClient implements HttpClient {
             }
 
             if (!response.ok) {
-                if (isErrorResponseBody(responseData)) {
-                    responseData.statusText = responseData.title;
-                }
-                // Explicitly specify the type parameter to match the responseData type
                 throw new HttpError<object | string | ErrorResponseBody>(
                     response.status,
                     response.statusText,

@@ -159,10 +159,6 @@ onMounted(async () => {
                 <div class="mb-4 text-6xl">❌</div>
                 <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
                 <p class="text-gray-600">{{ error }}</p>
-                <button @click="fetchRecipe"
-                        class="mt-4 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-green-700">
-                    Try Again
-                </button>
             </div>
 
             <!-- Recipe Not Found -->

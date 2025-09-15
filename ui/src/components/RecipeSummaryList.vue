@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getAllRecipeSummaries } from "../api/recipeSummaryApi.ts";
 import type RecipeSummary from "../models/domain/RecipeSummary.ts";
 import RecipeSummaryComponent from "./RecipeSummary.vue";
@@ -14,33 +14,32 @@ const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
 
 
-// Recipe overvioew filtering
-enum RecipeFilterType {
-    All = "all",
-    Mine = "mine",
-    Favorites = "favorites"
-}
+// Recipe summaries overview filtering
+type RecipeFilterType = "ALL" | "MY" | "FAVORITES";
 
-const filterType = ref<RecipeFilterType>(RecipeFilterType.All);
+const filterType = ref<RecipeFilterType>("ALL");
 
 const filterOptions = [
     {
-        value: RecipeFilterType.All,
+        value: "ALL" as RecipeFilterType,
         label: "All Recipes",
-        icon: `<svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'/></svg>`
+        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'/></svg>`
     },
     {
-        value: RecipeFilterType.Mine,
+        value: "MY" as RecipeFilterType,
         label: "My Recipes",
-        icon: `<svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.657 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z'/></svg>`
+        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.657 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z'/></svg>`
     },
     {
-        value: RecipeFilterType.Favorites,
-        label: "Favorited",
-        icon: `<svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'/></svg>`
+        value: "FAVORITES" as RecipeFilterType,
+        label: "Favorites",
+        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'/></svg>`
     }
 ];
 
+watch(filterType, () => {
+    fetchRecipeSummaries();
+});
 
 const error = ref<string | null>(null);
 
@@ -55,7 +54,7 @@ const fetchRecipeSummaries = async () => {
                 showLoading.value = true;
             }
         }, 300);
-        recipeSummaries.value = await getAllRecipeSummaries();
+        recipeSummaries.value = await getAllRecipeSummaries(filterType.value, authToken.value);
         error.value = null;
     } catch (err) {
         console.error("Failed to load recipe summaries:", err);
@@ -137,7 +136,7 @@ onMounted(() => {
             <!--                </div>-->
             <!--            </div>-->
 
-            <div v-if="userId" class="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+            <div class="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
                 <button
                     v-for="option in filterOptions"
                     :key="option.value"
@@ -145,9 +144,9 @@ onMounted(() => {
             'filter-btn flex items-center px-4 py-2 rounded-full font-medium transition-all duration-200',
             filterType === option.value
                 ? 'bg-green-600 text-white shadow-lg'
-                : 'bg-white text-green-700 border border-green-300 hover:bg-green-50']"
-                    :disabled="option.value !== RecipeFilterType.All && !userId"
-                    @click="filterType = option.value"
+                : 'bg-white text-green-700 border border-green-300 hover:bg-green-50'
+                     ]"
+                    @click="option.value !== 'ALL' && !userId ? $router.push('/login') : filterType = option.value"
                 >
                     <span class="mr-2" v-html="option.icon"></span>
                     {{ option.label }}
@@ -169,10 +168,6 @@ onMounted(() => {
                 <div class="mb-4 text-6xl">❌</div>
                 <h3 class="mb-2 text-xl font-medium text-gray-900">Error</h3>
                 <p class="text-gray-600">{{ error }}</p>
-                <button @click="fetchRecipeSummaries"
-                        class="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700">
-                    Try Again
-                </button>
             </div>
 
             <!-- Recipe Grid -->

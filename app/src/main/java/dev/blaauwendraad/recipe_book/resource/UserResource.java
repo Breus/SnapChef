@@ -3,7 +3,7 @@ package dev.blaauwendraad.recipe_book.resource;
 import dev.blaauwendraad.recipe_book.resource.model.AddUserFavoriteRecipeRequest;
 import dev.blaauwendraad.recipe_book.resource.model.LoginAttemptRequest;
 import dev.blaauwendraad.recipe_book.resource.model.LoginResponse;
-import dev.blaauwendraad.recipe_book.resource.model.UserFavoriteRecipesResponse;
+import dev.blaauwendraad.recipe_book.resource.model.UserFavoriteRecipesIdsResponse;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationResponse;
 import dev.blaauwendraad.recipe_book.service.UserService;
@@ -43,33 +43,33 @@ public class UserResource {
     @GET
     @RolesAllowed({"admin", "user"})
     @Path("/{userId}/recipes/favorites")
-    public UserFavoriteRecipesResponse getUserFavoriteRecipes(@PathParam("userId") Long userId) {
-        if (!Long.valueOf(jwt.getClaim("upn")).equals(userId)) {
+    public UserFavoriteRecipesIdsResponse getUserFavoriteRecipesIds(@PathParam("userId") Long userId) {
+        if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to request favorite recipes of other user");
         }
-        return new UserFavoriteRecipesResponse(userService.getUserFavoriteRecipes(userId));
+        return new UserFavoriteRecipesIdsResponse(userService.getUserFavoriteRecipes(userId));
     }
 
     @POST
     @RolesAllowed({"admin", "user"})
     @Path("/{userId}/recipes/favorites")
-    public UserFavoriteRecipesResponse addUserFavoriteRecipe(
+    public UserFavoriteRecipesIdsResponse addUserFavoriteRecipe(
             @PathParam("userId") Long userId, @Valid @NotNull AddUserFavoriteRecipeRequest request) {
-        if (!Long.valueOf(jwt.getClaim("upn")).equals(userId)) {
+        if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to favorite recipes for others users");
         }
-        return new UserFavoriteRecipesResponse(userService.addUserFavoriteRecipe(userId, request.recipeId()));
+        return new UserFavoriteRecipesIdsResponse(userService.addUserFavoriteRecipe(userId, request.recipeId()));
     }
 
     @DELETE
     @RolesAllowed({"admin", "user"})
     @Path("/{userId}/recipes/favorites/{recipeId}")
-    public UserFavoriteRecipesResponse removeUserFavoriteRecipe(
+    public UserFavoriteRecipesIdsResponse removeUserFavoriteRecipe(
             @PathParam("userId") Long userId, @PathParam("recipeId") Long recipeId) {
-        if (!Long.valueOf(jwt.getClaim("upn")).equals(userId)) {
+        if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to favorite recipes for others users");
         }
-        return new UserFavoriteRecipesResponse(userService.removeUserFavoriteRecipe(userId, recipeId));
+        return new UserFavoriteRecipesIdsResponse(userService.removeUserFavoriteRecipe(userId, recipeId));
     }
 
     @POST

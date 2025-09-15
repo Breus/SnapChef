@@ -8,6 +8,7 @@ import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,16 @@ public class UserRepository implements PanacheRepository<UserAccountEntity> {
     @Inject
     public UserRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+    }
+
+    public List<Long> listFavoriteRecipeIds(Long userId) {
+        UserAccountEntity userAccountEntity = UserAccountEntity.findById(userId);
+        if (userAccountEntity == null) {
+            throw new IllegalArgumentException("No user found for the provided userId");
+        }
+        return userAccountEntity.favoriteRecipes.stream()
+                .map(recipe -> recipe.id)
+                .toList();
     }
 
     @Transactional

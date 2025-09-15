@@ -4,6 +4,7 @@ import dev.blaauwendraad.recipe_book.data.model.RecipeEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RecipeRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesFilter;
 import dev.blaauwendraad.recipe_book.service.model.Author;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
@@ -27,16 +28,40 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
-    public List<RecipeSummary> getAllRecipeSummaries() {
-        return recipeRepository.listAll().stream()
-                .map(recipeEntity -> new RecipeSummary(
-                        recipeEntity.id,
-                        recipeEntity.title,
-                        recipeEntity.description,
-                        recipeEntity.author == null
-                                ? null
-                                : new Author(recipeEntity.author.id, recipeEntity.author.username)))
-                .collect(Collectors.toList());
+    public List<RecipeSummary> getAllRecipeSummaries(
+            RecipeSummariesFilter recipeSummariesFilter, @Nullable Long userId) {
+        switch (recipeSummariesFilter) {
+            case ALL -> {
+                return recipeRepository.listAll().stream()
+                        .map(this::toRecipeSummary)
+                        .toList();
+            }
+            case MY -> {
+                if (userId == null) {
+                    throw new IllegalArgumentException("UserId must be provided when using the MY filter");
+                }
+                return recipeRepository.listRecipesAuthoredBy(userId).stream()
+                        .map(this::toRecipeSummary)
+                        .toList();
+            }
+            case FAVORITES -> {
+                if (userId == null) {
+                    throw new IllegalArgumentException("UserId must be provided when using the MY filter");
+                }
+                return recipeRepository.listRecipesByIds(userRepository.listFavoriteRecipeIds(userId)).stream()
+                        .map(this::toRecipeSummary)
+                        .toList();
+            }
+            case null, default -> throw new IllegalArgumentException("Invalid recipe summaries filter provided");
+        }
+    }
+
+    private RecipeSummary toRecipeSummary(RecipeEntity recipeEntity) {
+        return new RecipeSummary(
+                recipeEntity.id,
+                recipeEntity.title,
+                recipeEntity.description,
+                recipeEntity.author == null ? null : new Author(recipeEntity.author.id, recipeEntity.author.username));
     }
 
     @Nullable

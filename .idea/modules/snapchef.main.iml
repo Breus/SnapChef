@@ -5,4 +5,18 @@
       <sourceFolder url="file://$MODULE_DIR$/../../app/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
     </content>
   </component>
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping>
+          <factory-entry name="snapchef.main" value="1edff445-7c80-4c97-8329-39a0b2791640" />
+        </datasource-mapping>
+        <naming-strategy-map>
+          <unit-entry name="snapchef.main" />
+        </naming-strategy-map>
+      </configuration>
+    </facet>
+  </component>
 </module>

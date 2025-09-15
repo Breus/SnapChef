@@ -16,6 +16,17 @@ import java.util.List;
 @ApplicationScoped
 public class RecipeRepository implements PanacheRepository<RecipeEntity> {
 
+    public List<RecipeEntity> listRecipesAuthoredBy(Long userId) {
+        return getSession()
+                .createQuery("FROM RecipeEntity recipe WHERE recipe.author.id = :userId", RecipeEntity.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
+    public List<RecipeEntity> listRecipesByIds(List<Long> recipeIds) {
+        return list("id in ?1", recipeIds);
+    }
+
     @Transactional
     public Long persistRecipeEntity(
             @Nullable RecipeEntity existingRecipeEntity,

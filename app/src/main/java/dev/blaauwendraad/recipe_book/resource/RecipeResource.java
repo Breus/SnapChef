@@ -5,6 +5,7 @@ import dev.blaauwendraad.recipe_book.resource.model.PreparationStepDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeAuthorDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeDto;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeResponse;
+import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesFilter;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesResponse;
 import dev.blaauwendraad.recipe_book.resource.model.RecipeSummaryDto;
 import dev.blaauwendraad.recipe_book.resource.model.SaveRecipeRequestDto;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
@@ -46,11 +48,23 @@ public class RecipeResource {
     }
 
     @GET
-    @Path("/summaries")
+    @Path("/summaries/{filter}")
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public RecipeSummariesResponse getRecipeSummaries() {
-        return new RecipeSummariesResponse(recipeService.getAllRecipeSummaries().stream()
+    public RecipeSummariesResponse getRecipeSummaries(@PathParam("filter") RecipeSummariesFilter filter) {
+        String upn = jwt.getName();
+        Long userId = null;
+        if (upn == null) {
+            if (filter == RecipeSummariesFilter.MY) {
+                throw new ForbiddenException("Cannot access my recipes without user authentication");
+            }
+            if (filter == RecipeSummariesFilter.FAVORITES) {
+                throw new ForbiddenException("Cannot access favorite recipes without user authentication");
+            }
+        } else {
+            userId = Long.valueOf(upn);
+        }
+        return new RecipeSummariesResponse(recipeService.getAllRecipeSummaries(filter, userId).stream()
                 .map(recipeSummary -> new RecipeSummaryDto(
                         recipeSummary.id(),
                         recipeSummary.title(),
@@ -97,7 +111,7 @@ public class RecipeResource {
         Long recipeId = recipeService.createRecipe(
                 newRecipe.title(),
                 newRecipe.description(),
-                Long.valueOf(jwt.getClaim("upn")),
+                Long.valueOf(jwt.getName()),
                 newRecipe.ingredients().stream()
                         .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
                         .toList(),
@@ -118,7 +132,7 @@ public class RecipeResource {
                 recipeId,
                 updatedRecipe.title(),
                 updatedRecipe.description(),
-                Long.valueOf(jwt.getClaim("upn")),
+                Long.valueOf(jwt.getName()),
                 updatedRecipe.ingredients().stream()
                         .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
                         .toList(),
@@ -134,7 +148,7 @@ public class RecipeResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
     public Response deleteRecipe(@PathParam("recipeId") Long recipeId) {
-        recipeService.deleteRecipe(recipeId, Long.valueOf(jwt.getClaim("upn")));
+        recipeService.deleteRecipe(recipeId, Long.valueOf(jwt.getName()));
         return Response.noContent().build();
     }
 }
