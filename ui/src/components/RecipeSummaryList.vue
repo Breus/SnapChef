@@ -7,7 +7,6 @@ import AddRecipeCard from "./AddRecipeCard.vue";
 import { useAuth } from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
-const searchQuery = ref<string>("");
 const {userId, userName, authToken, logout} = useAuth();
 const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
@@ -23,17 +22,17 @@ const filterOptions = [
     {
         value: "ALL" as RecipeFilterType,
         label: "All Recipes",
-        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'/></svg>`
+        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path fill="none" stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'/></svg>`
     },
     {
         value: "MY" as RecipeFilterType,
         label: "My Recipes",
-        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.657 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z'/></svg>`
+        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path fill="none" stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.657 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z'/></svg>`
     },
     {
         value: "FAVORITES" as RecipeFilterType,
         label: "Favorites",
-        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'/></svg>`
+        icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path fill="none" stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'/></svg>`
     }
 ];
 
@@ -122,20 +121,6 @@ onMounted(() => {
             </div>
         </div>
         <div class="mx-auto mt-5 max-w-7xl px-4 sm:px-6 lg:px-8">
-            <!-- Search Bar -->
-            <!--            <div class="mx-auto mb-8 max-w-md">-->
-            <!--                <div class="relative">-->
-            <!--                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">-->
-            <!--                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
-            <!--                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
-            <!--                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>-->
-            <!--                        </svg>-->
-            <!--                    </div>-->
-            <!--                    <input v-model="searchQuery" type="text" placeholder="Search recipes, ingredients, or authors..."-->
-            <!--                           class="block w-full rounded-md border border-gray-300 bg-white py-2 pr-3 pl-10 leading-5 placeholder-gray-500 focus:border-blue-500 focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:outline-none"/>-->
-            <!--                </div>-->
-            <!--            </div>-->
-
             <div class="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
                 <button
                     v-for="option in filterOptions"
