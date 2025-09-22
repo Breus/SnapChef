@@ -379,5 +379,3 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/osx,vim,node,patch,vuejs,gradle,intellij,certificates,java
-
-.pgpass

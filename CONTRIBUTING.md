@@ -27,15 +27,8 @@
     - [Python 3.13](https://www.python.org/downloads/) (for local dev environment auto-setup scripts)
     - [pre-commit](https://pre-commit.com/#install) (for automatic, required code formatting)
 2. Run the `setup.py`, which will:
-    1. Install the pre-commit hooks
+    1. Install the required pre-commit hooks
     2. Generate a local RSA key pair for user authentication (JWT signing)
-    3. Copy the example `.env.example` file to `.env`. This file contains environment variables used by the application.
-       **Note**: You still need to modify the `.env` file with the correct credentials.
-    4. Copy the example `.pgpass.example` file to `.pgpass`. **Note**: You still need to modify the `.pgpass` file with
-       the
-       correct database credentials.
-3. Modify the generated `.env` and `.pgpass` files by entering the correct credentials. The other default values should
-   work for local development.
 
 ### Running with Docker Compose
 
@@ -98,10 +91,6 @@ pnpm dev
 ```
 
 The frontend will be available at http://localhost:5173.
-
-> **_Note:_** The UI application is configured to use environment variables from the `.env` file in the root directory
-> of the project. This means you only need to maintain a single `.env` file at the project root, which will be used by
-> both the backend and frontend applications.
 
 ## Packaging and Running the Application
 

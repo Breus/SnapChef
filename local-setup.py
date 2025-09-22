@@ -41,37 +41,10 @@ def install_precommit_hooks() -> None:
     print("Pre-commit hook (re)installed.")
 
 
-def copy_env_example_to_env() -> None:
-    env_example_path = Path(".env.example")
-    env_path = Path(".env")
-    if not env_path.exists():
-        if env_example_path.exists():
-            subprocess.run(["cp", str(env_example_path), str(env_path)], check=True)
-            print("Copied .env.example to .env")
-        else:
-            print(".env.example does not exist. Please create a .env file manually.")
-    else:
-        print(".env file already exists. Skipping copy.")
-
-
-def copy_pgpass_example_to_pgpass() -> None:
-    pgpass_example_path = Path(".pgpass.example")
-    pgpass_path = Path(".pgpass")
-    if not pgpass_path.exists():
-        if pgpass_example_path.exists():
-            subprocess.run(["cp", str(pgpass_example_path), str(pgpass_path)], check=True)
-            print("Copied .pgpass.example to .pgpass")
-        else:
-            print(".pgpass.example does not exist. Please create a .pgpass file manually.")
-    else:
-        print(".pgpass file already exists. Skipping copy.")
-
 def main() -> None:
     ensure_executed_from_repo_root()
     install_precommit_hooks()
     generate_rsa_key_pair_for_local_devl()
-    copy_env_example_to_env()
-    copy_pgpass_example_to_pgpass()
     print("Local development configuration completed!")
 
 

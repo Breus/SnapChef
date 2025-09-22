@@ -1,6 +1,6 @@
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_BASE_URL = "http://localhost:8080";
 
 // Types for HTTP client
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
