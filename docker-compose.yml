@@ -18,7 +18,6 @@ services:
       dockerfile: ./app/src/main/docker/Dockerfile.jvm
     container_name: quarkus_app
     environment:
-      QUARKUS_PROFILE: ${QUARKUS_PROFILE}
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/recipe_book
       QUARKUS_DATASOURCE_USERNAME: quarkus_user
       QUARKUS_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
