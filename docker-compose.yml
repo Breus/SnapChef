@@ -10,9 +10,7 @@ services:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./app/db/schema:/docker-entrypoint-initdb.d/schema
-      - ./app/db/000-init.sql:/docker-entrypoint-initdb.d/000-init.sql
-      - ./app/db/001-demo-data.sql:/docker-entrypoint-initdb.d/001-demo-data.sql
+      - ./app/db:/docker-entrypoint-initdb.d
 
   quarkus_app:
     build:
