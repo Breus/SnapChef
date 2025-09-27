@@ -12,7 +12,7 @@ const router = useRouter();
 const route = useRoute();
 const isEditMode = !!route.params.id;
 const recipeId = route.params.id as string | undefined;
-const {authToken} = authLocalState();
+const {accessToken} = authLocalState();
 
 // Form data
 const title = ref("");
@@ -88,16 +88,16 @@ const submitForm = async () => {
             preparationSteps: preparationSteps.value,
         };
 
-        if (!authToken || authToken.value === null) {
+        if (!accessToken || accessToken.value === null) {
             throw new Error("You must be logged in to create a recipe.");
         }
         let goToRecipeId: number;
         if (isEditMode && recipeId) {
             // Update existing recipe
-            await updateRecipe(Number(recipeId), newRecipe, authToken.value);
+            await updateRecipe(Number(recipeId), newRecipe, accessToken.value);
             goToRecipeId = Number(recipeId);
         } else {
-            goToRecipeId = await createRecipe(newRecipe, authToken.value);
+            goToRecipeId = await createRecipe(newRecipe, accessToken.value);
         }
         router.push(`/recipe/${goToRecipeId}`);
     } catch (err) {

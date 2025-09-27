@@ -14,10 +14,10 @@ export const getRecipeById = async (id: number): Promise<Recipe> => {
     }
 };
 
-export const createRecipe = async (recipe: RecipeCreateDto, authToken: string): Promise<number> => {
+export const createRecipe = async (recipe: RecipeCreateDto, accessToken: string): Promise<number> => {
     try {
         const headers = {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
         };
         const data = await post<CreateRecipeResponse>("recipes", recipe, { headers });
         return data.recipeId;
@@ -27,10 +27,10 @@ export const createRecipe = async (recipe: RecipeCreateDto, authToken: string): 
     }
 };
 
-export const updateRecipe = async (id: number, recipe: RecipeCreateDto, authToken: string): Promise<void> => {
+export const updateRecipe = async (id: number, recipe: RecipeCreateDto, accessToken: string): Promise<void> => {
     try {
         const headers = {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
         };
         await put<void>(`recipes/${id}`, recipe, { headers });
     } catch (error) {
@@ -39,10 +39,10 @@ export const updateRecipe = async (id: number, recipe: RecipeCreateDto, authToke
     }
 };
 
-export const deleteRecipeById = async (id: number, authToken: string): Promise<void> => {
+export const deleteRecipeById = async (id: number, accessToken: string): Promise<void> => {
     try {
         const headers = {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
         };
         await del<void>(`recipes/${id}`, { headers });
     } catch (error) {

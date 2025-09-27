@@ -85,7 +85,7 @@ class UserAuthenticationTest {
         Assertions.assertThat(authenticationDetails.userId()).isEqualTo(1L);
         Assertions.assertThat(authenticationDetails.username()).isEqualTo("breus-test");
         Assertions.assertThat(authenticationDetails.emailAddress()).isEqualTo(USER_EMAIL);
-        Assertions.assertThat(authenticationDetails.authToken()).isNotBlank();
+        Assertions.assertThat(authenticationDetails.accessToken()).isNotBlank();
         Assertions.assertThat(authenticationDetails.refreshToken()).isEqualTo(REFRESH_TOKEN);
     }
 

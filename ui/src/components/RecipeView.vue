@@ -15,7 +15,7 @@ const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
 
 const error = ref<string | null>(null);
-const {authToken, userId} = authLocalState();
+const {accessToken, userId} = authLocalState();
 const userFavorites = ref<number[]>([]);
 
 const fetchRecipe = async () => {
@@ -56,11 +56,11 @@ const deleteRecipe = async () => {
 const confirmDelete = async () => {
     if (!recipe.value) return;
     try {
-        if (!authToken || authToken.value === null) {
+        if (!accessToken || accessToken.value === null) {
             alert("You must be logged in to delete a recipe.");
             return;
         }
-        await deleteRecipeById(recipe.value.id, authToken.value);
+        await deleteRecipeById(recipe.value.id, accessToken.value);
         router.push("/");
     } catch (err) {
         alert("Failed to delete recipe.");
@@ -85,11 +85,11 @@ const clickFavoriteRecipe = async () => {
 
 const favoriteRecipe = async (recipeId: number) => {
     try {
-        if (!authToken || authToken.value === null || !userId || userId.value === null) {
+        if (!accessToken || accessToken.value === null || !userId || userId.value === null) {
             router.push("/login");
             return;
         }
-        userFavorites.value = await addRecipeToUserFavorites(userId.value, recipeId, authToken.value);
+        userFavorites.value = await addRecipeToUserFavorites(userId.value, recipeId, accessToken.value);
     } catch (err) {
         console.error("Failed to favorite recipe:", err);
         throw err;
@@ -98,11 +98,11 @@ const favoriteRecipe = async (recipeId: number) => {
 
 const unfavoriteRecipe = async (recipeId: number) => {
     try {
-        if (!authToken || authToken.value === null || !userId || userId.value === null) {
+        if (!accessToken || accessToken.value === null || !userId || userId.value === null) {
             router.push("/login");
             return;
         }
-        userFavorites.value = await removeRecipeFromUserFavorites(userId.value, recipeId, authToken.value);
+        userFavorites.value = await removeRecipeFromUserFavorites(userId.value, recipeId, accessToken.value);
     } catch (err) {
         console.error("Failed to unfavorite recipe:", err);
         throw err;
@@ -114,10 +114,10 @@ const fetchUserFavorites = async () => {
         return;
     }
     try {
-        if (!authToken || authToken.value === null) {
+        if (!accessToken || accessToken.value === null) {
             return; // do nothing if a user is not logged in
         }
-        userFavorites.value = await getUserFavoriteRecipesIds(userId.value, authToken.value);
+        userFavorites.value = await getUserFavoriteRecipesIds(userId.value, accessToken.value);
     } catch (err) {
         console.error("Failed to fetch favorites:", err);
     }

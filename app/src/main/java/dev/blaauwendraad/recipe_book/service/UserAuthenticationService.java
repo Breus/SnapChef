@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.service;
 
+import dev.blaauwendraad.recipe_book.data.model.RefreshTokenEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
@@ -63,15 +64,17 @@ public class UserAuthenticationService {
      */
     public AuthenticationDetails login(String emailAddress, String password) throws UserLoginException {
         UserAccount userAccount = validateCredentials(emailAddress, password);
+        RefreshTokenEntity refreshTokenEntity = createAndStoreRefreshToken(userAccount);
         return new AuthenticationDetails(
                 userAccount.id(),
                 userAccount.username(),
                 userAccount.emailAddress(),
-                createAuthToken(userAccount),
-                createAndStoreRefreshToken(userAccount));
+                createAccessToken(userAccount),
+                refreshTokenEntity.token,
+                Duration.between(Instant.now(), refreshTokenEntity.expiresAt).toSeconds());
     }
 
-    private String createAuthToken(UserAccount userAccount) {
+    private String createAccessToken(UserAccount userAccount) {
         return Jwt.issuer("https://snapchef.blaauwendraad.dev")
                 .upn(userAccount.id().toString())
                 .claim("email", userAccount.emailAddress())
@@ -81,12 +84,11 @@ public class UserAuthenticationService {
                 .sign();
     }
 
-    private String createAndStoreRefreshToken(UserAccount userAccount) {
+    private RefreshTokenEntity createAndStoreRefreshToken(UserAccount userAccount) {
         var userAccountEntity = userRepository.findById(userAccount.id());
         var refreshToken = generateRefreshToken();
         var expiryInstant = Instant.now().plus(REFRESH_TOKEN_EXPIRY_DURATION);
-        var refreshTokenEntity = refreshTokenRepository.addRefreshToken(userAccountEntity, refreshToken, expiryInstant);
-        return refreshTokenEntity.token;
+        return refreshTokenRepository.addRefreshToken(userAccountEntity, refreshToken, expiryInstant);
     }
 
     private String generateRefreshToken() {

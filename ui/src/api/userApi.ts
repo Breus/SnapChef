@@ -12,10 +12,10 @@ export const submitLogin = async (loginCredentials: LoginCredentials): Promise<A
     }
 };
 
-export const getUserFavoriteRecipesIds = async (userId: number, authToken: string): Promise<number[]> => {
+export const getUserFavoriteRecipesIds = async (userId: number, accessToken: string): Promise<number[]> => {
     try {
         const headers = {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
         };
         const data = await get<UserFavoritesResponse>(`users/${userId.toString()}/recipes/favorites`, {headers});
         return data.favoriteRecipesIds;
@@ -25,10 +25,10 @@ export const getUserFavoriteRecipesIds = async (userId: number, authToken: strin
     }
 };
 
-export const addRecipeToUserFavorites = async (userId: number, recipeId: number, authToken: string): Promise<number[]> => {
+export const addRecipeToUserFavorites = async (userId: number, recipeId: number, accessToken: string): Promise<number[]> => {
     try {
         const headers = {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
         };
         const data = await post<UserFavoritesResponse>(`users/${userId.toString()}/recipes/favorites`, {recipeId: recipeId}, {headers});
         return data.favoriteRecipesIds;
@@ -38,10 +38,10 @@ export const addRecipeToUserFavorites = async (userId: number, recipeId: number,
     }
 }
 
-export const removeRecipeFromUserFavorites = async (userId: number, recipeId: number, authToken: string): Promise<number[]> => {
+export const removeRecipeFromUserFavorites = async (userId: number, recipeId: number, accessToken: string): Promise<number[]> => {
     try {
         const headers = {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
         };
         const data = await del<UserFavoritesResponse>(`users/${userId.toString()}/recipes/favorites/${recipeId}`, {headers});
         return data.favoriteRecipesIds;

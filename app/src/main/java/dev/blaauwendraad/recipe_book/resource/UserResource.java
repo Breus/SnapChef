@@ -90,8 +90,9 @@ public class UserResource {
                 loginDetails.userId(),
                 loginDetails.username(),
                 loginDetails.emailAddress(),
-                loginDetails.authToken(),
-                loginDetails.refreshToken());
+                loginDetails.accessToken(),
+                loginDetails.refreshToken(),
+                loginDetails.refreshExpiresInSeconds());
     }
 
     @POST

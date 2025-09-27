@@ -3,15 +3,15 @@ import type RecipeSummariesResponse from "../models/dto/RecipeSummariesResponse.
 import { get } from "./httpClient.ts";
 
 export const getAllRecipeSummaries = async (recipeSummariesFilter: string,
-                                            authToken: string | null
+                                            accessToken: string | null
     ): Promise<RecipeSummary[]> => {
         try {
             const headers: Record<string, string> = {};
-            if (recipeSummariesFilter != "ALL" && !authToken) {
+            if (recipeSummariesFilter != "ALL" && !accessToken) {
                 throw new Error("Authentication token is required for this filter");
             }
-            if (authToken) {
-                headers.Authorization = `Bearer ${authToken}`;
+            if (accessToken) {
+                headers.Authorization = `Bearer ${accessToken}`;
             }
             const data = await get<RecipeSummariesResponse>(`recipes/summaries/${recipeSummariesFilter}`, {headers});
             return data.recipeSummaries;
