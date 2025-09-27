@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useAuth } from "../auth/useAuth";
+import { authLocalState } from "../auth/authLocalState.ts";
 
 defineProps(["recipeSummary"]);
-const { userId } = useAuth();
+const { userId } = authLocalState();
 </script>
 
 <template>

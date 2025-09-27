@@ -6,7 +6,8 @@ import dev.blaauwendraad.recipe_book.resource.model.LoginResponse;
 import dev.blaauwendraad.recipe_book.resource.model.UserFavoriteRecipesIdsResponse;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationResponse;
-import dev.blaauwendraad.recipe_book.service.UserService;
+import dev.blaauwendraad.recipe_book.service.UserAuthenticationService;
+import dev.blaauwendraad.recipe_book.service.UserFavoriteRecipesService;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
@@ -30,14 +31,18 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 @Path("/users")
 @ApplicationScoped
 public class UserResource {
-    private final UserService userService;
+    private final UserFavoriteRecipesService userFavoriteRecipesService;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Inject
     JsonWebToken jwt;
 
     @Inject
-    public UserResource(UserService userService) {
-        this.userService = userService;
+    public UserResource(
+            UserFavoriteRecipesService userFavoriteRecipesService,
+            UserAuthenticationService userAuthenticationService) {
+        this.userFavoriteRecipesService = userFavoriteRecipesService;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
     @GET
@@ -47,7 +52,7 @@ public class UserResource {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to request favorite recipes of other user");
         }
-        return new UserFavoriteRecipesIdsResponse(userService.getUserFavoriteRecipes(userId));
+        return new UserFavoriteRecipesIdsResponse(userFavoriteRecipesService.getUserFavoriteRecipes(userId));
     }
 
     @POST
@@ -58,7 +63,8 @@ public class UserResource {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to favorite recipes for others users");
         }
-        return new UserFavoriteRecipesIdsResponse(userService.addUserFavoriteRecipe(userId, request.recipeId()));
+        return new UserFavoriteRecipesIdsResponse(
+                userFavoriteRecipesService.addUserFavoriteRecipe(userId, request.recipeId()));
     }
 
     @DELETE
@@ -69,25 +75,30 @@ public class UserResource {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to favorite recipes for others users");
         }
-        return new UserFavoriteRecipesIdsResponse(userService.removeUserFavoriteRecipe(userId, recipeId));
+        return new UserFavoriteRecipesIdsResponse(
+                userFavoriteRecipesService.removeUserFavoriteRecipe(userId, recipeId));
     }
 
     @POST
     @PermitAll
     @Path("/login")
     public LoginResponse login(@Valid @NotNull LoginAttemptRequest loginAttemptRequest) throws UserLoginException {
-        AuthenticationDetails loginDetails = userService.login(
+        AuthenticationDetails loginDetails = userAuthenticationService.login(
                 loginAttemptRequest.loginCredentials().emailAddress(),
                 loginAttemptRequest.loginCredentials().password());
         return new LoginResponse(
-                loginDetails.userId(), loginDetails.username(), loginDetails.emailAddress(), loginDetails.authToken());
+                loginDetails.userId(),
+                loginDetails.username(),
+                loginDetails.emailAddress(),
+                loginDetails.authToken(),
+                loginDetails.refreshToken());
     }
 
     @POST
     @PermitAll
     public Response register(@Valid @NotNull UserRegistrationRequest registrationRequest)
             throws UserRegistrationException {
-        UserAccount userAccount = userService.registerUser(
+        UserAccount userAccount = userAuthenticationService.registerUser(
                 registrationRequest.username(), registrationRequest.emailAddress(), registrationRequest.password());
         return Response.created(URI.create("/users/" + userAccount.id()))
                 .entity(new UserRegistrationResponse(

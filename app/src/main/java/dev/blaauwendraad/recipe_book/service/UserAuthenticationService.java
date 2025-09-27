@@ -1,6 +1,7 @@
 package dev.blaauwendraad.recipe_book.service;
 
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
+import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
@@ -11,19 +12,25 @@ import dev.blaauwendraad.recipe_book.service.model.UserRole;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.List;
+import java.time.Instant;
+import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class UserService {
-    private final UserRepository userRepository;
+public class UserAuthenticationService {
+    private static final Duration AUTH_TOKEN_EXPIRY_DURATION = Duration.ofMinutes(15);
+    private static final Duration REFRESH_TOKEN_EXPIRY_DURATION = Duration.ofDays(30);
+    private static final Integer REFRESH_TOKEN_BYTE_SIZE = 64;
 
-    @Inject
-    public UserService(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    public UserAuthenticationService(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository) {
         this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     /**
@@ -43,11 +50,12 @@ public class UserService {
             throw new UserRegistrationValidationException("Username is already in use.");
         }
         String hashPassword = BcryptUtil.bcryptHash(password);
-        return toUserAccount(userRepository.createUser(username, hashPassword, emailAddress, Set.of(UserRole.user)));
+        return UserAccountConverter.toUserAccount(
+                userRepository.createUser(username, hashPassword, emailAddress, Set.of(UserRole.user)));
     }
 
     /**
-     * Logs in a user with the provided e-mail address and password and returns an authentication authToken.
+     * Logs in a user with the provided e-mail address and password and returns an authentication (JWT) token.
      *
      * @param emailAddress the e-mail address of the user
      * @param password     the password of the user
@@ -59,13 +67,33 @@ public class UserService {
                 userAccount.id(),
                 userAccount.username(),
                 userAccount.emailAddress(),
-                Jwt.issuer("https://snapchef.blaauwendraad.dev")
-                        .upn(userAccount.id().toString())
-                        .claim("email", userAccount.emailAddress())
-                        .claim("userName", userAccount.username())
-                        .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
-                        .expiresIn(Duration.ofMinutes(15))
-                        .sign());
+                createAuthToken(userAccount),
+                createAndStoreRefreshToken(userAccount));
+    }
+
+    private String createAuthToken(UserAccount userAccount) {
+        return Jwt.issuer("https://snapchef.blaauwendraad.dev")
+                .upn(userAccount.id().toString())
+                .claim("email", userAccount.emailAddress())
+                .claim("userName", userAccount.username())
+                .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
+                .expiresIn(AUTH_TOKEN_EXPIRY_DURATION)
+                .sign();
+    }
+
+    private String createAndStoreRefreshToken(UserAccount userAccount) {
+        var userAccountEntity = userRepository.findById(userAccount.id());
+        var refreshToken = generateRefreshToken();
+        var expiryInstant = Instant.now().plus(REFRESH_TOKEN_EXPIRY_DURATION);
+        var refreshTokenEntity = refreshTokenRepository.addRefreshToken(userAccountEntity, refreshToken, expiryInstant);
+        return refreshTokenEntity.token;
+    }
+
+    private String generateRefreshToken() {
+        var secureRandom = new SecureRandom();
+        var bytes = new byte[REFRESH_TOKEN_BYTE_SIZE];
+        secureRandom.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
     private UserAccount validateCredentials(String emailAddress, String password) throws UserLoginException {
@@ -76,38 +104,6 @@ public class UserService {
         if (!BcryptUtil.matches(password, userAccountEntity.passwordHash)) {
             throw new UserLoginException("Invalid password provided.");
         }
-        return toUserAccount(userAccountEntity);
-    }
-
-    private static UserAccount toUserAccount(UserAccountEntity userAccountEntity) {
-        return new UserAccount(
-                userAccountEntity.id,
-                userAccountEntity.username,
-                userAccountEntity.emailAddress,
-                userAccountEntity.passwordHash,
-                userAccountEntity.roles.stream()
-                        .map(role -> switch (role.roleName) {
-                            case admin -> UserRole.admin;
-                            case user -> UserRole.user;
-                        })
-                        .collect(Collectors.toSet()));
-    }
-
-    public List<Long> getUserFavoriteRecipes(Long userId) {
-        return userRepository.findById(userId).favoriteRecipes.stream()
-                .map(r -> r.id)
-                .toList();
-    }
-
-    public List<Long> addUserFavoriteRecipe(Long userId, Long recipeId) {
-        return userRepository.addFavoriteRecipe(userId, recipeId).favoriteRecipes.stream()
-                .map(r -> r.id)
-                .toList();
-    }
-
-    public List<Long> removeUserFavoriteRecipe(Long userId, Long recipeId) {
-        return userRepository.removeFavoriteRecipe(userId, recipeId).favoriteRecipes.stream()
-                .map(r -> r.id)
-                .toList();
+        return UserAccountConverter.toUserAccount(userAccountEntity);
     }
 }

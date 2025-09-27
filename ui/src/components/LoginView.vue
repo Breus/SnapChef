@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuth } from "../auth/useAuth.ts";
+import { authLocalState } from "../auth/authLocalState.ts";
 import { HttpError } from "../api/httpClient.ts";
 import { submitLogin } from "../api/userApi.ts";
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 import type LoginCredentials from "../auth/LoginCredentials.ts";
 
 const router = useRouter();
-const { login } = useAuth();
+const { login } = authLocalState();
 
 function isErrorResponse(obj: unknown): obj is ErrorResponseBody {
     if (typeof obj !== "object" || obj === null) return false;
