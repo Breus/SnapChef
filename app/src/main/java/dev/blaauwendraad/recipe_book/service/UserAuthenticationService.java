@@ -75,12 +75,25 @@ public class UserAuthenticationService {
                 Duration.between(Instant.now(), refreshTokenEntity.expiresAt).toSeconds());
     }
 
+    /**
+     * Creates a new access token using the provided refresh token.
+     * @param refreshToken the refresh token to use for token creation
+     * @return the new access token (JWT)
+     * @throws AccessTokenRefreshException if there is an error during token creation
+     */
     public String refreshAccessToken(String refreshToken) throws AccessTokenRefreshException {
         RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken);
         if (refreshTokenEntity == null) {
+            throw new AccessTokenRefreshException("Unknown refresh token provided.");
+        }
+        if (!refreshTokenEntity.valid) {
             throw new AccessTokenRefreshException("Invalid refresh token provided.");
         }
-        throw new UnsupportedOperationException("Not done yet");
+        if (refreshTokenEntity.expiresAt.isBefore(Instant.now())) {
+            throw new AccessTokenRefreshException("Refresh token has expired.");
+        }
+        var userAccount = UserAccountConverter.toUserAccount(refreshTokenEntity.user);
+        return createAccessToken(userAccount);
     }
 
     private String createAccessToken(UserAccount userAccount) {
