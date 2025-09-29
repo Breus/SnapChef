@@ -17,7 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-class UserResourceTest {
+class UserFavoriteRecipesResourceTest {
 
     @BeforeEach
     @Transactional
@@ -42,7 +42,7 @@ class UserResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .when()
-                .post("/users/register")
+                .post("/users/authn/register")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
@@ -58,7 +58,7 @@ class UserResourceTest {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .post("/users/register")
+                .post("/users/authn/register")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
 
@@ -70,7 +70,7 @@ class UserResourceTest {
                 .contentType(ContentType.JSON)
                 .body(duplicateRequest)
                 .when()
-                .post("/users/register")
+                .post("/users/authn/register")
                 .then()
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                 .body("title", is("Failed to register new user."))

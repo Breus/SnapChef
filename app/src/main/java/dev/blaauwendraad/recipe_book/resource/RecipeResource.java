@@ -34,8 +34,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-@Path("/recipes")
 @ApplicationScoped
+@Path("/recipes")
 public class RecipeResource {
     private final RecipeService recipeService;
 

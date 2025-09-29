@@ -5,7 +5,7 @@ import { del, get, post } from "./httpClient.ts";
 
 export const submitLogin = async (loginCredentials: LoginCredentials): Promise<AuthenticationDetails> => {
     try {
-        return await post("/users/login", {loginCredentials});
+        return await post("/users/authn/login", {loginCredentials});
     } catch (error) {
         console.error("Error logging in user:", error);
         throw error;
