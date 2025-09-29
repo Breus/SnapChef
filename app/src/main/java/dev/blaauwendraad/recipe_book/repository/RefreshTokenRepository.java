@@ -10,6 +10,10 @@ import java.time.Instant;
 @ApplicationScoped
 public class RefreshTokenRepository implements PanacheRepository<RefreshTokenEntity> {
 
+    public RefreshTokenEntity findByToken(String token) {
+        return find("token", token).firstResult();
+    }
+
     @Transactional
     public RefreshTokenEntity addRefreshToken(UserAccountEntity userAccountEntity, String token, Instant expiresAt) {
         RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();

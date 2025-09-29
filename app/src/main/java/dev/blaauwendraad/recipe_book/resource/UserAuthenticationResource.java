@@ -2,9 +2,12 @@ package dev.blaauwendraad.recipe_book.resource;
 
 import dev.blaauwendraad.recipe_book.resource.model.LoginAttemptRequest;
 import dev.blaauwendraad.recipe_book.resource.model.LoginResponse;
+import dev.blaauwendraad.recipe_book.resource.model.RefreshTokenRequest;
+import dev.blaauwendraad.recipe_book.resource.model.RefreshTokenResponse;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationResponse;
 import dev.blaauwendraad.recipe_book.service.UserAuthenticationService;
+import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
@@ -43,6 +46,14 @@ public class UserAuthenticationResource {
                 loginDetails.accessToken(),
                 loginDetails.refreshToken(),
                 loginDetails.refreshExpiresInSeconds());
+    }
+
+    @POST
+    @PermitAll
+    public RefreshTokenResponse refreshToken(@Valid @NotNull RefreshTokenRequest refreshTokenRequest)
+            throws AccessTokenRefreshException {
+        String newAccessToken = userAuthenticationService.refreshAccessToken(refreshTokenRequest.refreshToken());
+        return new RefreshTokenResponse(newAccessToken);
     }
 
     @POST

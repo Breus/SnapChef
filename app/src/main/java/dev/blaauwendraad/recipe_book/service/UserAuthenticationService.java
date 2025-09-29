@@ -4,6 +4,7 @@ import dev.blaauwendraad.recipe_book.data.model.RefreshTokenEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
@@ -72,6 +73,14 @@ public class UserAuthenticationService {
                 createAccessToken(userAccount),
                 refreshTokenEntity.token,
                 Duration.between(Instant.now(), refreshTokenEntity.expiresAt).toSeconds());
+    }
+
+    public String refreshAccessToken(String refreshToken) throws AccessTokenRefreshException {
+        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken);
+        if (refreshTokenEntity == null) {
+            throw new AccessTokenRefreshException("Invalid refresh token provided.");
+        }
+        throw new UnsupportedOperationException("Not done yet");
     }
 
     private String createAccessToken(UserAccount userAccount) {
