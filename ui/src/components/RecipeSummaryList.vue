@@ -7,7 +7,7 @@ import AddRecipeCard from "./AddRecipeCard.vue";
 import { authLocalState } from "../auth/authLocalState.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
-const {userId, userName, accessToken, logout} = authLocalState();
+const {userId, username, accessToken, logout} = authLocalState();
 const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
@@ -104,8 +104,8 @@ onMounted(() => {
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
                 <span class="text-2xl font-bold text-white tracking-tight">SnapChef</span>
                 <div>
-                    <template v-if="userId && userName && accessToken">
-                        <span class="mr-4 text-green-100">Logged in as {{ userName }}</span>
+                    <template v-if="userId && username && accessToken">
+                        <span class="mr-4 text-green-100">Logged in as {{ username }}</span>
                         <button @click="logout"
                                 class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
                             Log Out
@@ -158,7 +158,7 @@ onMounted(() => {
             <!-- Recipe Grid -->
             <div v-else-if="!showLoading && recipeSummaries.length > 0"
                  class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <AddRecipeCard :isLoggedIn="!!userName"/>
+                <AddRecipeCard :isLoggedIn="!!username"/>
                 <div v-for="recipeSummary in recipeSummaries" :key="recipeSummary.id"
                      class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
                     <RecipeSummaryComponent :recipeSummary="recipeSummary"/>

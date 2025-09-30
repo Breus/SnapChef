@@ -100,7 +100,7 @@ public class UserAuthenticationService {
         return Jwt.issuer("https://snapchef.blaauwendraad.dev")
                 .upn(userAccount.id().toString())
                 .claim("email", userAccount.emailAddress())
-                .claim("userName", userAccount.username())
+                .claim("username", userAccount.username())
                 .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
                 .expiresIn(AUTH_TOKEN_EXPIRY_DURATION)
                 .sign();

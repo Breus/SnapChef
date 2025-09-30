@@ -240,10 +240,10 @@ onMounted(async () => {
                     <div class="flex items-center text-sm text-gray-500">
                         <span class="mr-1">By </span>
                         <span v-if="recipe && recipe.author && recipe.author.userId == userId" class="font-medium">
-                            {{ recipe.author.userName }} (Me)
+                            {{ recipe.author.username }} (Me)
                         </span>
                         <span v-else-if="recipe && recipe.author" class="font-medium">
-                            {{ recipe.author.userName }}
+                            {{ recipe.author.username }}
                         </span>
                     </div>
                 </div>

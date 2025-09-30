@@ -50,6 +50,7 @@ public class UserAuthenticationResource {
 
     @POST
     @PermitAll
+    @Path("/refresh")
     public RefreshTokenResponse refreshToken(@Valid @NotNull RefreshTokenRequest refreshTokenRequest)
             throws AccessTokenRefreshException {
         String newAccessToken = userAuthenticationService.refreshAccessToken(refreshTokenRequest.refreshToken());
@@ -58,6 +59,7 @@ public class UserAuthenticationResource {
 
     @POST
     @PermitAll
+    @Path("/register")
     public Response register(@Valid @NotNull UserRegistrationRequest registrationRequest)
             throws UserRegistrationException {
         UserAccount userAccount = userAuthenticationService.registerUser(

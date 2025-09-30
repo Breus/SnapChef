@@ -15,9 +15,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 @QuarkusTest
-class UserFavoriteRecipesResourceTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class UserAuthenticationResourceTest {
 
     @BeforeEach
     @Transactional
@@ -46,7 +48,7 @@ class UserFavoriteRecipesResourceTest {
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
-                .body("userName", is("testuser"))
+                .body("username", is("testuser"))
                 .body("emailAddress", is("test@example.com"));
     }
 
@@ -62,7 +64,7 @@ class UserFavoriteRecipesResourceTest {
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
 
-        // Try to register second user with same userName
+        // Try to register second user with same username
         UserRegistrationRequest duplicateRequest =
                 new UserRegistrationRequest("testuser", "different@example.com", "Password123!");
 
