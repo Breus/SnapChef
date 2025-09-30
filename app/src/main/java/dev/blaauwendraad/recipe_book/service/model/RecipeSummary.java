@@ -7,5 +7,9 @@ public record RecipeSummary(
         String title,
         @Nullable String description,
         Integer numServings,
+<<<<<<< HEAD
         PreparationTime preparationTime,
+=======
+        @Nullable Integer preparationTime,
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
         @Nullable Author author) {}

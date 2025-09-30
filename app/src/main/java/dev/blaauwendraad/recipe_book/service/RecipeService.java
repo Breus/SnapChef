@@ -93,7 +93,11 @@ public class RecipeService {
             String title,
             String description,
             Integer numServings,
+<<<<<<< HEAD
             PreparationTime preparationTime,
+=======
+            Integer preparationTime,
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
             Long userId,
             List<Ingredient> ingredients,
             List<PreparationStep> preparationSteps) {
@@ -135,7 +139,11 @@ public class RecipeService {
             String title,
             String description,
             Integer numServings,
+<<<<<<< HEAD
             PreparationTime preparationTime,
+=======
+            Integer preparationTime,
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
             Long userId,
             List<Ingredient> ingredients,
             List<PreparationStep> preparationSteps) {

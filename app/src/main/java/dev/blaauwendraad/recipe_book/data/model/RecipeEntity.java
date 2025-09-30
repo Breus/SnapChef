@@ -39,10 +39,16 @@ public class RecipeEntity extends PanacheEntityBase {
     @SuppressWarnings("NullAway.Init")
     public Integer numServings;
 
+<<<<<<< HEAD
     @Enumerated(EnumType.STRING)
     @Column(name = "preparation_time")
     @SuppressWarnings("NullAway.Init")
     public PreparationTime preparationTime;
+=======
+    @Column(name = "preparation_time")
+    @Nullable
+    public Integer preparationTime;
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
 
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")

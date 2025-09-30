@@ -246,8 +246,14 @@ onMounted(async () => {
                                     <path fill-rule="evenodd" d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z" clip-rule="evenodd" />
                                 </svg>
                             </span>
+<<<<<<< HEAD
                             <span class="mr-1" v-if="recipe.author.userId == userId"> {{ recipe.author.username }} (Me)</span>
                             <span class="mr-1" v-else>{{ recipe.author.username }}</span>
+=======
+                            <span class="mr-1" v-if="recipe.author.userId == userId"> {{
+                                recipe.author.userName }} (Me)</span>
+                            <span class="mr-1" v-else>{{ recipe.author.userName }}</span>
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
                         </div>
                         <div class="flex items-center">
                             <span class="mr-1">
@@ -263,7 +269,11 @@ onMounted(async () => {
                                     <path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7.75-4.25a.75.75 0 0 0-1.5 0V8c0 .414.336.75.75.75h3.25a.75.75 0 0 0 0-1.5h-2.5v-3.5Z" clip-rule="evenodd" />
                                 </svg>
                             </span>
+<<<<<<< HEAD
                             <span class="mr-1">{{ PreparationTime[recipe.preparationTime] }}</span>
+=======
+                            <span class="mr-1">{{ recipe.preparationTime }} mins</span>
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
                         </div>
                     </div>
                 </div>

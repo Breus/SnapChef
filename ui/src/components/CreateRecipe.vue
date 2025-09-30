@@ -19,7 +19,11 @@ const {accessToken} = useAuth();
 const title = ref("");
 const description = ref("");
 const numServings = ref<number>(4);
+<<<<<<< HEAD
 const preparationTime = ref<PreparationTime>(PreparationTime.MIN_15_30);
+=======
+const preparationTime = ref<number | null>(null);
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
 const ingredients = ref<Ingredient[]>([{name: "", quantity: ""}]);
 const preparationSteps = ref<PreparationStep[]>([{description: ""}]);
 
@@ -85,12 +89,17 @@ const submitForm = async () => {
         if (preparationSteps.value.some((step) => !step.description.trim())) {
             throw new Error("All step fields must be filled");
         }
+<<<<<<< HEAD
         // Map the selected (label) preparationTime back to the enum key
         const preparationTimeKey = (Object.keys(PreparationTime) as Array<keyof typeof PreparationTime>).find(
             (k) => PreparationTime[k] === preparationTime.value
         );
         if (!preparationTimeKey) {
             throw new Error("A preparation time interval must be given");
+=======
+        if (preparationTime.value !== null && (preparationTime.value < 0 || preparationTime.value > 3600)) {
+            throw new Error("Preparation time must be between 0 and 3600 minutes");
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
         }
         if (numServings.value === null || numServings.value === undefined || numServings.value < 1 || numServings.value > 100) {
             throw new Error("Number of servings must be between 1 and 100");
@@ -100,7 +109,11 @@ const submitForm = async () => {
             title: title.value.trim(),
             description: description.value.trim(),
             numServings: numServings.value,
+<<<<<<< HEAD
             preparationTime: preparationTimeKey as PreparationTime,
+=======
+            preparationTime: preparationTime.value,
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
             ingredients: ingredients.value,
             preparationSteps: preparationSteps.value,
         };
@@ -199,6 +212,7 @@ const cancelEdit = () => {
                             <div class="flex flex-col sm:flex-row sm:space-x-6">
                                 <!-- Preparation Time -->
                                 <div class="sm:flex-1">
+<<<<<<< HEAD
                                     <label for="preparationTime" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Preparation time</label>
                                         <div class="flex items-center space-x-2">
                                             <select v-model="preparationTime" id="preparationTime"
@@ -206,12 +220,26 @@ const cancelEdit = () => {
                                                 <option v-for="(opt, idx) in Object.values(PreparationTime) as PreparationTime[]" :key="idx" :value="opt">{{ opt }}</option>
                                             </select>
                                         </div>
+=======
+                                    <label for="preparationTime"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Preparation time</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input v-model="preparationTime" type="number" id="preparationTime" min="0" max="3600"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 w-16"
+                                            placeholder="60">
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">mins</span>
+                                    </div>
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
                                 </div>
 
                                 <!-- Number of Servings -->
                                 <div class="mt-4 sm:mt-0 sm:flex-1">
                                     <label for="numServings"
+<<<<<<< HEAD
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. of servings</label>
+=======
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Servings</label>
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
                                     <div class="flex items-center space-x-2">
                                         <input v-model="numServings" type="number" id="numServings" min="1" max="100"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 w-16"
