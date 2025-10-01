@@ -1,3 +1,3 @@
 package dev.blaauwendraad.recipe_book.resource.model;
 
-public record RefreshTokenResponse(String accessToken) {}
+public record RefreshTokenResponse(String accessToken, Long expiresInSeconds) {}

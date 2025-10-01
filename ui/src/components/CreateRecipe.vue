@@ -6,13 +6,13 @@ import type Ingredient from "../models/domain/Ingredient.ts";
 import type PreparationStep from "../models/domain/PreparationStep.ts";
 import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 import type Recipe from "../models/domain/Recipe.ts";
-import { authLocalState } from "../auth/authLocalState.ts";
+import { useAuth } from "../auth/useAuth.ts";
 
 const router = useRouter();
 const route = useRoute();
 const isEditMode = !!route.params.id;
 const recipeId = route.params.id as string | undefined;
-const {accessToken} = authLocalState();
+const {accessToken} = useAuth();
 
 // Form data
 const title = ref("");

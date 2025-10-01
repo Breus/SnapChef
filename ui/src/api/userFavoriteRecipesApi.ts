@@ -1,16 +1,5 @@
-import type AuthenticationDetails from "../auth/AuthenticationDetails";
-import type LoginCredentials from "../auth/LoginCredentials";
 import type UserFavoritesResponse from "../models/dto/UserFavoritesResponse.ts";
 import { del, get, post } from "./httpClient.ts";
-
-export const submitLogin = async (loginCredentials: LoginCredentials): Promise<AuthenticationDetails> => {
-    try {
-        return await post("/users/authn/login", {loginCredentials});
-    } catch (error) {
-        console.error("Error logging in user:", error);
-        throw error;
-    }
-};
 
 export const getUserFavoriteRecipesIds = async (userId: number, accessToken: string): Promise<number[]> => {
     try {

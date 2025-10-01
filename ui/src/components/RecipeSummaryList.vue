@@ -4,10 +4,10 @@ import { getAllRecipeSummaries } from "../api/recipeSummaryApi.ts";
 import type RecipeSummary from "../models/domain/RecipeSummary.ts";
 import RecipeSummaryComponent from "./RecipeSummary.vue";
 import AddRecipeCard from "./AddRecipeCard.vue";
-import { authLocalState } from "../auth/authLocalState.ts";
+import { useAuth } from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
-const {userId, username, accessToken, logout} = authLocalState();
+const {userId, username, accessToken, logout} = useAuth();
 const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;

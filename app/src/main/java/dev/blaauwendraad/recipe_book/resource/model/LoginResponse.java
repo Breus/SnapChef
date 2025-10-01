@@ -5,5 +5,6 @@ public record LoginResponse(
         String username,
         String emailAddress,
         String accessToken,
+        Long expiresInSeconds,
         String refreshToken,
         Long refreshExpiresInSeconds) {}

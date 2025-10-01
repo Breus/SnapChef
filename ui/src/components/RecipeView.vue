@@ -2,8 +2,8 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { deleteRecipeById, getRecipeById } from "../api/recipeApi.ts";
-import { addRecipeToUserFavorites, getUserFavoriteRecipesIds, removeRecipeFromUserFavorites } from "../api/userApi.ts";
-import { authLocalState } from "../auth/authLocalState.ts";
+import { addRecipeToUserFavorites, getUserFavoriteRecipesIds, removeRecipeFromUserFavorites } from "../api/userFavoriteRecipesApi.ts";
+import { useAuth } from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 
 const route = useRoute();
@@ -15,7 +15,7 @@ const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
 
 const error = ref<string | null>(null);
-const {accessToken, userId} = authLocalState();
+const {accessToken, userId} = useAuth();
 const userFavorites = ref<number[]>([]);
 
 const fetchRecipe = async () => {

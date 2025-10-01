@@ -44,6 +44,7 @@ public class UserAuthenticationResource {
                 loginDetails.username(),
                 loginDetails.emailAddress(),
                 loginDetails.accessToken(),
+                loginDetails.expiresInSeconds(),
                 loginDetails.refreshToken(),
                 loginDetails.refreshExpiresInSeconds());
     }
@@ -53,8 +54,7 @@ public class UserAuthenticationResource {
     @Path("/refresh")
     public RefreshTokenResponse refreshToken(@Valid @NotNull RefreshTokenRequest refreshTokenRequest)
             throws AccessTokenRefreshException {
-        String newAccessToken = userAuthenticationService.refreshAccessToken(refreshTokenRequest.refreshToken());
-        return new RefreshTokenResponse(newAccessToken);
+        return userAuthenticationService.refreshAccessToken(refreshTokenRequest.refreshToken());
     }
 
     @POST

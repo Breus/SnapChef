@@ -3,6 +3,7 @@ export default interface AuthenticationDetails {
     username: string;
     emailAddress: string;
     accessToken: string;
+    expiresInSeconds: number;
     refreshToken: string;
     refreshExpiresInSeconds: number;
 }
