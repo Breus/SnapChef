@@ -1,4 +1,5 @@
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
+import { useAuth } from "../auth/useAuth";
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -10,6 +11,7 @@ export interface RequestConfig {
     params?: Record<string, string>;
     timeout?: number;
     signal?: AbortSignal;
+    auth?: "accessToken"; // Indicates that the request should include the access token from useAuth
 }
 
 export interface HttpClient {
@@ -65,7 +67,17 @@ const buildUrl = (path: string, params?: Record<string, string>): string => {
 class FetchHttpClient implements HttpClient {
     async request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T> {
         const mergedConfig = { ...defaultConfig, ...config };
-        const { headers, params, signal } = mergedConfig;
+        let { headers, params, signal, auth } = mergedConfig;
+
+        if (auth === "accessToken") {
+            const { accessToken } = useAuth();
+            if (accessToken.value) {
+                headers = {
+                    ...headers,
+                    Authorization: `Bearer ${accessToken.value}`,
+                };
+            }
+        }
 
         const url = buildUrl(path, params);
 
@@ -136,24 +148,8 @@ class FetchHttpClient implements HttpClient {
 
 // Create and export a singleton instance of the HTTP client
 export const httpClient = new FetchHttpClient();
-
-// Export individual methods for backward compatibility and convenience
-export const get = <T>(path: string, config?: RequestConfig): Promise<T> => {
-    return httpClient.get<T>(path, config);
-};
-
-export const post = <T>(path: string, data?: unknown, config?: RequestConfig): Promise<T> => {
-    return httpClient.post<T>(path, data, config);
-};
-
-export const put = <T>(path: string, data?: unknown, config?: RequestConfig): Promise<T> => {
-    return httpClient.put<T>(path, data, config);
-};
-
-export const del = <T>(path: string, config?: RequestConfig): Promise<T> => {
-    return httpClient.delete<T>(path, config);
-};
-
-export const patch = <T>(path: string, data?: unknown, config?: RequestConfig): Promise<T> => {
-    return httpClient.patch<T>(path, data, config);
-};
+export const get = httpClient.get.bind(httpClient);
+export const post = httpClient.post.bind(httpClient);
+export const put = httpClient.put.bind(httpClient);
+export const del = httpClient.delete.bind(httpClient);
+export const patch = httpClient.patch.bind(httpClient);
