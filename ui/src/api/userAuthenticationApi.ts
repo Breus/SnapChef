@@ -21,7 +21,7 @@ export const refreshAccessToken = async (refreshToken: string): Promise<RefreshT
     try {
         return await post("/users/authn/refresh", {refreshToken});
     } catch (error) {
-        console.error(error)
+        console.error(error);
         throw error;
     }
 };
