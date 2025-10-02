@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { authLocalState } from "../auth/authLocalState.ts";
+import { useAuth } from "../auth/useAuth.ts";
 import { HttpError } from "../api/httpClient.ts";
-import { submitLogin } from "../api/userApi.ts";
+import { submitLogin } from "../api/userAuthenticationApi.ts";
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 import type LoginCredentials from "../auth/LoginCredentials.ts";
 
 const router = useRouter();
-const {login} = authLocalState();
+const {login} = useAuth();
 
 function isErrorResponse(obj: unknown): obj is ErrorResponseBody {
     if (typeof obj !== "object" || obj === null) return false;
@@ -43,7 +43,7 @@ const submitForm = async () => {
         };
 
         let authDetails = await submitLogin(loginCredentials);
-        login(authDetails.userId, authDetails.username, authDetails.accessToken, authDetails.refreshToken, authDetails.refreshExpiresInSeconds);
+        login(authDetails.userId, authDetails.username, authDetails.accessToken, authDetails.expiresInSeconds, authDetails.refreshToken, authDetails.refreshExpiresInSeconds);
         // Navigate back to the homepage after successful login
         router.push("/");
     } catch (err) {

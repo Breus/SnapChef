@@ -7,7 +7,7 @@ export default interface Recipe {
     description: string;
     author: {
         userId: number;
-        userName: string;
+        username: string;
     };
     ingredients: Ingredient[];
     preparationSteps: PreparationStep[];

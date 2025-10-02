@@ -15,9 +15,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 @QuarkusTest
-class UserResourceTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class UserAuthenticationResourceTest {
 
     @BeforeEach
     @Transactional
@@ -42,11 +44,11 @@ class UserResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .when()
-                .post("/users/register")
+                .post("/users/authn/register")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
-                .body("userName", is("testuser"))
+                .body("username", is("testuser"))
                 .body("emailAddress", is("test@example.com"));
     }
 
@@ -58,11 +60,11 @@ class UserResourceTest {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .post("/users/register")
+                .post("/users/authn/register")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
 
-        // Try to register second user with same userName
+        // Try to register second user with same username
         UserRegistrationRequest duplicateRequest =
                 new UserRegistrationRequest("testuser", "different@example.com", "Password123!");
 
@@ -70,7 +72,7 @@ class UserResourceTest {
                 .contentType(ContentType.JSON)
                 .body(duplicateRequest)
                 .when()
-                .post("/users/register")
+                .post("/users/authn/register")
                 .then()
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                 .body("title", is("Failed to register new user."))

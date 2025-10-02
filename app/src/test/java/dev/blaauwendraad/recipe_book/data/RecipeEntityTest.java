@@ -6,6 +6,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -18,28 +19,12 @@ import org.testcontainers.utility.MountableFile;
 class RecipeEntityTest {
 
     public static class PostgresTestResource implements QuarkusTestResourceLifecycleManager {
-        private PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17");
+        private PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
+                .withStartupTimeout(Duration.ofSeconds(60)); // Add explicit timeout
 
         @Override
         public Map<String, String> start() {
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/000-init.sql"), "/docker-entrypoint-initdb.d/000-init.sql");
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/user_account.sql"),
-                    "/docker-entrypoint-initdb.d/schema/user_account.sql");
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/user_account_role.sql"),
-                    "/docker-entrypoint-initdb.d/schema/user_account_role.sql");
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/role.sql"), "/docker-entrypoint-initdb.d/schema/role.sql");
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/ingredient.sql"),
-                    "/docker-entrypoint-initdb.d/schema/ingredient.sql");
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/preparation_step.sql"),
-                    "/docker-entrypoint-initdb.d/schema/preparation_step.sql");
-            postgres.withCopyFileToContainer(
-                    MountableFile.forHostPath("db/schema/recipe.sql"), "/docker-entrypoint-initdb.d/schema/recipe.sql");
+            postgres.withCopyFileToContainer(MountableFile.forHostPath("db"), "/docker-entrypoint-initdb.d/");
             postgres.start();
             Map<String, String> config = new HashMap<>();
             config.put("quarkus.datasource.jdbc.url", postgres.getJdbcUrl());

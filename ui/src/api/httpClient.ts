@@ -1,4 +1,6 @@
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
+import { useAuth } from "../auth/useAuth";
+import { refreshAccessToken } from "./userAuthenticationApi";
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -10,14 +12,20 @@ export interface RequestConfig {
     params?: Record<string, string>;
     timeout?: number;
     signal?: AbortSignal;
+    auth?: "accessToken"; // Indicates that the request should include the access token from useAuth
 }
 
 export interface HttpClient {
     get<T>(path: string, config?: RequestConfig): Promise<T>;
+
     post<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+
     put<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+
     delete<T>(path: string, config?: RequestConfig): Promise<T>;
+
     patch<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+
     request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T>;
 }
 
@@ -64,14 +72,26 @@ const buildUrl = (path: string, params?: Record<string, string>): string => {
 // Implementation of the HTTP client
 class FetchHttpClient implements HttpClient {
     async request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T> {
-        const mergedConfig = { ...defaultConfig, ...config };
-        const { headers, params, signal } = mergedConfig;
+        const mergedConfig = {...defaultConfig, ...config};
+        let {headers, params, signal, auth} = mergedConfig;
+
+        if (auth === "accessToken") {
+            const authState = useAuth();
+            await authState.ensureFreshAccessToken(refreshAccessToken);
+            let tokenToUse = authState.accessToken.value;
+            if (tokenToUse) {
+                headers = {
+                    ...headers,
+                    Authorization: `Bearer ${tokenToUse}`,
+                };
+            }
+        }
 
         const url = buildUrl(path, params);
 
         const requestOptions: RequestInit = {
             method,
-            headers: { ...defaultConfig.headers, ...headers },
+            headers: {...defaultConfig.headers, ...headers},
             signal,
         };
 
@@ -136,24 +156,8 @@ class FetchHttpClient implements HttpClient {
 
 // Create and export a singleton instance of the HTTP client
 export const httpClient = new FetchHttpClient();
-
-// Export individual methods for backward compatibility and convenience
-export const get = <T>(path: string, config?: RequestConfig): Promise<T> => {
-    return httpClient.get<T>(path, config);
-};
-
-export const post = <T>(path: string, data?: unknown, config?: RequestConfig): Promise<T> => {
-    return httpClient.post<T>(path, data, config);
-};
-
-export const put = <T>(path: string, data?: unknown, config?: RequestConfig): Promise<T> => {
-    return httpClient.put<T>(path, data, config);
-};
-
-export const del = <T>(path: string, config?: RequestConfig): Promise<T> => {
-    return httpClient.delete<T>(path, config);
-};
-
-export const patch = <T>(path: string, data?: unknown, config?: RequestConfig): Promise<T> => {
-    return httpClient.patch<T>(path, data, config);
-};
+export const get = httpClient.get.bind(httpClient);
+export const post = httpClient.post.bind(httpClient);
+export const put = httpClient.put.bind(httpClient);
+export const del = httpClient.delete.bind(httpClient);
+export const patch = httpClient.patch.bind(httpClient);

@@ -4,6 +4,8 @@ import dev.blaauwendraad.recipe_book.data.model.RefreshTokenEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.resource.model.RefreshTokenResponse;
+import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
@@ -13,6 +15,7 @@ import dev.blaauwendraad.recipe_book.service.model.UserRole;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class UserAuthenticationService {
     private static final Duration AUTH_TOKEN_EXPIRY_DURATION = Duration.ofMinutes(15);
-    private static final Duration REFRESH_TOKEN_EXPIRY_DURATION = Duration.ofDays(30);
+    private static final Duration REFRESH_TOKEN_EXPIRY_DURATION = Duration.ofDays(365);
     private static final Integer REFRESH_TOKEN_BYTE_SIZE = 64;
 
     private final UserRepository userRepository;
@@ -70,16 +73,38 @@ public class UserAuthenticationService {
                 userAccount.username(),
                 userAccount.emailAddress(),
                 createAccessToken(userAccount),
+                AUTH_TOKEN_EXPIRY_DURATION.toSeconds(),
                 refreshTokenEntity.token,
                 Duration.between(Instant.now(), refreshTokenEntity.expiresAt).toSeconds());
+    }
+
+    /**
+     * Creates a new access token using the provided refresh token.
+     * @param refreshToken the refresh token to use for token creation
+     * @return the refresh token response
+     * @throws AccessTokenRefreshException if there is an error during token refresh
+     */
+    @Transactional
+    public RefreshTokenResponse refreshAccessToken(String refreshToken) throws AccessTokenRefreshException {
+        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken);
+        if (refreshTokenEntity == null) {
+            throw new AccessTokenRefreshException("Unknown refresh token provided.");
+        }
+        if (!refreshTokenEntity.valid) {
+            throw new AccessTokenRefreshException("Invalid refresh token provided.");
+        }
+        var userAccount = UserAccountConverter.toUserAccount(refreshTokenEntity.user);
+        String newAccessToken = createAccessToken(userAccount);
+        return new RefreshTokenResponse(newAccessToken, AUTH_TOKEN_EXPIRY_DURATION.toSeconds());
     }
 
     private String createAccessToken(UserAccount userAccount) {
         return Jwt.issuer("https://snapchef.blaauwendraad.dev")
                 .upn(userAccount.id().toString())
                 .claim("email", userAccount.emailAddress())
-                .claim("userName", userAccount.username())
+                .claim("username", userAccount.username())
                 .groups(userAccount.roles().stream().map(Enum::name).collect(Collectors.toSet()))
+                .issuedAt(Instant.now())
                 .expiresIn(AUTH_TOKEN_EXPIRY_DURATION)
                 .sign();
     }

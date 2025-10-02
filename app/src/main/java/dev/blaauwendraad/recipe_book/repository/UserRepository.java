@@ -83,7 +83,7 @@ public class UserRepository implements PanacheRepository<UserAccountEntity> {
 
     @Nullable
     public UserAccountEntity findByUsername(String username) {
-        return UserAccountEntity.find("userName", username).firstResult();
+        return UserAccountEntity.find("username", username).firstResult();
     }
 
     @Nullable

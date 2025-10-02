@@ -4,6 +4,6 @@ export default interface RecipeSummary {
     description: string;
     author: {
         userId: number;
-        userName: string;
+        username: string;
     };
 }
