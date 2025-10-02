@@ -1,5 +1,8 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
+import { Mutex } from "async-mutex";
 
+const refreshAccessTokenMutex = new Mutex();
+let refreshInProgress: Promise<void> | null = null;
 
 const storedUserId = localStorage.getItem("userId");
 const userId = ref<number | null>(storedUserId !== null ? parseInt(storedUserId) : null);
@@ -13,34 +16,26 @@ const accessTokenExpiry = ref<number | null>(storedAccessTokenExpiry !== null ? 
 const storedRefreshTokenExpiry = localStorage.getItem("refreshTokenExpiry");
 const refreshTokenExpiry = ref<number | null>(storedRefreshTokenExpiry !== null ? parseInt(storedRefreshTokenExpiry) : null);
 
-// Computed values to check if tokens are expired
-const isAccessTokenExpired = computed(() => {
-    if (!accessTokenExpiry.value) {
-        return true;
-    }
-    return Date.now() >= accessTokenExpiry.value;
-});
-
-const isRefreshTokenExpired = computed(() => {
-    if (!refreshTokenExpiry.value) return true;
-    return Date.now() >= refreshTokenExpiry.value;
-});
-
-// Need to refresh token 3 seconds before it expires
-const shouldRefreshToken = computed(() => {
+function shouldRefreshAccessToken(): boolean {
     if (!accessTokenExpiry.value) {
         return false;
     }
-    // Refresh 3 seconds before expiry
     return Date.now() >= (accessTokenExpiry.value - 3000);
-});
+}
+
+function refreshTokenIsExpired(): boolean {
+    if (!refreshTokenExpiry.value) {
+        return true;
+    }
+    return Date.now() >= (refreshTokenExpiry.value - 1000);
+}
 
 export function useAuth() {
     function login(userIdArg: number, userNameArg: string, accessTokenArg: string, accessExpiresInSeconds: number, refreshTokenArg: string,
                    refreshExpiresInSecondsArg: number) {
-        // Calculate actual expiry timestamps. Minus 3 seconds to account for potential clock skew and latency.
-        const accessExpiryTime = Date.now() + ((accessExpiresInSeconds - 3) * 1000);
-        const refreshExpiryTime = Date.now() + ((refreshExpiresInSecondsArg - 3) * 1000);
+        // Calculate actual expiry timestamps. Minus 2 seconds to account for potential clock skew and latency.
+        const accessExpiryTime = Date.now() + ((accessExpiresInSeconds - 2) * 1000);
+        const refreshExpiryTime = Date.now() + ((refreshExpiresInSecondsArg - 2) * 1000);
 
         // Store user info
         userId.value = userIdArg;
@@ -78,12 +73,53 @@ export function useAuth() {
      * Used when refreshing access tokens
      */
     function updateAccessToken(newAccessToken: string, expiresInSeconds: number) {
-        // Calculate actual expiry timestamp (with 3 seconds buffer for clock skew)
-        const accessExpiryTime = Date.now() + ((expiresInSeconds - 3) * 1000);
+        // Calculate the actual expiry timestamp (with a buffer of 2 seconds for clock drift and latency)
+        const accessExpiryTime = Date.now() + ((expiresInSeconds - 2) * 1000);
         accessToken.value = newAccessToken;
         localStorage.setItem("accessToken", newAccessToken);
         accessTokenExpiry.value = accessExpiryTime;
         localStorage.setItem("accessTokenExpiry", accessExpiryTime.toString());
+    }
+
+    async function ensureFreshAccessToken(
+        refreshAccessTokenFn: (refreshToken: string) => Promise<{
+            accessToken: string;
+            expiresInSeconds: number;
+        }>
+    ) {
+        if (!shouldRefreshAccessToken()) {
+            return;
+        }
+        if (refreshInProgress) {
+            await refreshInProgress;
+            return;
+        }
+        return refreshAccessTokenMutex.runExclusive(async () => {
+            if (!shouldRefreshAccessToken()) {
+                return;
+            }
+            if (refreshInProgress) {
+                await refreshInProgress;
+                return;
+            }
+            refreshInProgress = (async () => {
+                try {
+                    if (!refreshToken.value || refreshTokenIsExpired()) {
+                        logout();
+                        console.log("Token refresh failed: Refresh token is expired");
+                        return;
+                    }
+                    const response = await refreshAccessTokenFn(refreshToken.value);
+                    updateAccessToken(response.accessToken, response.expiresInSeconds);
+                } catch (error) {
+                    console.error("Token refresh failed:", error);
+                    throw error;
+                } finally {
+                    refreshInProgress = null;
+                }
+            })();
+            await refreshInProgress;
+        });
     }
 
     return {
@@ -91,11 +127,8 @@ export function useAuth() {
         username,
         accessToken,
         refreshToken,
-        isAccessTokenExpired,
-        isRefreshTokenExpired,
-        shouldRefreshToken,
         login,
         logout,
-        updateAccessToken
+        ensureFreshAccessToken
     };
 }

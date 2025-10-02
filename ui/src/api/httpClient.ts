@@ -1,5 +1,6 @@
 import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 import { useAuth } from "../auth/useAuth";
+import { refreshAccessToken } from "./userAuthenticationApi";
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -16,10 +17,15 @@ export interface RequestConfig {
 
 export interface HttpClient {
     get<T>(path: string, config?: RequestConfig): Promise<T>;
+
     post<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+
     put<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+
     delete<T>(path: string, config?: RequestConfig): Promise<T>;
+
     patch<T>(path: string, data?: unknown, config?: RequestConfig): Promise<T>;
+
     request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T>;
 }
 
@@ -66,15 +72,17 @@ const buildUrl = (path: string, params?: Record<string, string>): string => {
 // Implementation of the HTTP client
 class FetchHttpClient implements HttpClient {
     async request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T> {
-        const mergedConfig = { ...defaultConfig, ...config };
-        let { headers, params, signal, auth } = mergedConfig;
+        const mergedConfig = {...defaultConfig, ...config};
+        let {headers, params, signal, auth} = mergedConfig;
 
         if (auth === "accessToken") {
-            const { accessToken } = useAuth();
-            if (accessToken.value) {
+            const authState = useAuth();
+            await authState.ensureFreshAccessToken(refreshAccessToken);
+            let tokenToUse = authState.accessToken.value;
+            if (tokenToUse) {
                 headers = {
                     ...headers,
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${tokenToUse}`,
                 };
             }
         }
@@ -83,7 +91,7 @@ class FetchHttpClient implements HttpClient {
 
         const requestOptions: RequestInit = {
             method,
-            headers: { ...defaultConfig.headers, ...headers },
+            headers: {...defaultConfig.headers, ...headers},
             signal,
         };
 
