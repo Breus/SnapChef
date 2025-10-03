@@ -6,6 +6,7 @@ import dev.blaauwendraad.recipe_book.data.model.RecipeEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
+import dev.blaauwendraad.recipe_book.service.model.PreparationTime;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -33,6 +34,8 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
             UserAccountEntity userAccountEntity,
             String title,
             String description,
+            Integer numServings,
+            PreparationTime preparationTime,
             List<Ingredient> ingredients,
             List<PreparationStep> preparationSteps) {
         if (existingRecipeEntity != null) {
@@ -46,6 +49,9 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
         var recipeEntity = existingRecipeEntity != null ? existingRecipeEntity : new RecipeEntity();
         recipeEntity.title = title;
         recipeEntity.description = description;
+        recipeEntity.numServings = numServings;
+        recipeEntity.preparationTime = preparationTime;
+
         recipeEntity.author = userAccountEntity;
         List<IngredientEntity> ingredientsEntities = new ArrayList<>();
         for (int position = 0; position < ingredients.size(); position++) {
