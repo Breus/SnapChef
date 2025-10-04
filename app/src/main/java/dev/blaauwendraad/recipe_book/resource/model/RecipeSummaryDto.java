@@ -1,5 +1,12 @@
 package dev.blaauwendraad.recipe_book.resource.model;
 
+import dev.blaauwendraad.recipe_book.service.model.PreparationTime;
 import jakarta.annotation.Nullable;
 
-public record RecipeSummaryDto(Long id, String title, @Nullable String description, @Nullable RecipeAuthorDto author) {}
+public record RecipeSummaryDto(
+        Long id,
+        String title,
+        @Nullable String description,
+        Integer numServings,
+        PreparationTime preparationTime,
+        @Nullable RecipeAuthorDto author) {}

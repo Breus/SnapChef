@@ -1,10 +1,13 @@
 package dev.blaauwendraad.recipe_book.data.model;
 
+import dev.blaauwendraad.recipe_book.service.model.PreparationTime;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,6 +34,15 @@ public class RecipeEntity extends PanacheEntityBase {
     @Column(columnDefinition = "text")
     @Nullable
     public String description;
+
+    @Column(name = "num_servings")
+    @SuppressWarnings("NullAway.Init")
+    public Integer numServings;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "preparation_time")
+    @SuppressWarnings("NullAway.Init")
+    public PreparationTime preparationTime;
 
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
