@@ -51,6 +51,7 @@ class RecipeEntityTest {
         RecipeEntity recipe = new RecipeEntity();
         recipe.title = "Pasta";
         recipe.description = "Delicious pasta";
+        recipe.numServings = 4;
         recipe.author = user;
         recipe.persist();
 
