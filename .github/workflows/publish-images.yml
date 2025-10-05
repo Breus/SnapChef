@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 env:
-  GHCR_REPO: ghcr.io/breus
   VERSION: ${{ github.event.release.tag_name || github.sha }}
 
 jobs:
@@ -52,7 +51,7 @@ jobs:
       - name: Build and push Quarkus backend image
         uses: docker/build-push-action@v6
         with:
-          context: ./app
+          context: ./
           file: ./app/src/main/docker/Dockerfile.jvm
           push: true
           tags: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
