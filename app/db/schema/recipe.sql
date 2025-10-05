@@ -4,6 +4,11 @@ CREATE TABLE recipe
     title               VARCHAR(255) NOT NULL,
     description         TEXT,
     num_servings        INTEGER      NOT NULL,
+<<<<<<< HEAD
     preparation_time    VARCHAR      CHECK (preparation_time IN ('MIN_0_15', 'MIN_15_30', 'MIN_30_45', 'MIN_45_60', 'HOUR_PLUS')),
     author_id           BIGINT       NOT NULL REFERENCES user_account (id) ON DELETE SET NULL
+=======
+    preparation_time    INTEGER, -- in minutes
+    author_id           BIGINT       REFERENCES user_account (id) ON DELETE SET NULL
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
 );

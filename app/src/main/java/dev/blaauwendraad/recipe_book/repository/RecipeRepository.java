@@ -35,7 +35,11 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
             String title,
             String description,
             Integer numServings,
+<<<<<<< HEAD
             PreparationTime preparationTime,
+=======
+            @Nullable Integer preparationTime,
+>>>>>>> 8fafeab (Added preparation time and number of serving attributes for recipes)
             List<Ingredient> ingredients,
             List<PreparationStep> preparationSteps) {
         if (existingRecipeEntity != null) {

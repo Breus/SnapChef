@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import dev.blaauwendraad.recipe_book.data.model.RoleEntity;
 import dev.blaauwendraad.recipe_book.data.model.RoleName;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
+import dev.blaauwendraad.recipe_book.model.Filter;
 import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
@@ -48,8 +49,14 @@ public class UserAuthenticationResourceTest {
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
+<<<<<<< HEAD:app/src/test/java/dev/blaauwendraad/recipe_book/resource/UserAuthenticationResourceTest.java
                 .body("username", is("testuser"))
                 .body("emailAddress", is("test@example.com"));
+=======
+                .body("userName", is("testuser"))
+                .body("emailAddress", is("test@example.com"))
+                .body("defaultFilter", is(Filter.ALL));
+>>>>>>> 3dbb001 (Added default filter as attribute of users in the backend):app/src/test/java/dev/blaauwendraad/recipe_book/resource/UserResourceTest.java
     }
 
     @Test
