@@ -13,9 +13,16 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       packages: write
 
     steps:
+      - name: Validate required secrets
+        run: |
+          if [ -z "${{ secrets.VPS_HOST }}" ] || [ -z "${{ secrets.VPS_USER }}" ] || [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "Error: Missing required secrets for VPS deployment"
+            exit 1
+          fi
       - name: Checkout code
         uses: actions/checkout@v5
 
