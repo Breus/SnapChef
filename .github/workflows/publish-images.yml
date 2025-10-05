@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 env:
+  GHCR_REPO: ghcr.io/breus/snapchef
   VERSION: ${{ github.event.release.tag_name || github.sha }}
 
 jobs:
