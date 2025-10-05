@@ -7,6 +7,7 @@ import type PreparationStep from "../models/domain/PreparationStep.ts";
 import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 import { useAuth } from "../auth/useAuth.ts";
+import { PreparationTime } from "../models/domain/PreparationTime.ts";
 
 const router = useRouter();
 const route = useRoute();
@@ -17,6 +18,8 @@ const {accessToken} = useAuth();
 // Form data
 const title = ref("");
 const description = ref("");
+const numServings = ref<number>(4);
+const preparationTime = ref<PreparationTime>(PreparationTime.MIN_15_30);
 const ingredients = ref<Ingredient[]>([{name: "", quantity: ""}]);
 const preparationSteps = ref<PreparationStep[]>([{description: ""}]);
 
@@ -54,6 +57,8 @@ onMounted(async () => {
             const recipe: Recipe = await getRecipeById(Number(recipeId));
             title.value = recipe.title;
             description.value = recipe.description;
+            numServings.value = recipe.numServings;
+            preparationTime.value = recipe.preparationTime;
             ingredients.value = recipe.ingredients;
             preparationSteps.value = recipe.preparationSteps;
         } catch (err) {
@@ -80,10 +85,22 @@ const submitForm = async () => {
         if (preparationSteps.value.some((step) => !step.description.trim())) {
             throw new Error("All step fields must be filled");
         }
+        // Map the selected (label) preparationTime back to the enum key
+        const preparationTimeKey = (Object.keys(PreparationTime) as Array<keyof typeof PreparationTime>).find(
+            (k) => PreparationTime[k] === preparationTime.value
+        );
+        if (!preparationTimeKey) {
+            throw new Error("A preparation time interval must be given");
+        }
+        if (numServings.value === null || numServings.value === undefined || numServings.value < 1 || numServings.value > 100) {
+            throw new Error("Number of servings must be between 1 and 100");
+        }
 
         const newRecipe: RecipeCreateDto = {
             title: title.value.trim(),
             description: description.value.trim(),
+            numServings: numServings.value,
+            preparationTime: preparationTimeKey as PreparationTime,
             ingredients: ingredients.value,
             preparationSteps: preparationSteps.value,
         };
@@ -176,6 +193,33 @@ const cancelEdit = () => {
                             <textarea v-model="description" id="description" rows="3"
                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                       placeholder="Brief description of your recipe" required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex flex-col sm:flex-row sm:space-x-6">
+                                <!-- Preparation Time -->
+                                <div class="sm:flex-1">
+                                    <label for="preparationTime" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Preparation time</label>
+                                        <div class="flex items-center space-x-2">
+                                            <select v-model="preparationTime" id="preparationTime"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
+                                                <option v-for="(opt, idx) in Object.values(PreparationTime) as PreparationTime[]" :key="idx" :value="opt">{{ opt }}</option>
+                                            </select>
+                                        </div>
+                                </div>
+
+                                <!-- Number of Servings -->
+                                <div class="mt-4 sm:mt-0 sm:flex-1">
+                                    <label for="numServings"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. of servings</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input v-model="numServings" type="number" id="numServings" min="1" max="100"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 w-16"
+                                            placeholder="4">
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">servings</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

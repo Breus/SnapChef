@@ -8,6 +8,7 @@ import dev.blaauwendraad.recipe_book.resource.model.RecipeSummariesFilter;
 import dev.blaauwendraad.recipe_book.service.model.Author;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
+import dev.blaauwendraad.recipe_book.service.model.PreparationTime;
 import dev.blaauwendraad.recipe_book.service.model.Recipe;
 import dev.blaauwendraad.recipe_book.service.model.RecipeSummary;
 import jakarta.annotation.Nullable;
@@ -46,7 +47,7 @@ public class RecipeService {
             }
             case FAVORITES -> {
                 if (userId == null) {
-                    throw new IllegalArgumentException("UserId must be provided when using the MY filter");
+                    throw new IllegalArgumentException("UserId must be provided when using the FAVORITES filter");
                 }
                 return recipeRepository.listRecipesByIds(userRepository.listFavoriteRecipeIds(userId)).stream()
                         .map(this::toRecipeSummary)
@@ -61,6 +62,8 @@ public class RecipeService {
                 recipeEntity.id,
                 recipeEntity.title,
                 recipeEntity.description,
+                recipeEntity.numServings,
+                recipeEntity.preparationTime,
                 recipeEntity.author == null ? null : new Author(recipeEntity.author.id, recipeEntity.author.username));
     }
 
@@ -74,6 +77,8 @@ public class RecipeService {
                 recipeEntity.id,
                 recipeEntity.title,
                 recipeEntity.description,
+                recipeEntity.numServings,
+                recipeEntity.preparationTime,
                 recipeEntity.author == null ? null : new Author(recipeEntity.author.id, recipeEntity.author.username),
                 recipeEntity.ingredients.stream()
                         .map(ingredient -> new Ingredient(ingredient.name, ingredient.quantity))
@@ -87,6 +92,8 @@ public class RecipeService {
     public Long createRecipe(
             String title,
             String description,
+            Integer numServings,
+            PreparationTime preparationTime,
             Long userId,
             List<Ingredient> ingredients,
             List<PreparationStep> preparationSteps) {
@@ -95,7 +102,14 @@ public class RecipeService {
             throw new IllegalArgumentException("Author with userId " + userId + " does not exist");
         }
         return recipeRepository.persistRecipeEntity(
-                null, userAccountEntity, title, description, ingredients, preparationSteps);
+                null,
+                userAccountEntity,
+                title,
+                description,
+                numServings,
+                preparationTime,
+                ingredients,
+                preparationSteps);
     }
 
     @Transactional
@@ -120,6 +134,8 @@ public class RecipeService {
             Long recipeId,
             String title,
             String description,
+            Integer numServings,
+            PreparationTime preparationTime,
             Long userId,
             List<Ingredient> ingredients,
             List<PreparationStep> preparationSteps) {
@@ -136,6 +152,13 @@ public class RecipeService {
                     "User with userId " + userId + " is not the author of the recipe with recipeId " + recipeId);
         }
         recipeRepository.persistRecipeEntity(
-                existingRecipeEntity, existingRecipeEntity.author, title, description, ingredients, preparationSteps);
+                existingRecipeEntity,
+                existingRecipeEntity.author,
+                title,
+                description,
+                numServings,
+                preparationTime,
+                ingredients,
+                preparationSteps);
     }
 }

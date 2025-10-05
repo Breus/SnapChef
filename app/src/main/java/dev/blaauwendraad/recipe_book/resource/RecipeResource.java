@@ -69,6 +69,8 @@ public class RecipeResource {
                         recipeSummary.id(),
                         recipeSummary.title(),
                         recipeSummary.description(),
+                        recipeSummary.numServings(),
+                        recipeSummary.preparationTime(),
                         recipeSummary.author() == null
                                 ? null
                                 : new RecipeAuthorDto(
@@ -84,13 +86,15 @@ public class RecipeResource {
     public RecipeResponse getRecipe(@PathParam("recipeId") Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
         if (recipe == null) {
-            throw new NotFoundException("Recipe not found with userId: " + id);
+            throw new NotFoundException("Recipe not found with recipeId: " + id);
         }
 
         return new RecipeResponse(new RecipeDto(
                 recipe.id(),
                 recipe.title(),
                 recipe.description(),
+                recipe.numServings(),
+                recipe.preparationTime(),
                 recipe.author() == null
                         ? null
                         : new RecipeAuthorDto(
@@ -111,6 +115,8 @@ public class RecipeResource {
         Long recipeId = recipeService.createRecipe(
                 newRecipe.title(),
                 newRecipe.description(),
+                newRecipe.numServings(),
+                newRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
                 newRecipe.ingredients().stream()
                         .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
@@ -132,6 +138,8 @@ public class RecipeResource {
                 recipeId,
                 updatedRecipe.title(),
                 updatedRecipe.description(),
+                updatedRecipe.numServings(),
+                updatedRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
                 updatedRecipe.ingredients().stream()
                         .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
