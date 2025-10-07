@@ -84,15 +84,33 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v6
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          context: ./ui
-          file: ./ui/Dockerfile
-          push: true
-          tags: ${{ env.GHCR_REPO }}/frontend:${{ env.VERSION }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+          cache-dependency-path: 'ui/pnpm-lock.yaml'
+
+      - name: Install UI dependencies
+        run: |
+          cd ui
+          pnpm install
+
+      - name: Build frontend
+        run: |
+          cd ui
+          pnpm build
+          echo "Frontend build output:"
+          ls -la dist/
+
+      - name: Copy frontend to Quarkus static resources
+        run: |
+          cp -r ui/dist/* app/src/main/resources/META-INF/resources/
 
       - name: Create production docker-compose file for release
         run: |
@@ -120,12 +138,6 @@ jobs:
                 - "8080:8080"
               depends_on:
                 - postgres
-            frontend:
-              image: ${{ env.GHCR_REPO }}/frontend:${{ env.VERSION }}
-              ports:
-                - "80:80"
-              depends_on:
-                - quarkus_app
           volumes:
             pg_data:
           EOF
@@ -147,7 +159,6 @@ jobs:
             docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} -p ${{ secrets.GHCR_PAT }}
             docker pull ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}
             docker pull ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
-            docker pull ${{ env.GHCR_REPO }}/frontend:${{ env.VERSION }}
 
             # Write docker-compose.prod.yml
             cat > docker-compose.prod.yml << EOF
@@ -174,12 +185,6 @@ jobs:
                   - "8080:8080"
                 depends_on:
                   - postgres
-              frontend:
-                image: ${{ env.GHCR_REPO }}/frontend:${{ env.VERSION }}
-                ports:
-                  - "80:80"
-                depends_on:
-                  - quarkus_app
             volumes:
               pg_data:
             EOF
