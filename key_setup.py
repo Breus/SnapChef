@@ -3,13 +3,7 @@ import sys
 from pathlib import Path
 
 
-def ensure_executed_from_repo_root():
-    if not (Path(".git").is_dir() and Path("app").is_dir()):
-        print("Please run this script from the repository root directory.")
-        sys.exit(1)
-
-
-def generate_rsa_key_pair_for_local_devl() -> None:
+def generate_rsa_key_pair_for_local_dev() -> None:
     resources_dir = Path("app/src/main/resources")
     private_key_path = resources_dir / "privateKey.pem"
     public_key_path = resources_dir / "META-INF/publicKey.pem"
@@ -36,17 +30,14 @@ def generate_rsa_key_pair_for_local_devl() -> None:
     print(f"Public key extracted to {public_key_path}")
 
 
-def install_precommit_hooks() -> None:
-    subprocess.run(["pre-commit", "install"], check=True)
-    print("Pre-commit hook (re)installed.")
-
-
-def main() -> None:
-    ensure_executed_from_repo_root()
-    install_precommit_hooks()
-    generate_rsa_key_pair_for_local_devl()
-    print("Local development configuration completed!")
+def ensure_repo_root() -> bool:
+    """Check if the script is being run from the repository root directory."""
+    return Path(".git").is_dir() and Path("app").is_dir()
 
 
 if __name__ == "__main__":
-    main()
+    if not ensure_repo_root():
+        print("Please run this script from the repository root directory.")
+        sys.exit(1)
+    generate_rsa_key_pair_for_local_dev()
+    print("RSA key pair setup completed!")
