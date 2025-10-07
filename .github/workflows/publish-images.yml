@@ -42,10 +42,9 @@ jobs:
 
       - name: Prepare folders and generate keys
         run: |
-          cd app
-          python3 local-setup.py
+          python3 ./key_setup.py
           echo "Keys generated:"
-          ls -la src/main/resources/META-INF/
+          ls -la app/src/main/resources/META-INF/
 
       - name: Run Tests
         run: |
