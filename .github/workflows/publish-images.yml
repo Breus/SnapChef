@@ -85,16 +85,9 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'pnpm'
-          cache-dependency-path: 'ui/pnpm-lock.yaml'
+          version: 10
 
       - name: Install UI dependencies
         run: |
