@@ -2,7 +2,7 @@ name: Publish Docker Images to VPS
 
 on:
   release:
-    types: [created]
+    types: [ created ]
   workflow_dispatch:
 
 env:
@@ -74,16 +74,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push Quarkus backend image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./
-          file: ./app/src/main/docker/Dockerfile.jvm
-          push: true
-          tags: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -101,9 +91,20 @@ jobs:
           echo "Frontend build output:"
           ls -la dist/
 
-      - name: Copy frontend to Quarkus static resources
+      - name: Copy frontend to Quarkus static resources directory and create directory
         run: |
+          mkdir -p app/src/main/resources/META-INF/resources/
           cp -r ui/dist/* app/src/main/resources/META-INF/resources/
+
+      - name: Build and push Quarkus backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          file: ./app/src/main/docker/Dockerfile.jvm
+          push: true
+          tags: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Create production docker-compose file for release
         run: |
