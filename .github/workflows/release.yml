@@ -1,4 +1,4 @@
-name: Publish Docker Images to VPS
+name: Release to snapchef.blaauwendraad.dev
 
 on:
   release:
