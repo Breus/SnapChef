@@ -26,6 +26,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install UI dependencies
+        run: |
+          cd ui
+          pnpm install
+
+      - name: Build frontend
+        run: |
+          cd ui
+          pnpm build
+          echo "Frontend build output:"
+          ls -la dist/
+
+      - name: Copy frontend to Quarkus static resources directory and create directory
+        run: |
+          mkdir -p app/src/main/resources/META-INF/resources/
+          cp -r ui/dist/* app/src/main/resources/META-INF/resources/
+          ls -la app/src/main/resources/META-INF/resources/
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -73,28 +96,6 @@ jobs:
             POSTGRES_DB=recipe_book
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Install UI dependencies
-        run: |
-          cd ui
-          pnpm install
-
-      - name: Build frontend
-        run: |
-          cd ui
-          pnpm build
-          echo "Frontend build output:"
-          ls -la dist/
-
-      - name: Copy frontend to Quarkus static resources directory and create directory
-        run: |
-          mkdir -p app/src/main/resources/META-INF/resources/
-          cp -r ui/dist/* app/src/main/resources/META-INF/resources/
 
       - name: Build and push Quarkus backend image
         uses: docker/build-push-action@v6
