@@ -13,7 +13,7 @@ export default defineConfig({
         tailwindcss(),
         checker({
             stylelint: {
-                lintCommand: 'stylelint "./src/**/*.{css,scss,vue}"',
+                lintCommand: 'stylelint "**/*.{css,scss,vue}"',
                 watchPath: "./src",
             },
             typescript: true,
