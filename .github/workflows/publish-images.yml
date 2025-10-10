@@ -127,9 +127,9 @@ jobs:
                 QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/recipe_book
                 QUARKUS_DATASOURCE_USERNAME: quarkus_user
                 QUARKUS_DATASOURCE_PASSWORD: \${POSTGRES_PASSWORD}
-                QUARKUS_HTTP_PORT: 8080
+                QUARKUS_HTTP_PORT: 8081
               ports:
-                - "8080:8080"
+                - "8081:8081"
               depends_on:
                 - postgres
           volumes:
@@ -149,13 +149,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            # Pull latest images
-            docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} -p ${{ secrets.GHCR_PAT }}
-            docker pull ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}
-            docker pull ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
-
-            # Write docker-compose.prod.yml
-            cat > docker-compose.prod.yml << EOF
+            mkdir -p /opt/snapchef
+            # Write docker-compose.prod.yml to /opt/snapchef
+            cat > /opt/snapchef/docker-compose.prod.yml << EOF
             version: '3.9'
             services:
               postgres:
@@ -174,14 +170,16 @@ jobs:
                   QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/recipe_book
                   QUARKUS_DATASOURCE_USERNAME: quarkus_user
                   QUARKUS_DATASOURCE_PASSWORD: \${POSTGRES_PASSWORD}
-                  QUARKUS_HTTP_PORT: 8080
+                  QUARKUS_HTTP_PORT: 8081
                 ports:
-                  - "8080:8080"
+                  - "8081:8081"
                 depends_on:
                   - postgres
             volumes:
               pg_data:
             EOF
-
-            # Start or restart containers
-            docker compose up -d
+            cd /opt/snapchef
+            docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} -p ${{ secrets.GHCR_PAT }}
+            docker pull ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}
+            docker pull ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
+            docker compose -p snapchef -f docker-compose.prod.yml up -d
