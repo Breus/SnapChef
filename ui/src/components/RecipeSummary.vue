@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useAuth } from "../auth/useAuth.ts";
 import { PreparationTime } from "../models/domain/PreparationTime.ts";
+import type RecipeSummary from "../models/domain/RecipeSummary.ts";
 
-defineProps(["recipeSummary"]);
+defineProps<{ recipeSummary: RecipeSummary }>();
+
 const { userId } = useAuth();
 </script>
 
@@ -43,7 +45,7 @@ const { userId } = useAuth();
                             <path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7.75-4.25a.75.75 0 0 0-1.5 0V8c0 .414.336.75.75.75h3.25a.75.75 0 0 0 0-1.5h-2.5v-3.5Z" clip-rule="evenodd" />
                         </svg>
                     </span>
-                    <span class="mr-1">{{ PreparationTime[recipeSummary.preparationTime] }}</span>
+                    <span class="mr-1">{{ PreparationTime[recipeSummary.preparationTime as keyof typeof PreparationTime] }}</span>
                 </div>
             </div>
         </div>

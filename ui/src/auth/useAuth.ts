@@ -81,6 +81,14 @@ export function useAuth() {
         localStorage.setItem("accessTokenExpiry", accessExpiryTime.toString());
     }
 
+
+    /**
+     * Checks if the user is logged in by verifying that userId and accessToken are non-null
+     */
+    function isLoggedIn() {
+        return userId.value !== null && accessToken.value !== null;
+    }
+
     async function ensureFreshAccessToken(
         refreshAccessTokenFn: (refreshToken: string) => Promise<{
             accessToken: string;
@@ -127,6 +135,7 @@ export function useAuth() {
         username,
         accessToken,
         refreshToken,
+        isLoggedIn,
         login,
         logout,
         ensureFreshAccessToken

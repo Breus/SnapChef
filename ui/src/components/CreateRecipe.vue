@@ -13,7 +13,7 @@ const router = useRouter();
 const route = useRoute();
 const isEditMode = !!route.params.id;
 const recipeId = route.params.id as string | undefined;
-const {accessToken} = useAuth();
+const {isLoggedIn} = useAuth();
 
 // Form data
 const title = ref("");
@@ -105,16 +105,16 @@ const submitForm = async () => {
             preparationSteps: preparationSteps.value,
         };
 
-        if (!accessToken || accessToken.value === null) {
+        if (!isLoggedIn()) {
             throw new Error("You must be logged in to create a recipe.");
         }
         let goToRecipeId: number;
         if (isEditMode && recipeId) {
             // Update existing recipe
-            await updateRecipe(Number(recipeId), newRecipe, accessToken.value);
+            await updateRecipe(Number(recipeId), newRecipe);
             goToRecipeId = Number(recipeId);
         } else {
-            goToRecipeId = await createRecipe(newRecipe, accessToken.value);
+            goToRecipeId = await createRecipe(newRecipe);
         }
         router.push(`/recipe/${goToRecipeId}`);
     } catch (err) {
@@ -199,23 +199,29 @@ const cancelEdit = () => {
                             <div class="flex flex-col sm:flex-row sm:space-x-6">
                                 <!-- Preparation Time -->
                                 <div class="sm:flex-1">
-                                    <label for="preparationTime" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Preparation time</label>
-                                        <div class="flex items-center space-x-2">
-                                            <select v-model="preparationTime" id="preparationTime"
+                                    <label for="preparationTime"
+                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Preparation
+                                        time</label>
+                                    <div class="flex items-center space-x-2">
+                                        <select v-model="preparationTime" id="preparationTime"
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
-                                                <option v-for="(opt, idx) in Object.values(PreparationTime) as PreparationTime[]" :key="idx" :value="opt">{{ opt }}</option>
-                                            </select>
-                                        </div>
+                                            <option
+                                                v-for="(opt, idx) in Object.values(PreparationTime) as PreparationTime[]"
+                                                :key="idx" :value="opt">{{ opt }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <!-- Number of Servings -->
                                 <div class="mt-4 sm:mt-0 sm:flex-1">
                                     <label for="numServings"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. of servings</label>
+                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. of
+                                        servings</label>
                                     <div class="flex items-center space-x-2">
                                         <input v-model="numServings" type="number" id="numServings" min="1" max="100"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 w-16"
-                                            placeholder="4">
+                                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 w-16"
+                                               placeholder="4">
                                         <span class="text-sm text-gray-700 dark:text-gray-300">servings</span>
                                     </div>
                                 </div>

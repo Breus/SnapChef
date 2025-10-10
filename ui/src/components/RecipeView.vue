@@ -61,7 +61,7 @@ const confirmDelete = async () => {
             alert("You must be logged in to delete a recipe.");
             return;
         }
-        await deleteRecipeById(recipe.value.id, accessToken.value);
+        await deleteRecipeById(recipe.value.id);
         router.push("/");
     } catch (err) {
         alert("Failed to delete recipe.");
@@ -90,7 +90,7 @@ const favoriteRecipe = async (recipeId: number) => {
             router.push("/login");
             return;
         }
-        userFavorites.value = await addRecipeToUserFavorites(userId.value, recipeId, accessToken.value);
+        userFavorites.value = await addRecipeToUserFavorites(userId.value, recipeId);
     } catch (err) {
         console.error("Failed to favorite recipe:", err);
         throw err;
@@ -103,7 +103,7 @@ const unfavoriteRecipe = async (recipeId: number) => {
             router.push("/login");
             return;
         }
-        userFavorites.value = await removeRecipeFromUserFavorites(userId.value, recipeId, accessToken.value);
+        userFavorites.value = await removeRecipeFromUserFavorites(userId.value, recipeId);
     } catch (err) {
         console.error("Failed to unfavorite recipe:", err);
         throw err;
@@ -118,7 +118,7 @@ const fetchUserFavorites = async () => {
         if (!accessToken || accessToken.value === null) {
             return; // do nothing if a user is not logged in
         }
-        userFavorites.value = await getUserFavoriteRecipesIds(userId.value, accessToken.value);
+        userFavorites.value = await getUserFavoriteRecipesIds(userId.value);
     } catch (err) {
         console.error("Failed to fetch favorites:", err);
     }
@@ -238,7 +238,7 @@ onMounted(async () => {
                     <p class="mb-4 text-lg text-gray-600">
                         {{ recipe?.description }}
                     </p>
-                    
+
                     <div class="mb-4 flex flex-col items-start text-sm text-gray-500">
                         <div class="flex items-center">
                             <span class="mr-1">
@@ -264,7 +264,7 @@ onMounted(async () => {
                                     <path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7.75-4.25a.75.75 0 0 0-1.5 0V8c0 .414.336.75.75.75h3.25a.75.75 0 0 0 0-1.5h-2.5v-3.5Z" clip-rule="evenodd" />
                                 </svg>
                             </span>
-                            <span class="mr-1">{{ PreparationTime[recipe.preparationTime] }}</span>
+                            <span class="mr-1">{{ PreparationTime[recipe.preparationTime as keyof typeof PreparationTime] }}</span>
                         </div>
                     </div>
                 </div>

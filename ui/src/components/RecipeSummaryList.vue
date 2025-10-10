@@ -7,7 +7,7 @@ import AddRecipeCard from "./AddRecipeCard.vue";
 import { useAuth } from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
-const {userId, username, accessToken, logout} = useAuth();
+const {userId, username, isLoggedIn, logout} = useAuth();
 const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
@@ -53,7 +53,7 @@ const fetchRecipeSummaries = async () => {
                 showLoading.value = true;
             }
         }, 300);
-        recipeSummaries.value = await getAllRecipeSummaries(filterType.value, accessToken.value);
+        recipeSummaries.value = await getAllRecipeSummaries(filterType.value);
         error.value = null;
     } catch (err) {
         console.error("Failed to load recipe summaries:", err);
@@ -104,7 +104,7 @@ onMounted(() => {
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
                 <span class="text-2xl font-bold text-white tracking-tight">SnapChef</span>
                 <div>
-                    <template v-if="userId && username && accessToken">
+                    <template v-if="isLoggedIn()">
                         <span class="mr-4 text-green-100">Logged in as {{ username }}</span>
                         <button @click="logout"
                                 class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50">
