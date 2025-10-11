@@ -88,8 +88,6 @@ COPY --chown=185 ./app/build/quarkus-app/lib/ /deployments/lib/
 COPY --chown=185 ./app/build/quarkus-app/*.jar /deployments/
 COPY --chown=185 ./app/build/quarkus-app/app/ /deployments/app/
 COPY --chown=185 ./app/build/quarkus-app/quarkus/ /deployments/quarkus/
-# Add production application properties
-COPY --chown=185 ./app/src/main/resources/application.properties /deployments/
 
 EXPOSE 8080
 USER 185

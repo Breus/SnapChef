@@ -110,7 +110,6 @@ jobs:
       - name: Create production docker-compose file for release
         run: |
           cat > docker-compose.prod.yml << EOF
-          version: '3.9'
           services:
             postgres:
               image: ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}
@@ -167,6 +166,8 @@ jobs:
                   - "5432:5432"
               quarkus_app:
                 image: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
+                environment:
+                  POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
                 ports:
                   - "8081:8081"
                 depends_on:
