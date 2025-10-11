@@ -107,6 +107,7 @@ jobs:
               image: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
               environment:
                 POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
+                BACKEND_HOST_URL: https://snapchef.blaauwendraad.dev
               ports:
                 - "8081:8081"
               depends_on:

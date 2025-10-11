@@ -2,7 +2,8 @@ import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 import { useAuth } from "../auth/useAuth";
 import { refreshAccessToken } from "./userAuthenticationApi";
 
-const API_BASE_URL = "http://localhost:8081/api";
+const BACKEND_HOST_URL = import.meta.env.BACKEND_HOST_URL || "http://localhost:8081";
+const API_BASE_URL = `${BACKEND_HOST_URL}/api/`;
 
 // Types for HTTP client
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";

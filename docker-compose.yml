@@ -17,6 +17,7 @@ services:
       dockerfile: ./app/src/main/docker/Dockerfile.jvm
     environment:
       POSTGRES_PASSWORD: localdevpassword
+      BACKEND_HOST_URL: localhost:8081
     ports:
       - "8081:8081"
 volumes:
