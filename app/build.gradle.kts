@@ -28,9 +28,10 @@ dependencies {
     implementation(libs.quarkus.hibernate.orm.panache)
     implementation(libs.quarkus.hibernate.validator)
     implementation(libs.quarkus.jdbc.postgresql)
-    implementation(libs.quarkus.smallrye.jwt)
+    implementation(libs.quarkus.quinoa)
     implementation(libs.quarkus.rest)
     implementation(libs.quarkus.rest.jackson)
+    implementation(libs.quarkus.smallrye.jwt)
 
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockito.junit)
@@ -105,4 +106,22 @@ tasks.withType<JavaCompile>().configureEach {
         excludedPaths = ".*/build/generated/.*"
     }
     options.encoding = "UTF-8"
+}
+
+tasks.register<Copy>("copyQuinoaAssets") {
+    dependsOn("quarkusAppPartsBuild")
+    from("$projectDir/build/quinoa/build")
+    into("$projectDir/src/main/resources/META-INF/resources")
+}
+
+tasks.named("spotlessJava") {
+    dependsOn("copyQuinoaAssets")
+}
+
+tasks.named("quarkusDependenciesBuild") {
+    dependsOn("copyQuinoaAssets")
+}
+
+tasks.named("quarkusBuild") {
+    dependsOn("copyQuinoaAssets")
 }

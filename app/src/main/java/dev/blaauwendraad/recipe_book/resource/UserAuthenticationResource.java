@@ -23,7 +23,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 
 @ApplicationScoped
-@Path("/users/authn/")
+@Path("/api/users/authn/")
 public class UserAuthenticationResource {
     private final UserAuthenticationService userAuthenticationService;
 

@@ -17,7 +17,7 @@ import jakarta.ws.rs.PathParam;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
-@Path("/users/{userId}/recipes/favorites")
+@Path("/api/users/{userId}/recipes/favorites")
 public class UserFavoriteRecipesResource {
     private final UserFavoriteRecipesService userFavoriteRecipesService;
 

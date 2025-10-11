@@ -31,24 +31,6 @@ jobs:
         with:
           version: 10
 
-      - name: Install UI dependencies
-        run: |
-          cd ui
-          pnpm install
-
-      - name: Build frontend
-        run: |
-          cd ui
-          pnpm build
-          echo "Frontend build output:"
-          ls -la dist/
-
-      - name: Copy frontend to Quarkus static resources directory and create directory
-        run: |
-          mkdir -p app/src/main/resources/META-INF/resources/
-          cp -r ui/dist/* app/src/main/resources/META-INF/resources/
-          ls -la app/src/main/resources/META-INF/resources/
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -121,7 +103,7 @@ jobs:
                 - pg_data:/var/lib/postgresql/data
               ports:
                 - "5432:5432"
-            quarkus_app:
+            quarkus:
               image: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
               environment:
                 QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/recipe_book
@@ -164,7 +146,7 @@ jobs:
                   - pg_data:/var/lib/postgresql/data
                 ports:
                   - "5432:5432"
-              quarkus_app:
+              quarkus:
                 image: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
                 environment:
                   POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}

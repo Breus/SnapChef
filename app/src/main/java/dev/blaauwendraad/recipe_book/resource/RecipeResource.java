@@ -35,7 +35,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
-@Path("/recipes")
+@Path("/api/recipes")
 public class RecipeResource {
     private final RecipeService recipeService;
 

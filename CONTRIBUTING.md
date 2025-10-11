@@ -42,7 +42,7 @@ docker compose up -d
 This will start:
 
 - PostgreSQL database on port 5432
-- Quarkus backend on port 8080 (accessible at http://localhost:8080)
+- Quarkus backend on port 8081 (accessible at http://localhost:8081)
 
 To stop all services:
 
@@ -57,7 +57,7 @@ Compose because for local development it is more convenient to run it directly o
 
 If you prefer to run the backend in development mode for live coding:
 
-1. Uncomment `quarkus_app: !reset null` in `docker compose.override.yml` to disable the Docker container for the Quarkus
+1. Uncomment `quarkus: !reset null` in `docker compose.override.yml` to disable the Docker container for the Quarkus
    app, allowing you to run it directly on your host machine in development mode.
 
 2. Make sure the PostgreSQL database is running (now `docker compose up` will only start the database):
@@ -70,9 +70,9 @@ If you prefer to run the backend in development mode for live coding:
 
 or you can use `quarkus dev` if you have the Quarkus CLI installed.
 
-The backend will be available at http://localhost:8080.
+The backend will be available at http://localhost:8081.
 
-> **_Note:_**  Quarkus ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_Note:_**  Quarkus ships with a Dev UI, which is available in dev mode only at http://localhost:8081/q/dev/.
 
 ### Running the Frontend
 

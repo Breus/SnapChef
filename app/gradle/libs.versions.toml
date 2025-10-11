@@ -2,10 +2,11 @@
 assertj = "3.27.3"
 errorprone = "2.39.0"
 errorprone-plugin = "4.3.0"
+mockito-junit = "5.18.0"
 nullaway = "0.12.7"
-    mockito-junit = "5.18.0"
 palantir-java-format = "2.73.0"
 quarkus = "3.26.3"
+quarkus-quinoa = "2.6.2"
 rest-assured = "5.5.5"
 testcontainers = "1.21.3"
 
@@ -20,6 +21,7 @@ quarkus-hibernate-orm-panache = { module = "io.quarkus:quarkus-hibernate-orm-pan
 quarkus-hibernate-validator = { module = "io.quarkus:quarkus-hibernate-validator", version.ref = "quarkus" }
 quarkus-jdbc-postgresql = { module = "io.quarkus:quarkus-jdbc-postgresql", version.ref = "quarkus" }
 quarkus-junit5 = { module = "io.quarkus:quarkus-junit5", version.ref = "quarkus" }
+quarkus-quinoa = { module = "io.quarkiverse.quinoa:quarkus-quinoa", version.ref = "quarkus-quinoa" }
 quarkus-rest = { module = "io.quarkus:quarkus-rest", version.ref = "quarkus" }
 quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson", version.ref = "quarkus" }
 quarkus-smallrye-jwt = { group = "io.quarkus", name = "quarkus-smallrye-jwt", version.ref = "quarkus" }

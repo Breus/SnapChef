@@ -2,7 +2,7 @@ import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
 import { useAuth } from "../auth/useAuth";
 import { refreshAccessToken } from "./userAuthenticationApi";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "http://localhost:8081/api";
 
 // Types for HTTP client
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
