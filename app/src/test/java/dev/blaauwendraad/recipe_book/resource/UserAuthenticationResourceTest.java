@@ -44,7 +44,7 @@ public class UserAuthenticationResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .when()
-                .post("/users/authn/register")
+                .post("/api/users/authn/register")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .body("id", notNullValue())
@@ -60,7 +60,7 @@ public class UserAuthenticationResourceTest {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .post("/users/authn/register")
+                .post("/api/users/authn/register")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
 
@@ -72,7 +72,7 @@ public class UserAuthenticationResourceTest {
                 .contentType(ContentType.JSON)
                 .body(duplicateRequest)
                 .when()
-                .post("/users/authn/register")
+                .post("/api/users/authn/register")
                 .then()
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                 .body("title", is("Failed to register new user."))
