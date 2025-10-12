@@ -15,7 +15,7 @@ public class SPARouting {
             String path = rc.normalizedPath();
             boolean isApi = path.startsWith("/api");
             boolean isRoot = path.equals("/");
-            boolean isAsset = path.startsWith("/assets/") || path.matches(".*\\.(js|css|png|jpg|jpeg|svg|ico)$");
+            boolean isAsset = path.contains("/assets/") || path.matches(".*\\.(js|css|png|jpg|jpeg|svg|ico)$");
             if (!isRoot && !isApi && !isAsset) {
                 rc.reroute("/");
             } else {
