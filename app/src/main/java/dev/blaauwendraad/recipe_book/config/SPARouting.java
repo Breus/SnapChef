@@ -14,15 +14,16 @@ public class SPARouting {
         router.get("/*").handler(rc -> {
             String path = rc.normalizedPath();
             int assetsIndex = path.indexOf("/assets/");
+            // If the path contains /assets/ (not at root), reroute to the correct asset path and return immediately
             if (assetsIndex > 0) {
-                // Redirect to '/assets/' root path, where they are packaged in the Quarkus app as static resources
                 String assetPath = path.substring(assetsIndex);
                 rc.reroute(assetPath);
                 return;
             }
             boolean isApi = path.startsWith("/api"); // API calls should not be redirected to SPA
             boolean isRoot = path.equals("/"); // already on the root page, no need to redirect
-            if (!isRoot && !isApi) {
+            boolean isAsset = path.startsWith("/assets/") || path.matches(".*\\.(js|css|png|jpg|jpeg|svg|ico)$");
+            if (!isRoot && !isApi & !isAsset) {
                 rc.reroute("/");
             } else {
                 rc.next();
