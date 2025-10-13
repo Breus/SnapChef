@@ -3,6 +3,7 @@ import CreateRecipe from "../components/CreateRecipe.vue";
 import Login from "../components/LoginView.vue";
 import RecipeSummaryList from "../components/RecipeSummaryList.vue";
 import RecipeView from "../components/RecipeView.vue";
+import ProfileView from "../components/ProfileView.vue";
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         component: Login,
         name: "Login",
         path: "/login",
+    },
+    {
+        component: ProfileView,
+        name: "Profile",
+        path: "/profile",
     },
 ];
 
