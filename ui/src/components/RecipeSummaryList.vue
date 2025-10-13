@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-import { getAllRecipeSummaries } from "../api/recipeSummaryApi.ts";
+import {onMounted, ref, watch} from "vue";
+import {getAllRecipeSummaries} from "../api/recipeSummaryApi.ts";
 import type RecipeSummary from "../models/domain/RecipeSummary.ts";
 import RecipeSummaryComponent from "./RecipeSummary.vue";
 import AddRecipeCard from "./AddRecipeCard.vue";
-import { useAuth } from "../auth/useAuth.ts";
+import {useAuth} from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
 const {userId, username, isLoggedIn, logout} = useAuth();
@@ -17,6 +17,16 @@ let loadingTimer: number | null = null;
 type RecipeFilterType = "ALL" | "MY" | "FAVORITES";
 
 const filterType = ref<RecipeFilterType>("ALL");
+
+const isMobile = ref(window.innerWidth < 640);
+window.addEventListener("resize", () => {
+    isMobile.value = window.innerWidth < 640;
+});
+const shortLabels: Record<RecipeFilterType, string> = {
+    ALL: "All",
+    MY: "My",
+    FAVORITES: "Favorites"
+};
 
 const filterOptions = [
     {
@@ -31,7 +41,7 @@ const filterOptions = [
     },
     {
         value: "FAVORITES" as RecipeFilterType,
-        label: "Favorites",
+        label: "Favorite Recipes",
         icon: `<svg class='w-5 h-5' stroke='currentColor' viewBox='0 0 24 24'><path fill="none" stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'/></svg>`
     }
 ];
@@ -73,35 +83,14 @@ onMounted(() => {
 });
 </script>
 <style scoped>
-.filter-btn {
-    box-shadow: 0 1px 2px rgb(16 185 129 / 8%);
-    cursor: pointer;
-    min-height: 35px;
-    font-size: 1rem;
-}
+/* We need to keep the media query since this isn't easily doable with Tailwind's standard classes */
 
-@media (width <= 640px) {
-    .filter-btn {
-        width: 100%;
-        min-height: 45px;
-        margin-right: 0 !important;
-    }
-}
-
-.filter-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.filter-btn:not(:last-child) {
-    margin-right: 0.5rem;
-}
 </style>
 
 <template>
     <div class="min-h-screen bg-gray-50">
-        <div class="sticky top-0 z-20 w-full bg-green-700 shadow-lg">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
+        <div class="z-20 w-full bg-green-700 shadow-lg">
+            <div class="mx-auto max-w-7xl px-4 lg:px-8 flex items-center justify-between py-4">
                 <span class="text-2xl font-bold text-white tracking-tight">SnapChef</span>
                 <div>
                     <template v-if="isLoggedIn()">
@@ -120,21 +109,21 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div class="mx-auto mt-5 max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+        <div class="mx-auto mt-3 md:mt-4 max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mb-3 md:mb-5 flex flex-row items-center justify-center space-x-2">
                 <button
                     v-for="option in filterOptions"
                     :key="option.value"
                     :class="[
-            'filter-btn flex items-center px-4 py-2 rounded-full font-medium transition-all duration-200',
-            filterType === option.value
-                ? 'bg-green-600 text-white shadow-lg'
-                : 'bg-white text-green-700 border border-green-300 hover:bg-green-50'
-                     ]"
+      'flex items-center justify-center px-5 py-2 rounded-full font-medium transition-all duration-200 min-h-[35px] shadow-sm cursor-pointer text-base sm:mr-2',
+      filterType === option.value
+        ? 'bg-green-600 text-white shadow-lg'
+        : 'bg-white text-green-700 border border-green-300 hover:bg-green-50',
+    ]"
                     @click="option.value !== 'ALL' && !userId ? $router.push('/login') : filterType = option.value"
                 >
                     <span class="mr-2" v-html="option.icon"></span>
-                    {{ option.label }}
+                    {{ isMobile ? shortLabels[option.value] : option.label }}
                 </button>
             </div>
             <!-- Loading State -->
@@ -157,8 +146,8 @@ onMounted(() => {
 
             <!-- Recipe Grid -->
             <div v-else-if="!showLoading && recipeSummaries.length > 0"
-                 class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <AddRecipeCard :isLoggedIn="!!username"/>
+                 class="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+                <AddRecipeCard v-if="filterType !== 'FAVORITES'" :isLoggedIn="!!username"/>
                 <div v-for="recipeSummary in recipeSummaries" :key="recipeSummary.id"
                      class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-lg">
                     <RecipeSummaryComponent :recipeSummary="recipeSummary"/>
