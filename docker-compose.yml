@@ -1,3 +1,4 @@
+# This file is used for local development only
 services:
   postgres:
     image: postgres:latest

@@ -45,11 +45,6 @@ jobs:
           echo "Build artifacts:"
           ls -la build/quarkus-app/
 
-      - name: Prepare folders and generate keys
-        run: |
-          python3 ./key_setup.py
-          echo "Keys generated."
-
       - name: Run Tests
         run: |
           cd app
@@ -109,6 +104,8 @@ jobs:
                 POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
               ports:
                 - "8081:8081"
+              volumes:
+                - /opt/snapchef/keys:/keys:ro
               depends_on:
                 - postgres
           volumes:
@@ -120,15 +117,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: docker-compose.prod.yml
-
-      - name: Ensure deployment folder /opt/snapchef exists on VPS
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            mkdir -p /opt/snapchef
 
       - name: Copy docker-compose.prod.yml to VPS
         uses: appleboy/scp-action@v0.1.7
