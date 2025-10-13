@@ -6,6 +6,7 @@ app/src/main/resources/META-INF/resources
 
 ### certificates ###
 *.pem
+!app/src/test/resources/test-keys/*.pem
 *.key
 *.crt
 *.cer
