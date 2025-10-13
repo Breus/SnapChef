@@ -7,7 +7,7 @@ import AddRecipeCard from "./AddRecipeCard.vue";
 import {useAuth} from "../auth/useAuth.ts";
 
 const recipeSummaries = ref<RecipeSummary[]>([]);
-const {userId, username, isLoggedIn, logout} = useAuth();
+const {userId, username, isLoggedIn} = useAuth();
 const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;

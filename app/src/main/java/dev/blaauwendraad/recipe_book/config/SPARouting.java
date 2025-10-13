@@ -23,7 +23,7 @@ public class SPARouting {
             boolean isApi = path.startsWith("/api"); // API calls should not be redirected to SPA
             boolean isRoot = path.equals("/"); // already on the root page, no need to redirect
             boolean isAsset = path.startsWith("/assets/") || path.matches(".*\\.(js|css|png|jpg|jpeg|svg|ico)$");
-            if (!isRoot && !isApi & !isAsset) {
+            if (!isRoot && !isApi && !isAsset) {
                 rc.reroute("/");
             } else {
                 rc.next();

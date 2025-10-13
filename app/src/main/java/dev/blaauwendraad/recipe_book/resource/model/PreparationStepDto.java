@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.resource.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-public record PreparationStepDto(@NotBlank String description) {}
+public record PreparationStepDto(@NotBlank @Size(max = 400) String description) {}

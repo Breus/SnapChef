@@ -7,9 +7,9 @@ import jakarta.validation.constraints.Size;
 
 public record UserRegistrationRequest(
         @NotBlank @Size(min = 3, max = 50) String username,
-        @NotBlank @Email String emailAddress,
+        @NotBlank @Size(max = 100) @Email String emailAddress,
         @NotBlank
-                @Size(min = 8, max = 100)
+                @Size(min = 8, max = 200)
                 @Pattern(
                         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
                         message =
