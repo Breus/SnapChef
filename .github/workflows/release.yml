@@ -65,8 +65,8 @@ jobs:
       - name: Build and push PostgreSQL image
         uses: docker/build-push-action@v6
         with:
-          context: ./
-          file: ./app/src/main/docker/Dockerfile.postgres
+          context: ./app
+          file: ./src/main/docker/Dockerfile.postgres
           push: true
           tags: ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}
           build-args: |
@@ -78,8 +78,8 @@ jobs:
       - name: Build and push Quarkus backend image
         uses: docker/build-push-action@v6
         with:
-          context: ./
-          file: ./app/src/main/docker/Dockerfile.jvm
+          context: ./app
+          file: ./src/main/docker/Dockerfile.jvm
           push: true
           tags: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
           cache-from: type=gha
@@ -104,6 +104,8 @@ jobs:
               image: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
               environment:
                 POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
+                PUB_KEY_LOCATION: file:/keys/publicKey.pem
+                PRIV_KEY_LOCATION: file:/keys/privateKey.pem
               ports:
                 - "8081:8081"
               volumes:

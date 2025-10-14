@@ -1,128 +1,65 @@
-## TODO short term
+# Contributing to the Project
 
-- [ ] Add refreshing and refresh tokens for JWT tokens
-- [ ] Deploy on snapchef.blaauwendraad.dev manually and prepare entire environment
-- [ ] Finish shopping list functionality
-- [ ] Implement caching on APIs
-- [ ] Add unit and integration tests for backend and frontend
+## Local Development Environment Setup
 
-## TODO longer term
+### Prerequisites
 
-- [ ] Add resiliency patterns such as rate limiters on endpoints
-- [ ] Set-up continuous integration / deployment using Github actions
-- [ ] Add SonarQube integration
+Ensure you have the following tools installed:
 
+* [Docker Desktop](https://docs.docker.com/get-docker/) - For running the PostgreSQL database
+* [Java 21 JDK](https://www.oracle.com/java/technologies/downloads/#java21) - For the backend Quarkus application
+* [Node.js](https://nodejs.org/en/download/) - For frontend development (version 22 or higher)
+* [pnpm](https://pnpm.io/installation) - For frontend package management
+* [Python 3.13](https://www.python.org/downloads/) - For local development scripts
+* [pre-commit](https://pre-commit.com/#install) - For automatic code formatting
 
-## Getting Started
+### Initial Setup
 
-### Local Development Environment Setup
+Run the setup script to prepare your development environment:
 
-1. Install the required, non-prepackaged tools:
-
-    - [Docker Desktop](https://docs.docker.com/get-docker/) (for Docker Compose)
-    - [Java 21 JDK](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) (to build the backend
-      Quarkus application)
-    - [Node.js](https://nodejs.org/en/download/) (for frontend development tooling, version 22 or higher)
-    - [pnpm](https://pnpm.io/installation) (for frontend package management)
-    - [Python 3.13](https://www.python.org/downloads/) (for local dev environment auto-setup scripts)
-    - [pre-commit](https://pre-commit.com/#install) (for automatic, required code formatting)
-2. Run the `setup.py`, which will:
-    1. Install the required pre-commit hooks
-    2. Generate a local RSA key pair for user authentication (JWT signing)
-
-### Running with Docker Compose
-
-The easiest way to run the entire application stack (database, backend, and database admin tool) is using Docker
-Compose:
-
-```shell script
-docker compose up -d
+```bash
+./local_setup.py
 ```
 
-This will start:
+This script will:
 
-- PostgreSQL database on port 5432
-- Quarkus backend on port 8081 (accessible at http://localhost:8081)
+* Install required pre-commit hooks
+* Install frontend Node dependencies
+* Generate a local RSA key pair for JWT authentication
 
-To stop all services:
+## Development Workflow
 
-```shell script
-docker compose down
+### Starting the Development Environment
+
+Run a single command to start the entire stack in development mode:
+
+```bash
+./dev_local.py
 ```
 
-**Note:** By default, the `docker-compose-override.yml` file configures the Quarkus application to be ignored by Docker
-Compose because for local development it is more convenient to run it directly on your host machine using quarkusDev.
+This script automatically:
 
-### Running the Backend in Development Mode
+* Launches the PostgreSQL database in Docker
+* Starts the Quarkus backend in development mode
+* Runs the frontend Vite development server
+* Gracefully shuts down all components when interrupted
 
-If you prefer to run the backend in development mode for live coding:
+### Accessing the Application
 
-1. Uncomment `quarkus: !reset null` in `docker compose.override.yml` to disable the Docker container for the Quarkus
-   app, allowing you to run it directly on your host machine in development mode.
+Once the development environment is running, you can access the application via:
 
-2. Make sure the PostgreSQL database is running (now `docker compose up` will only start the database):
+* [http://localhost:5173](http://localhost:5173) (frontend SPA)
+* [http://localhost:8081](http://localhost:8081) (backend API)
 
-3. From to the `app` directory run:
+## Building for Production
 
-```shell script
-./gradlew quarkusDev
+To build the entire application for production, run the following command:
+
+```bash
+cd app && ./gradlew build
 ```
 
-or you can use `quarkus dev` if you have the Quarkus CLI installed.
+This creates a runnable JAR file in `app/build/quarkus-app/` directory.
 
-The backend will be available at http://localhost:8081.
-
-> **_Note:_**  Quarkus ships with a Dev UI, which is available in dev mode only at http://localhost:8081/q/dev/.
-
-### Running the Frontend
-
-To run the frontend development server, from the `ui` directory:
-
-1. Install the frontend dependencies (if you haven't already):
-
-```shell script
-pnpm install
-```
-
-2. Start the development server:
-
-```shell script
-pnpm dev
-```
-
-The frontend will be available at http://localhost:5173.
-
-## Packaging and Running the Application
-
-### Backend
-
-The backend application can be packaged using:
-
-```shell script
-cd app
-./gradlew build
-```
-
-It produces the `quarkus-run.jar` file in the `build/quarkus-app/` directory.
-Be aware that it’s not a _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar build/quarkus-app/quarkus-run.jar`.
-
-If you want to build a _über-jar_, execute the following command:
-
-```shell script
-./gradlew build -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as a _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
-
-### Frontend
-
-To build the frontend for production:
-
-```shell script
-cd ui
-pnpm build
-```
-
-This will generate static files in the `ui/dist` directory that can be served by any web server.
+The resulting JAR is packaged in a container image in the `docker-compose.prod.yml` file created in the Github release
+workflow ( see `.github/workflows/release.yml`)

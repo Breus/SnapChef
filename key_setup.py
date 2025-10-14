@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 def generate_rsa_key_pair_for_local_dev() -> None:
-    resources_dir = Path("app/src/main/resources")
-    private_key_path = resources_dir / "privateKey.pem"
-    public_key_path = resources_dir / "META-INF/publicKey.pem"
+    local_dev_keys_path = Path("app/src/main/resources/local-dev-keys/")
+    private_key_path = local_dev_keys_path / "privateKey.pem"
+    public_key_path = local_dev_keys_path / "publicKey.pem"
     if private_key_path.exists() and public_key_path.exists():
         print("RSA key pair already exists. Skipping key generation.")
         return

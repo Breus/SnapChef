@@ -14,10 +14,12 @@ services:
 
   quarkus:
     build:
-      context: .
-      dockerfile: ./app/src/main/docker/Dockerfile.jvm
+      context: ./app
+      dockerfile: ./src/main/docker/Dockerfile.jvm
     environment:
       POSTGRES_PASSWORD: localdevpassword
+      PUB_KEY_LOCATION: classpath:local-dev-keys/publicKey.pem
+      PRIV_KEY_LOCATION: classpath:local-dev-keys/privateKey.pem
     ports:
       - "8081:8081"
 volumes:
