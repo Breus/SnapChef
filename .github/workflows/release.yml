@@ -65,7 +65,7 @@ jobs:
       - name: Build and push PostgreSQL image
         uses: docker/build-push-action@v6
         with:
-          context: ./app
+          context: ./
           file: ./app/src/main/docker/Dockerfile.postgres
           push: true
           tags: ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}
@@ -88,7 +88,6 @@ jobs:
       - name: Create production docker-compose file for release
         run: |
           cat > docker-compose.prod.yml << EOF
-          version: '3.9'
           services:
             postgres:
               image: ${{ env.GHCR_REPO }}/postgres:${{ env.VERSION }}

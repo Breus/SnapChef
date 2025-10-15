@@ -7,8 +7,8 @@ ENV POSTGRES_USER=$POSTGRES_USER
 ENV POSTGRES_DB=$POSTGRES_DB
 
 # Copy initialization scripts
-COPY ./db/*.sql /docker-entrypoint-initdb.d/
-COPY ./db/schema/*.sql /docker-entrypoint-initdb.d/schema/
+COPY ./app/db/*.sql /docker-entrypoint-initdb.d/
+COPY ./app/db/schema/*.sql /docker-entrypoint-initdb.d/schema/
 
 # Expose the PostgreSQL port
 EXPOSE 5432
