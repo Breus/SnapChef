@@ -111,7 +111,7 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div class="mx-auto mt-3 md:mt-4 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto mt-3 md:mt-4 max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="mb-3 md:mb-5 flex flex-row items-center justify-center space-x-2">
                 <button
                     v-for="option in filterOptions"
