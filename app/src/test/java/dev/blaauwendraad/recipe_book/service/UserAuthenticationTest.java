@@ -60,7 +60,7 @@ class UserAuthenticationTest {
                         duplicateUserName, "different@example.com", TEST_PASSWORD))
                 .isInstanceOf(UserRegistrationValidationException.class)
                 .hasMessageContaining("Failed to register new user.")
-                .hasFieldOrPropertyWithValue("detailMessage", "Invalid user provided: Username is already in use.");
+                .hasFieldOrPropertyWithValue("detailMessage", "Username is already in use.");
     }
 
     @Test

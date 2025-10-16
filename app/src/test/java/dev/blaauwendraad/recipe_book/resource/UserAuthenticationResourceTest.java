@@ -76,7 +76,7 @@ public class UserAuthenticationResourceTest {
                 .then()
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                 .body("title", is("Failed to register new user."))
-                .body("detail", is("Invalid user provided: Username is already in use."))
+                .body("detail", is("Username is already in use."))
                 .body("status", is(Response.Status.BAD_REQUEST.getStatusCode()));
     }
 }

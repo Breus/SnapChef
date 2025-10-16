@@ -2,6 +2,6 @@ package dev.blaauwendraad.recipe_book.service.exception;
 
 public class UserRegistrationValidationException extends UserRegistrationException {
     public UserRegistrationValidationException(String detailMessage) {
-        super("Invalid user provided: " + detailMessage);
+        super(detailMessage);
     }
 }

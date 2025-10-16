@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuth } from "../auth/useAuth.ts";
-import { HttpError } from "../api/httpClient.ts";
-import { submitLogin } from "../api/userAuthenticationApi.ts";
-import type { ErrorResponseBody } from "../models/dto/ErrorResponseBody.ts";
+import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {HttpError} from "../api/httpClient.ts";
+import type {ErrorResponseBody} from "../models/dto/ErrorResponseBody.ts";
+import {submitLogin, submitRegistration} from "../api/userAuthenticationApi.ts";
+import {useAuth} from "../auth/useAuth.ts";
+
+const {login} = useAuth();
 
 const router = useRouter();
-const {login} = useAuth();
 
 function isErrorResponse(obj: unknown): obj is ErrorResponseBody {
     if (typeof obj !== "object" || obj === null) return false;
@@ -15,31 +16,54 @@ function isErrorResponse(obj: unknown): obj is ErrorResponseBody {
     return typeof o.title === "string" && typeof o.detail === "string" && typeof o.status === "number";
 }
 
-// Form data
-const emailaddress = ref("");
+const username = ref("");
+const emailAddress = ref("");
 const password = ref("");
+const confirmPassword = ref("");
 
-// Form state
 const error = ref<string | null>(null);
 const isSubmitting = ref(false);
 
 const submitForm = async () => {
+    isSubmitting.value = true;
     try {
-        isSubmitting.value = true;
-
-        if (!emailaddress.value.trim()) {
-            throw new Error("E-mail address is required");
+        if (!username.value.trim()) {
+            throw new Error("The username field is required.");
+        }
+        if (username.value.length < 3) {
+            throw new Error("The username must contain at least 3 characters.");
+        }
+        if (!emailAddress.value.trim()) {
+            throw new Error("The email address field is required.");
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailAddress.value.trim())) {
+            throw new Error("The email address you entered is not valid.");
+        }
+        if (password.value !== confirmPassword.value) {
+            throw new Error("The passwords you entered do not match.");
         }
         if (!password.value.trim()) {
-            throw new Error("Password is required");
+            throw new Error("The password field is required.");
         }
         if (password.value.length < 8) {
-            throw new Error("Any valid password contains at least 8 characters");
+            throw new Error("The password must contain at least 8 characters.");
+        }
+        if (!/[A-Z]/.test(password.value)) {
+            throw new Error("The password must contain at least one uppercase letter.");
+        }
+        if (!/[a-z]/.test(password.value)) {
+            throw new Error("The password must contain at least one lowercase letter.");
         }
 
-        let authDetails = await submitLogin(emailaddress.value.trim(), password.value.trim());
+        const registerData = {
+            username: username.value.trim(),
+            emailAddress: emailAddress.value.trim(),
+            password: password.value.trim(),
+        };
+        await submitRegistration(registerData);
+        let authDetails = await submitLogin(registerData.emailAddress, registerData.password);
         login(authDetails.userId, authDetails.username, authDetails.accessToken, authDetails.expiresInSeconds, authDetails.refreshToken, authDetails.refreshExpiresInSeconds);
-        // Navigate back to the homepage after successful login
         router.push("/");
     } catch (err) {
         if (err instanceof HttpError && isErrorResponse(err.data)) {
@@ -53,7 +77,7 @@ const submitForm = async () => {
     } finally {
         isSubmitting.value = false;
     }
-};
+}
 </script>
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
@@ -90,9 +114,16 @@ const submitForm = async () => {
                 <div class="p-6">
                     <div class="mb-8">
                         <div class="mb-4">
+                            <label for="username"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                            <input v-model="username" type="text" id="username"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                   placeholder="Used as recipe author name" required/>
+                        </div>
+                        <div class="mb-4">
                             <label for="emailaddress"
                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-mail</label>
-                            <input v-model="emailaddress" type="email" id="emailaddress"
+                            <input v-model="emailAddress" type="email" id="emailaddress"
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                    placeholder="username@example.com" required/>
                         </div>
@@ -102,18 +133,29 @@ const submitForm = async () => {
                             <input v-model="password" id="password" type="password"
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                    placeholder="********" required/>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Password must be at least 8 characters and include an uppercase letter and a lowercase
+                                letter.
+                            </p>
+                        </div>
+                        <div class="mb-4">
+                            <label for="confirmPassword"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
+                                Password</label>
+                            <input v-model="confirmPassword" id="confirmPassword" type="password"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                   placeholder="********" required/>
                         </div>
                     </div>
                 </div>
-                <!-- Form Actions -->
                 <div class="bg-gray-50 px-6 py-4">
                     <!-- For larger screens (sm and up) display in same row -->
                     <div class="hidden sm:flex sm:justify-between sm:items-center">
                         <div>
-                            <span class="text-sm text-gray-600">Don't have an account?</span>
-                            <button type="button" @click="$router.push('/register')"
+                            <span class="text-sm text-gray-600">Already have an account?</span>
+                            <button type="button" @click="$router.push('/login')"
                                     class="ml-2 text-sm font-medium text-green-600 hover:text-green-700">
-                                Register now
+                                Login here
                             </button>
                         </div>
                         <div class="flex space-x-3">
@@ -124,7 +166,7 @@ const submitForm = async () => {
                             <button type="submit"
                                     class="cursor-pointer rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                     :disabled="isSubmitting">
-                                {{ isSubmitting ? 'Logging in...' : 'Login' }}
+                                {{ isSubmitting ? 'Registering...' : 'Register' }}
                             </button>
                         </div>
                     </div>
@@ -139,14 +181,14 @@ const submitForm = async () => {
                             <button type="submit"
                                     class="cursor-pointer rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                     :disabled="isSubmitting">
-                                {{ isSubmitting ? 'Logging in...' : 'Login' }}
+                                {{ isSubmitting ? 'Registering...' : 'Register' }}
                             </button>
                         </div>
                         <div class="text-center mt-2">
-                            <span class="text-sm text-gray-600">Don't have an account?</span>
-                            <button type="button" @click="$router.push('/register')"
+                            <span class="text-sm text-gray-600">Already have an account?</span>
+                            <button type="button" @click="$router.push('/login')"
                                     class="ml-2 text-sm font-medium text-green-600 hover:text-green-700">
-                                Register now
+                                Login here
                             </button>
                         </div>
                     </div>

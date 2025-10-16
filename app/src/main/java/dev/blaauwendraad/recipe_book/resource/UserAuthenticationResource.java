@@ -36,9 +36,8 @@ public class UserAuthenticationResource {
     @PermitAll
     @Path("/login")
     public LoginResponse login(@Valid @NotNull LoginAttemptRequest loginAttemptRequest) throws UserLoginException {
-        AuthenticationDetails loginDetails = userAuthenticationService.login(
-                loginAttemptRequest.loginCredentials().emailAddress(),
-                loginAttemptRequest.loginCredentials().password());
+        AuthenticationDetails loginDetails =
+                userAuthenticationService.login(loginAttemptRequest.emailAddress(), loginAttemptRequest.password());
         return new LoginResponse(
                 loginDetails.userId(),
                 loginDetails.username(),

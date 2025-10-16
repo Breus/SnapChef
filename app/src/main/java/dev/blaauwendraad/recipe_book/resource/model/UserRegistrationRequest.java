@@ -11,7 +11,6 @@ public record UserRegistrationRequest(
         @NotBlank
                 @Size(min = 8, max = 200)
                 @Pattern(
-                        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
-                        message =
-                                "Password must contain at least one uppercase letter, one lowercase letter, and one number")
+                        regexp = "^(?=.*[a-z])(?=.*[A-Z]).+$",
+                        message = "Password must contain at least one uppercase letter, one lowercase letter")
                 String password) {}
