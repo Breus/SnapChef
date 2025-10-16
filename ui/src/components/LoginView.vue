@@ -62,7 +62,7 @@ const submitForm = async () => {
 </script>
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-6">
                 <button @click="$router.push('/')"
@@ -75,9 +75,9 @@ const submitForm = async () => {
             </div>
 
             <!-- Form Header -->
-            <div class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900">Login Your Account</h1>
-                <h2 class="text-1xl text-gray-400">Add your own recipes, save your favorites, and build your personal
+            <div class="mb-6 text-center">
+                <h1 class="text-4xl font-bold text-green-700">SnapChef</h1>
+                <h2 class="text-lg mt-2 text-gray-600">Add your recipes, save your favorites, and build your personal
                     recipe book!</h2>
             </div>
             <div v-if="error" class="mb-6 rounded-md bg-red-50 p-4">
