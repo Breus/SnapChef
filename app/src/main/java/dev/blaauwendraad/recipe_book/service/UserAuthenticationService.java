@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserAuthenticationService {
-    private static final Duration AUTH_TOKEN_EXPIRY_DURATION = Duration.ofMinutes(15);
+    private static final Duration AUTH_TOKEN_EXPIRY_DURATION = Duration.ofMinutes(5);
     private static final Duration REFRESH_TOKEN_EXPIRY_DURATION = Duration.ofDays(365);
     private static final Integer REFRESH_TOKEN_BYTE_SIZE = 64;
 

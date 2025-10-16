@@ -2,6 +2,7 @@ import type LoginCredentials from "../auth/LoginCredentials.ts";
 import type AuthenticationDetails from "../auth/AuthenticationDetails.ts";
 import type RefreshTokenResponse from "../auth/RefreshTokenResponse.ts";
 import { post } from "./httpClient.ts";
+import {useAuth} from "../auth/useAuth.ts";
 
 export const submitLogin = async (loginCredentials: LoginCredentials): Promise<AuthenticationDetails> => {
     try {
@@ -21,6 +22,7 @@ export const refreshAccessToken = async (refreshToken: string): Promise<RefreshT
     try {
         return await post("/users/authn/refresh", {refreshToken});
     } catch (error) {
+        useAuth().logout();
         console.error(error);
         throw error;
     }

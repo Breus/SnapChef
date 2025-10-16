@@ -115,6 +115,10 @@ class FetchHttpClient implements HttpClient {
             }
 
             if (!response.ok) {
+                if (response.status === 401) {
+                    // Unauthorized - clear local auth state
+                    useAuth().logout();
+                }
                 throw new HttpError<object | string | ErrorResponseBody>(
                     response.status,
                     response.statusText,
