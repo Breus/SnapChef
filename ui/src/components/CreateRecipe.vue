@@ -58,7 +58,7 @@ onMounted(async () => {
             title.value = recipe.title;
             description.value = recipe.description;
             numServings.value = recipe.numServings;
-            preparationTime.value = recipe.preparationTime;
+            preparationTime.value = PreparationTime[recipe.preparationTime as keyof typeof PreparationTime];
             ingredients.value = recipe.ingredients;
             preparationSteps.value = recipe.preparationSteps;
         } catch (err) {
