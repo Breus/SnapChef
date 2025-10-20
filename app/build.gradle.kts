@@ -25,6 +25,7 @@ dependencies {
 
     implementation(libs.quarkus.arc)
     implementation(libs.quarkus.elytron.security)
+    implementation(libs.quarkus.flyway)
     implementation(libs.quarkus.hibernate.orm.panache)
     implementation(libs.quarkus.hibernate.validator)
     implementation(libs.quarkus.jdbc.postgresql)
