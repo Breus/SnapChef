@@ -16,7 +16,8 @@ let loadingTimer: number | null = null;
 // Recipe summaries overview filtering
 type RecipeFilterType = "ALL" | "MY" | "FAVORITES";
 
-const filterType = ref<RecipeFilterType>("ALL");
+const storedFilter = localStorage.getItem("filter") as RecipeFilterType;
+const filterType = ref<RecipeFilterType>(storedFilter && isLoggedIn() ? storedFilter : "ALL");
 
 const isMobile = ref(window.innerWidth < 640);
 window.addEventListener("resize", () => {
@@ -48,6 +49,7 @@ const filterOptions = [
 
 watch(filterType, () => {
     fetchRecipeSummaries();
+    localStorage.setItem("filter", filterType.value);
 });
 
 const error = ref<string | null>(null);
