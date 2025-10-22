@@ -84,6 +84,7 @@ def main():
     ensure_executed_from_repo_root()
     check_command_exists("docker")
     check_command_exists("pnpm")
+    check_command_exists("pre-commit")
     verify_local_setup_completed()
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
