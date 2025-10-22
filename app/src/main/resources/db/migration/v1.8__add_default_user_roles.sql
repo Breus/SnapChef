@@ -1,4 +1,3 @@
-INSERT INTO role (id, name)
-VALUES (1, 'admin'),
-       (2, 'user')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO role (name)
+VALUES ('admin'),
+       ( 'user')
