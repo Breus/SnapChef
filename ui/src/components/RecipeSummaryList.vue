@@ -99,8 +99,10 @@ onMounted(() => {
                         <button @click="$router.push('/profile')"
                                 class="cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-green-700 shadow hover:bg-green-50 flex items-center">
                             <span class="mr-2">{{ username }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                             </svg>
                         </button>
                     </template>
@@ -161,10 +163,32 @@ onMounted(() => {
             <!-- Empty State -->
             <div v-else-if="!isLoading" class="py-12 text-center">
                 <div class="mb-4 text-6xl">🍳</div>
-                <h3 class="mb-2 text-xl font-medium text-gray-900">
-                    No recipes found
-                </h3>
-                <p class="text-gray-600">Start by adding your first recipe!</p>
+                <template v-if="filterType === 'FAVORITES'">
+                    <h3 class="mb-2 text-xl font-medium text-gray-900">
+                        You have no favorite recipes yet.
+                    </h3>
+                    <p class="text-gray-600">
+                        <button
+                            @click="filterType = 'ALL'"
+                            class="text-green-600 hover:text-green-700 underline cursor-pointer"
+                        >
+                            Find your new favorite recipes!
+                        </button>
+                    </p>
+                </template>
+                <template v-else>
+                    <h3 class="mb-2 text-xl font-medium text-gray-900">
+                        No recipes found
+                    </h3>
+                    <p class="text-gray-600">
+                        <router-link
+                            to="/recipe/create"
+                            class="text-green-600 hover:text-green-700 underline"
+                        >
+                            Add your first recipe!
+                        </router-link>
+                    </p>
+                </template>
             </div>
         </div>
     </div>
