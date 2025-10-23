@@ -26,6 +26,8 @@ app/src/main/resources/META-INF/resources
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/data_source_mapping.xml
+.idea/sqldialects.xml
 
 # AWS User-specific
 .idea/**/aws.xml

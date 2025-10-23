@@ -8,6 +8,9 @@
       <item index="0" class="java.lang.String" itemvalue="jakarta.ws.rs.Consumes" />
       <item index="1" class="java.lang.String" itemvalue="jakarta.ws.rs.Path" />
     </list>
+    <writeAnnotations>
+      <writeAnnotation name="jakarta.resource.spi.ConfigProperty" />
+    </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
