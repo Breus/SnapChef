@@ -150,8 +150,12 @@ const cancelEdit = () => {
 
             <!-- Form Header -->
             <div class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900">Create New Recipe</h1>
-                <p class="mt-2 text-gray-600">Add the ingredients and steps for your recipe. </p>
+                <h1 class="text-3xl font-bold text-gray-900">
+                    {{ isEditMode ? 'Edit Recipe' : 'Create New Recipe' }}
+                </h1>
+                <p class="mt-2 text-gray-600">
+                    {{ isEditMode ? 'Change the ingredients and steps for your recipe.' : 'Add the ingredients and steps for your recipe.' }}
+                </p>
             </div>
 
             <!-- Error Message -->
