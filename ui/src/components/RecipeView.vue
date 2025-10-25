@@ -311,7 +311,7 @@ onMounted(async () => {
                             <li v-for="(step, number) in recipe?.preparationSteps || []" :key="step.description"
                                 class="flex items-start">
                                 <span
-                                    class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
+                                    class="mr-3 mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
                                     {{ number + 1 }}
                                 </span>
                                 <p class="leading-relaxed text-gray-700">
