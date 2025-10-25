@@ -91,7 +91,7 @@ public class RecipeService {
     @Transactional
     public Long createRecipe(
             String title,
-            String description,
+            @Nullable String description,
             Integer numServings,
             PreparationTime preparationTime,
             Long userId,
@@ -133,7 +133,7 @@ public class RecipeService {
     public void updateRecipe(
             Long recipeId,
             String title,
-            String description,
+            @Nullable String description,
             Integer numServings,
             PreparationTime preparationTime,
             Long userId,

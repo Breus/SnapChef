@@ -33,7 +33,7 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
             @Nullable RecipeEntity existingRecipeEntity,
             UserAccountEntity userAccountEntity,
             String title,
-            String description,
+            @Nullable String description,
             Integer numServings,
             PreparationTime preparationTime,
             List<Ingredient> ingredients,
