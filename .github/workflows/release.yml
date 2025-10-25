@@ -122,7 +122,7 @@ jobs:
           files: docker-compose.prod.yml
 
       - name: Copy docker-compose.prod.yml to VPS
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
