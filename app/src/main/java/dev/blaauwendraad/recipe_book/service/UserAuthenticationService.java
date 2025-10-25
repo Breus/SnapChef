@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserAuthenticationService {
     private static final Duration AUTH_TOKEN_EXPIRY_DURATION = Duration.ofMinutes(5);
     private static final Duration REFRESH_TOKEN_EXPIRY_DURATION = Duration.ofDays(365);
-    private static final Integer REFRESH_TOKEN_BYTE_SIZE = 64;
+    private static final int REFRESH_TOKEN_BYTE_SIZE = 64;
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
