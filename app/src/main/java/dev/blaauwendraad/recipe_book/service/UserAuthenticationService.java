@@ -5,7 +5,7 @@ import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
 import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
-import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
@@ -63,9 +63,9 @@ public class UserAuthenticationService {
      *
      * @param emailAddress the e-mail address of the user
      * @param password     the password of the user
-     * @throws UserLoginException if there is an error during user login
+     * @throws UserAuthenticationException if there is an error during user login
      */
-    public AuthenticationDetails login(String emailAddress, String password) throws UserLoginException {
+    public AuthenticationDetails login(String emailAddress, String password) throws UserAuthenticationException {
         UserAccount userAccount = validateCredentials(emailAddress, password);
         RefreshTokenEntity refreshTokenEntity = createAndStoreRefreshToken(userAccount);
         return new AuthenticationDetails(
@@ -123,13 +123,13 @@ public class UserAuthenticationService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private UserAccount validateCredentials(String emailAddress, String password) throws UserLoginException {
+    private UserAccount validateCredentials(String emailAddress, String password) throws UserAuthenticationException {
         UserAccountEntity userAccountEntity = userRepository.findByEmail(emailAddress);
         if (userAccountEntity == null) {
-            throw new UserLoginException("No user account found for the provided email address.");
+            throw new UserAuthenticationException("No user account found for the provided email address.");
         }
         if (!BcryptUtil.matches(password, userAccountEntity.passwordHash)) {
-            throw new UserLoginException("Invalid password provided.");
+            throw new UserAuthenticationException("Invalid password provided.");
         }
         return UserAccountConverter.toUserAccount(userAccountEntity);
     }

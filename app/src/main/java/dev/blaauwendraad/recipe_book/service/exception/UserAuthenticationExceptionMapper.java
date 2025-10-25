@@ -7,10 +7,10 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class UserLoginExceptionMapper implements ExceptionMapper<UserLoginException> {
+public class UserAuthenticationExceptionMapper implements ExceptionMapper<UserAuthenticationException> {
 
     @Override
-    public Response toResponse(UserLoginException exception) {
+    public Response toResponse(UserAuthenticationException exception) {
         var errorResponse = toErrorResponse(exception);
         return Response.status(errorResponse.httpStatusCode())
                 .type(MediaType.APPLICATION_JSON_TYPE)
@@ -18,11 +18,11 @@ public class UserLoginExceptionMapper implements ExceptionMapper<UserLoginExcept
                 .build();
     }
 
-    private static ErrorResponse toErrorResponse(UserLoginException exception) {
+    private static ErrorResponse toErrorResponse(UserAuthenticationException exception) {
         return new ErrorResponse(
                 exception.getMessage() != null
                         ? exception.getMessage()
-                        : "An unexpected error occurred while trying to log in",
+                        : "An unexpected error occurred while trying to authenticate the user.",
                 exception.getDetailMessage(),
                 Response.Status.BAD_REQUEST.getStatusCode());
     }
