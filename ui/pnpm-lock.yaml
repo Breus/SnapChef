@@ -28,8 +28,8 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0
       '@eslint/js':
-        specifier: ^9.37.0
-        version: 9.37.0
+        specifier: ^9.38.0
+        version: 9.38.0
       '@eslint/json':
         specifier: ^0.13.2
         version: 0.13.2
@@ -386,6 +386,10 @@ packages:
 
   '@eslint/js@9.37.0':
     resolution: {integrity: sha512-jaS+NJ+hximswBG6pjNX0uEJZkrT0zwpVi3BA3vX22aFGjJjmgSTSmPpZCRKmoBL5VY/M6p0xsSJx7rk7sy5gg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/js@9.38.0':
+    resolution: {integrity: sha512-UZ1VpFvXf9J06YG9xQBdnzU+kthors6KjhMAl6f4gH4usHyh31rUf2DLGInT8RFYIReYXNSydgPY0V2LuWgl7A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/json@0.13.2':
@@ -2040,6 +2044,8 @@ snapshots:
       - supports-color
 
   '@eslint/js@9.37.0': {}
+
+  '@eslint/js@9.38.0': {}
 
   '@eslint/json@0.13.2':
     dependencies:
