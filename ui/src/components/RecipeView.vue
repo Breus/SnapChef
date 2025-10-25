@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { deleteRecipeById, getRecipeById } from "../api/recipeApi.ts";
-import { addRecipeToUserFavorites, getUserFavoriteRecipesIds, removeRecipeFromUserFavorites } from "../api/userFavoriteRecipesApi.ts";
-import { useAuth } from "../auth/useAuth.ts";
+import {onMounted, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {deleteRecipeById, getRecipeById} from "../api/recipeApi.ts";
+import {
+    addRecipeToUserFavorites,
+    getUserFavoriteRecipesIds,
+    removeRecipeFromUserFavorites
+} from "../api/userFavoriteRecipesApi.ts";
+import {useAuth} from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
-import { PreparationTime } from "../models/domain/PreparationTime.ts";
+import {PreparationTime} from "../models/domain/PreparationTime.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -132,13 +136,14 @@ onMounted(async () => {
 
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-6">
                 <button @click="$router.push('/')"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50 cursor-pointer transition-colors duration-150">
                     <svg class="mr-2 h-4 w-4" stroke="currentColor" viewBox="0 0 24 24">
-                        <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 19l-7-7 7-7"/>
                     </svg>
                     Back to Recipes
                 </button>
@@ -196,7 +201,7 @@ onMounted(async () => {
             <!-- Recipe Content -->
             <div v-else-if="!showLoading && recipe" class="overflow-hidden rounded-lg bg-white shadow-lg">
                 <!-- Recipe Header -->
-                <div class="relative border-b border-gray-300 px-6 py-8 group">
+                <div class="relative border-b border-gray-300 px-6 pt-8 pb-6 group">
                     <div class="absolute top-6 right-6 flex space-x-2">
                         <button @click="clickFavoriteRecipe" class="p-0 bg-transparent shadow-none hover:bg-transparent"
                                 title="Favorite Recipe">
@@ -206,7 +211,7 @@ onMounted(async () => {
                                 <path :fill="'#16a34a'" stroke-linecap="round" stroke-linejoin="round"
                                       d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
                             </svg>
-                            <svg v-else xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                  stroke-width="1.5" stroke="currentColor"
                                  class="w-6 h-6 text-gray-400 hover:text-green-600 transition-colors duration-150 cursor-pointer">
                                 <path fill="none" stroke-linecap="round" stroke-linejoin="round"
@@ -239,37 +244,47 @@ onMounted(async () => {
                         {{ recipe?.description }}
                     </p>
 
-                    <div class="mb-4 flex flex-col items-start text-sm text-gray-500">
+                    <div class="mb-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
                         <div class="flex items-center">
                             <span class="mr-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                                    <path fill-rule="evenodd" d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z" clip-rule="evenodd" />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                     class="size-4">
+                                    <path fill-rule="evenodd"
+                                          d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z"
+                                          clip-rule="evenodd"/>
                                 </svg>
                             </span>
-                            <span class="mr-1" v-if="!recipe.author">Anonymous</span>
-                            <span class="mr-1" v-else-if="recipe.author.userId == userId"> {{ recipe.author.username }} (Me)</span>
-                            <span class="mr-1" v-else>{{ recipe.author.username }}</span>
+                            <span v-if="!recipe.author">Anonymous</span>
+                            <span v-else-if="recipe.author.userId == userId">{{ recipe.author.username }} (Me)</span>
+                            <span v-else>{{ recipe.author.username }}</span>
                         </div>
                         <div class="flex items-center">
                             <span class="mr-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                                    <path d="M8 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM3.156 11.763c.16-.629.44-1.21.813-1.72a2.5 2.5 0 0 0-2.725 1.377c-.136.287.102.58.418.58h1.449c.01-.077.025-.156.045-.237ZM12.847 11.763c.02.08.036.16.046.237h1.446c.316 0 .554-.293.417-.579a2.5 2.5 0 0 0-2.722-1.378c.374.51.653 1.09.813 1.72ZM14 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0ZM3.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM5 13c-.552 0-1.013-.455-.876-.99a4.002 4.002 0 0 1 7.753 0c.136.535-.324.99-.877.99H5Z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                     class="size-4">
+                                    <path
+                                        d="M8 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM3.156 11.763c.16-.629.44-1.21.813-1.72a2.5 2.5 0 0 0-2.725 1.377c-.136.287.102.58.418.58h1.449c.01-.077.025-.156.045-.237ZM12.847 11.763c.02.08.036.16.046.237h1.446c.316 0 .554-.293.417-.579a2.5 2.5 0 0 0-2.722-1.378c.374.51.653 1.09.813 1.72ZM14 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0ZM3.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM5 13c-.552 0-1.013-.455-.876-.99a4.002 4.002 0 0 1 7.753 0c.136.535-.324.99-.877.99H5Z"/>
                                 </svg>
                             </span>
-                            <span class="mr-1">{{ recipe.numServings }} servings</span>
+                            <span>{{ recipe.numServings }} servings</span>
                         </div>
                         <div v-if="recipe.preparationTime" class="flex items-center">
                             <span class="mr-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7.75-4.25a.75.75 0 0 0-1.5 0V8c0 .414.336.75.75.75h3.25a.75.75 0 0 0 0-1.5h-2.5v-3.5Z" clip-rule="evenodd" />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                     class="size-4">
+                                    <path fill-rule="evenodd"
+                                          d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7.75-4.25a.75.75 0 0 0-1.5 0V8c0 .414.336.75.75.75h3.25a.75.75 0 0 0 0-1.5h-2.5v-3.5Z"
+                                          clip-rule="evenodd"/>
                                 </svg>
                             </span>
-                            <span class="mr-1">{{ PreparationTime[recipe.preparationTime as keyof typeof PreparationTime] }}</span>
+                            <span>{{
+                                    PreparationTime[recipe.preparationTime as keyof typeof PreparationTime]
+                                }}</span>
                         </div>
                     </div>
                 </div>
                 <!-- Recipe Body (Main section)-->
-                <div class="grid grid-cols-1 gap-8 p-6 lg:grid-cols-2">
+                <div class="space-y-8 p-6">
                     <!-- Ingredients Section -->
                     <div>
                         <h2 class="mb-4 text-xl font-semibold text-gray-900">
@@ -278,7 +293,7 @@ onMounted(async () => {
                         <ul class="space-y-2">
                             <li v-for="ingredient in recipe?.ingredients || []" :key="ingredient.name"
                                 class="flex items-start">
-                                <span class="mt-1 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-green-600"></span>
+                                <span class="mt-2 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-green-600"></span>
                                 <div>
                                     <span class="font-medium text-gray-900">{{ ingredient.quantity }}</span>
                                     <span class="ml-2 text-gray-700">{{ ingredient.name }}</span>
