@@ -1,6 +1,6 @@
 package dev.blaauwendraad.recipe_book.service.exception;
 
-import dev.blaauwendraad.recipe_book.resource.exception.ErrorResponse;
+import dev.blaauwendraad.recipe_book.web.exception.ErrorResponse;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

@@ -1,17 +1,17 @@
-package dev.blaauwendraad.recipe_book.resource;
+package dev.blaauwendraad.recipe_book.web;
 
-import dev.blaauwendraad.recipe_book.resource.model.LoginAttemptRequest;
-import dev.blaauwendraad.recipe_book.resource.model.LoginResponse;
-import dev.blaauwendraad.recipe_book.resource.model.RefreshTokenRequest;
-import dev.blaauwendraad.recipe_book.resource.model.RefreshTokenResponse;
-import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
-import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationResponse;
 import dev.blaauwendraad.recipe_book.service.UserAuthenticationService;
 import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
+import dev.blaauwendraad.recipe_book.web.model.LoginAttemptRequest;
+import dev.blaauwendraad.recipe_book.web.model.LoginResponse;
+import dev.blaauwendraad.recipe_book.web.model.RefreshTokenRequest;
+import dev.blaauwendraad.recipe_book.web.model.RefreshTokenResponse;
+import dev.blaauwendraad.recipe_book.web.model.UserRegistrationRequest;
+import dev.blaauwendraad.recipe_book.web.model.UserRegistrationResponse;
 import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

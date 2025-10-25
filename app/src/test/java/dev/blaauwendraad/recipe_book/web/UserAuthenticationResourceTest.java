@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.resource;
+package dev.blaauwendraad.recipe_book.web;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import dev.blaauwendraad.recipe_book.data.model.RoleEntity;
 import dev.blaauwendraad.recipe_book.data.model.RoleName;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
-import dev.blaauwendraad.recipe_book.resource.model.UserRegistrationRequest;
+import dev.blaauwendraad.recipe_book.web.model.UserRegistrationRequest;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

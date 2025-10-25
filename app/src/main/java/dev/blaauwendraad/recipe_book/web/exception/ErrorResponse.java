@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.resource.exception;
+package dev.blaauwendraad.recipe_book.web.exception;
 
 /*
  * This ErrorResponse class is used to represent error responses in the HTTP API and is inspired by RFC-7807 but

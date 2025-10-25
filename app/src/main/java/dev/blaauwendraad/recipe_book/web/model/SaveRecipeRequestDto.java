@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.resource.model;
+package dev.blaauwendraad.recipe_book.web.model;
 
 import dev.blaauwendraad.recipe_book.service.model.PreparationTime;
 import jakarta.validation.Valid;

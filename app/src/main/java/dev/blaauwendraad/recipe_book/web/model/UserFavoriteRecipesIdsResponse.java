@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.resource.model;
+package dev.blaauwendraad.recipe_book.web.model;
 
 import java.util.List;
 

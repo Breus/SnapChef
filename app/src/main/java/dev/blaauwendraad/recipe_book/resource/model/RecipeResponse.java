@@ -1,3 +1,0 @@
-package dev.blaauwendraad.recipe_book.resource.model;
-
-public record RecipeResponse(RecipeDto recipe) {}

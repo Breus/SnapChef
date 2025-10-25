@@ -4,7 +4,6 @@ import dev.blaauwendraad.recipe_book.data.model.RefreshTokenEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
-import dev.blaauwendraad.recipe_book.resource.model.RefreshTokenResponse;
 import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
 import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
@@ -12,6 +11,7 @@ import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidatio
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import dev.blaauwendraad.recipe_book.service.model.UserRole;
+import dev.blaauwendraad.recipe_book.web.model.RefreshTokenResponse;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;

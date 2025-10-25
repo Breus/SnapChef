@@ -1,4 +1,4 @@
-package dev.blaauwendraad.recipe_book.resource.exception;
+package dev.blaauwendraad.recipe_book.web.exception;
 
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;

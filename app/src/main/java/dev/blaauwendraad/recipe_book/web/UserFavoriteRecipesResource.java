@@ -1,8 +1,8 @@
-package dev.blaauwendraad.recipe_book.resource;
+package dev.blaauwendraad.recipe_book.web;
 
-import dev.blaauwendraad.recipe_book.resource.model.AddUserFavoriteRecipeRequest;
-import dev.blaauwendraad.recipe_book.resource.model.UserFavoriteRecipesIdsResponse;
 import dev.blaauwendraad.recipe_book.service.UserFavoriteRecipesService;
+import dev.blaauwendraad.recipe_book.web.model.AddUserFavoriteRecipeRequest;
+import dev.blaauwendraad.recipe_book.web.model.UserFavoriteRecipesIdsResponse;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
