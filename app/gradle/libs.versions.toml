@@ -1,6 +1,6 @@
 [versions]
 assertj = "3.27.3"
-errorprone = "2.39.0"
+errorprone = "2.43.0"
 errorprone-plugin = "4.3.0"
 mockito-junit = "5.18.0"
 nullaway = "0.12.7"
