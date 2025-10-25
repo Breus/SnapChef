@@ -131,7 +131,7 @@ jobs:
           target: /opt/snapchef/
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
