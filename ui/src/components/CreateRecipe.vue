@@ -232,17 +232,7 @@ const cancelEdit = () => {
 
                     <!-- Ingredients Section -->
                     <div class="mb-8">
-                        <div class="mb-4 flex items-center justify-between">
-                            <h2 class="text-xl font-semibold text-gray-900">Ingredients</h2>
-                            <button type="button" @click="addIngredient"
-                                    class="inline-flex items-center rounded-md bg-green-50 px-3 py-1 text-sm font-medium text-green-700 hover:bg-green-100">
-                                <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Add Ingredient
-                            </button>
-                        </div>
+                        <h2 class="mb-4 text-xl font-semibold text-gray-900">Ingredients</h2>
 
                         <div v-for="(ingredient, index) in ingredients" :key="index"
                              class="mb-3 flex items-center space-x-2">
@@ -265,30 +255,27 @@ const cancelEdit = () => {
                                 </svg>
                             </button>
                         </div>
+
+                        <button type="button" @click="addIngredient"
+                                class="w-full mt-4 flex items-center justify-center rounded-lg border border-gray-200 px-4 py-3 text-gray-700 hover:border-green-300 hover:bg-green-50 hover:text-green-700 transition-colors duration-200">
+                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                      d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span class="text-sm font-medium">Add Another Ingredient</span>
+                        </button>
                     </div>
 
                     <!-- Preparation Steps Section -->
                     <div>
                         <div class="mb-4 flex items-center justify-between">
                             <h2 class="text-xl font-semibold text-gray-900">Instructions</h2>
-                            <button type="button" @click="addStep"
-                                    class="inline-flex items-center rounded-md bg-green-50 px-3 py-1 text-sm font-medium text-green-700 hover:bg-green-100">
-                                <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Add Step
-                            </button>
                         </div>
 
                         <div v-for="(step, index) in preparationSteps" :key="index"
                              class="mb-3 flex items-start space-x-2">
-                            <div
-                                class="mt-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-xs font-medium text-white">
-                                {{ index + 1 }}
-                            </div>
                             <div class="flex-1">
-                                <textarea v-model="step.description" rows="2"
+                                <textarea v-model="step.description" rows="1"
                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                           placeholder="Describe this step" required></textarea>
                             </div>
@@ -301,6 +288,16 @@ const cancelEdit = () => {
                                 </svg>
                             </button>
                         </div>
+
+                        <!-- Add Step Button - lighter design -->
+                        <button type="button" @click="addStep"
+                                class="w-full mt-4 flex items-center justify-center rounded-lg border border-gray-200  px-4 py-3 text-gray-700 hover:border-green-300 hover:bg-green-50 hover:text-green-700 transition-colors duration-200">
+                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                      d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span class="text-sm font-medium">Add Another Step</span>
+                        </button>
                     </div>
                 </div>
 
