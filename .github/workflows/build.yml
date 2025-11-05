@@ -22,6 +22,7 @@ jobs:
     permissions:
       contents: read
       checks: write # for publishing test results and annotations
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
         with:
