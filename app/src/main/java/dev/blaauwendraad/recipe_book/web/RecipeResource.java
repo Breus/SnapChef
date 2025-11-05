@@ -100,7 +100,7 @@ public class RecipeResource {
                         : new RecipeAuthorDto(
                                 recipe.author().id().toString(), recipe.author().authorName()),
                 recipe.ingredients().stream()
-                        .map(ingredient -> new IngredientDto(ingredient.name(), ingredient.quantity()))
+                        .map(ingredient -> new IngredientDto(ingredient.description()))
                         .toList(),
                 recipe.preparationSteps().stream()
                         .map(step -> new PreparationStepDto(step.description()))
@@ -119,7 +119,7 @@ public class RecipeResource {
                 newRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
                 newRecipe.ingredients().stream()
-                        .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
+                        .map(ingredientDto -> new Ingredient(ingredientDto.description()))
                         .toList(),
                 newRecipe.preparationSteps().stream()
                         .map(stepDto -> new PreparationStep(stepDto.description()))
@@ -142,7 +142,7 @@ public class RecipeResource {
                 updatedRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
                 updatedRecipe.ingredients().stream()
-                        .map(ingredientDto -> new Ingredient(ingredientDto.name(), ingredientDto.quantity()))
+                        .map(ingredientDto -> new Ingredient(ingredientDto.description()))
                         .toList(),
                 updatedRecipe.preparationSteps().stream()
                         .map(stepDto -> new PreparationStep(stepDto.description()))

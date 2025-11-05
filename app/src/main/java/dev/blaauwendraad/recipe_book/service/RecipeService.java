@@ -81,7 +81,7 @@ public class RecipeService {
                 recipeEntity.preparationTime,
                 recipeEntity.author == null ? null : new Author(recipeEntity.author.id, recipeEntity.author.username),
                 recipeEntity.ingredients.stream()
-                        .map(ingredient -> new Ingredient(ingredient.name, ingredient.quantity))
+                        .map(ingredient -> new Ingredient(ingredient.description))
                         .collect(Collectors.toList()),
                 recipeEntity.preparationSteps.stream()
                         .map(step -> new PreparationStep(step.description))

@@ -58,9 +58,8 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
             var ingredient = ingredients.get(position);
             var ingredientEntity = new IngredientEntity();
             ingredientEntity.recipe = recipeEntity;
-            ingredientEntity.name = ingredient.name();
+            ingredientEntity.description = ingredient.description();
             ingredientEntity.position = position;
-            ingredientEntity.quantity = ingredient.quantity();
             ingredientsEntities.add(ingredientEntity);
         }
         recipeEntity.ingredients = ingredientsEntities;
