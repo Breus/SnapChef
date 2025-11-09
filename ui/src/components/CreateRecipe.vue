@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { createRecipe, getRecipeById, updateRecipe } from "../api/recipeApi.ts";
+import {onMounted, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {createRecipe, getRecipeById, updateRecipe} from "../api/recipeApi.ts";
 import type Ingredient from "../models/domain/Ingredient.ts";
 import type PreparationStep from "../models/domain/PreparationStep.ts";
 import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 import type Recipe from "../models/domain/Recipe.ts";
-import { useAuth } from "../auth/useAuth.ts";
-import { PreparationTime } from "../models/domain/PreparationTime.ts";
+import {useAuth} from "../auth/useAuth.ts";
+import {PreparationTime} from "../models/domain/PreparationTime.ts";
 
 const router = useRouter();
 const route = useRoute();
@@ -20,7 +20,7 @@ const title = ref("");
 const description = ref("");
 const numServings = ref<number>(4);
 const preparationTime = ref<PreparationTime>(PreparationTime.MIN_15_30);
-const ingredients = ref<Ingredient[]>([{name: "", quantity: ""}]);
+const ingredients = ref<Ingredient[]>([{description: ""}]);
 const preparationSteps = ref<PreparationStep[]>([{description: ""}]);
 
 // Form state
@@ -29,7 +29,7 @@ const error = ref<string | null>(null);
 
 // Add a new ingredient field
 const addIngredient = () => {
-    ingredients.value.push({name: "", quantity: ""});
+    ingredients.value.push({description: ""});
 };
 
 // Remove an ingredient field
@@ -72,11 +72,10 @@ const submitForm = async () => {
         isSubmitting.value = true;
         error.value = null;
 
-        // Validate form
         if (!title.value.trim()) {
             throw new Error("Title is required");
         }
-        if (ingredients.value.some((ing) => !ing.name.trim() || !ing.quantity.trim())) {
+        if (ingredients.value.some((ing) => !ing.description.trim())) {
             throw new Error("All ingredient fields must be filled");
         }
         if (preparationSteps.value.some((step) => !step.description.trim())) {
@@ -154,7 +153,9 @@ const cancelEdit = () => {
                     {{ isEditMode ? 'Edit Recipe' : 'Create New Recipe' }}
                 </h1>
                 <p class="mt-2 text-gray-600">
-                    {{ isEditMode ? 'Change the ingredients and steps for your recipe.' : 'Add the ingredients and steps for your recipe.' }}
+                    {{
+                        isEditMode ? 'Change the ingredients and steps for your recipe.' : 'Add the ingredients and steps for your recipe.'
+                    }}
                 </p>
             </div>
 
@@ -236,15 +237,10 @@ const cancelEdit = () => {
 
                         <div v-for="(ingredient, index) in ingredients" :key="index"
                              class="mb-3 flex items-center space-x-2">
-                            <div class="w-1/3">
-                                <input v-model="ingredient.quantity" type="text"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                       placeholder="Quantity" required/>
-                            </div>
                             <div class="flex-1">
-                                <input v-model="ingredient.name" type="text"
+                                <input v-model="ingredient.description" type="text"
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                       placeholder="Ingredient name" required/>
+                                       placeholder="Ingredient description, for example: 3 tomatoes (diced)" required/>
                             </div>
                             <button type="button" @click="removeIngredient(index)"
                                     class="rounded-md p-1 text-gray-400 hover:text-red-500"
@@ -277,7 +273,8 @@ const cancelEdit = () => {
                             <div class="flex-1">
                                 <textarea v-model="step.description" rows="1"
                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                          placeholder="Describe this step" required></textarea>
+                                          placeholder="Instruction step, for example: simmer the tomatoes"
+                                          required></textarea>
                             </div>
                             <button type="button" @click="removeStep(index)"
                                     class="mt-2 rounded-md p-1 text-gray-400 hover:text-red-500"

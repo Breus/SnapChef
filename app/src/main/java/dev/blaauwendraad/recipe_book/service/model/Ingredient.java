@@ -1,3 +1,3 @@
 package dev.blaauwendraad.recipe_book.service.model;
 
-public record Ingredient(String name, String quantity) {}
+public record Ingredient(String description) {}

@@ -291,12 +291,11 @@ onMounted(async () => {
                             Ingredients
                         </h2>
                         <ul class="space-y-2">
-                            <li v-for="ingredient in recipe?.ingredients || []" :key="ingredient.name"
+                            <li v-for="ingredient in recipe?.ingredients || []" :key="ingredient.description"
                                 class="flex items-start">
                                 <span class="mt-2 mr-3 h-2 w-2 flex-shrink-0 rounded-full bg-green-600"></span>
                                 <div>
-                                    <span class="font-medium text-gray-900">{{ ingredient.quantity }}</span>
-                                    <span class="ml-2 text-gray-700">{{ ingredient.name }}</span>
+                                    <span class="font-medium text-gray-800">{{ ingredient.description }}</span>
                                 </div>
                             </li>
                         </ul>

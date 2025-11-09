@@ -23,13 +23,9 @@ public class IngredientEntity extends PanacheEntityBase {
     @SuppressWarnings("NullAway.Init")
     public RecipeEntity recipe;
 
-    @Column(length = 255, nullable = false)
+    @Column(nullable = false)
     @SuppressWarnings("NullAway.Init")
-    public String name;
-
-    @Column(length = 100, nullable = false)
-    @SuppressWarnings("NullAway.Init")
-    public String quantity;
+    public String description;
 
     @Column(nullable = false)
     @SuppressWarnings("NullAway.Init")
