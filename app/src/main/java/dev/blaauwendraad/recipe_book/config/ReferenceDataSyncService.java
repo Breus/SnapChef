@@ -49,7 +49,7 @@ public final class ReferenceDataSyncService {
                 RoleEntity roleEntity = new RoleEntity();
                 roleEntity.roleName = roleName;
                 roleRepository.persistAndFlush(roleEntity);
-                log.infof("Inserted role with description %s", roleName);
+                log.infof("Inserted role with name %s", roleName);
             }
         }
     }
