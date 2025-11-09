@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, ref, nextTick} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {createRecipe, getRecipeById, updateRecipe} from "../api/recipeApi.ts";
 import type Ingredient from "../models/domain/Ingredient.ts";
@@ -27,9 +27,41 @@ const preparationSteps = ref<PreparationStep[]>([{description: ""}]);
 const isSubmitting = ref(false);
 const error = ref<string | null>(null);
 
-// Add a new ingredient field
-const addIngredient = () => {
-    ingredients.value.push({description: ""});
+// Auto-resize function for textareas
+const autoResize = (element: HTMLTextAreaElement) => {
+    element.style.height = 'auto';
+    element.style.height = element.scrollHeight + 'px';
+};
+
+// Handle ingredient input changes
+const onIngredientInput = (index: number, value: string, event: Event) => {
+    if (ingredients.value[index]) {
+        ingredients.value[index].description = value;
+    }
+
+    // Auto-resize the input field if it's a textarea
+    const target = event.target as HTMLTextAreaElement;
+    if (target.tagName === 'TEXTAREA') {
+        autoResize(target);
+    }
+
+    // If typing in the last field and it's not empty, add a new field
+    if (index === ingredients.value.length - 1 && value.trim()) {
+        ingredients.value.push({description: ""});
+        // Auto-resize the new field after it's added to the DOM
+        nextTick(() => {
+            const textareas = document.querySelectorAll('.ingredient-textarea');
+            const newTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
+            if (newTextarea) {
+                autoResize(newTextarea);
+            }
+        });
+    }
+
+    // If field becomes empty and it's not the only one and not the last one, remove it
+    if (!value.trim() && ingredients.value.length > 1 && index !== ingredients.value.length - 1) {
+        ingredients.value.splice(index, 1);
+    }
 };
 
 // Remove an ingredient field
@@ -39,9 +71,33 @@ const removeIngredient = (index: number) => {
     }
 };
 
-// Add a new preparation step field
-const addStep = () => {
-    preparationSteps.value.push({description: ""});
+// Handle preparation step input changes
+const onStepInput = (index: number, value: string, event: Event) => {
+    if (preparationSteps.value[index]) {
+        preparationSteps.value[index].description = value;
+    }
+
+    // Auto-resize the textarea
+    const target = event.target as HTMLTextAreaElement;
+    autoResize(target);
+
+    // If typing in the last field and it's not empty, add a new field
+    if (index === preparationSteps.value.length - 1 && value.trim()) {
+        preparationSteps.value.push({description: ""});
+        // Auto-resize the new field after it's added to the DOM
+        nextTick(() => {
+            const textareas = document.querySelectorAll('.step-textarea');
+            const newTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
+            if (newTextarea) {
+                autoResize(newTextarea);
+            }
+        });
+    }
+
+    // If field becomes empty and it's not the only one and not the last one, remove it
+    if (!value.trim() && preparationSteps.value.length > 1 && index !== preparationSteps.value.length - 1) {
+        preparationSteps.value.splice(index, 1);
+    }
 };
 
 // Remove a preparation step field
@@ -49,6 +105,16 @@ const removeStep = (index: number) => {
     if (preparationSteps.value.length > 1) {
         preparationSteps.value.splice(index, 1);
     }
+};
+
+// Auto-resize all textareas in the form
+const autoResizeAllTextareas = () => {
+    nextTick(() => {
+        const allTextareas = document.querySelectorAll('.ingredient-textarea, .step-textarea');
+        allTextareas.forEach(textarea => {
+            autoResize(textarea as HTMLTextAreaElement);
+        });
+    });
 };
 
 onMounted(async () => {
@@ -59,11 +125,17 @@ onMounted(async () => {
             description.value = recipe.description;
             numServings.value = recipe.numServings;
             preparationTime.value = PreparationTime[recipe.preparationTime as keyof typeof PreparationTime];
-            ingredients.value = recipe.ingredients;
-            preparationSteps.value = recipe.preparationSteps;
+            ingredients.value = [...recipe.ingredients, {description: ""}];
+            preparationSteps.value = [...recipe.preparationSteps, {description: ""}];
+
+            // Auto-resize all textareas after loading the data
+            autoResizeAllTextareas();
         } catch (err) {
             error.value = "Failed to load recipe for editing.";
         }
+    } else {
+        // Auto-resize textareas on initial mount for new recipes
+        autoResizeAllTextareas();
     }
 });
 
@@ -75,11 +147,16 @@ const submitForm = async () => {
         if (!title.value.trim()) {
             throw new Error("Title is required");
         }
-        if (ingredients.value.some((ing) => !ing.description.trim())) {
-            throw new Error("All ingredient fields must be filled");
+
+        // Filter out empty ingredients and steps
+        const validIngredients = ingredients.value.filter(ing => ing.description.trim());
+        const validSteps = preparationSteps.value.filter(step => step.description.trim());
+
+        if (validIngredients.length === 0) {
+            throw new Error("At least one ingredient is required");
         }
-        if (preparationSteps.value.some((step) => !step.description.trim())) {
-            throw new Error("All step fields must be filled");
+        if (validSteps.length === 0) {
+            throw new Error("At least one instruction step is required");
         }
         // Map the selected (label) preparationTime back to the enum key
         const preparationTimeKey = (Object.keys(PreparationTime) as Array<keyof typeof PreparationTime>).find(
@@ -97,8 +174,8 @@ const submitForm = async () => {
             description: description.value.trim(),
             numServings: numServings.value,
             preparationTime: preparationTimeKey as PreparationTime,
-            ingredients: ingredients.value,
-            preparationSteps: preparationSteps.value,
+            ingredients: validIngredients,
+            preparationSteps: validSteps,
         };
 
         if (!isLoggedIn()) {
@@ -235,31 +312,26 @@ const cancelEdit = () => {
                     <div class="mb-8">
                         <h2 class="mb-4 text-xl font-semibold text-gray-900">Ingredients</h2>
 
-                        <div v-for="(ingredient, index) in ingredients" :key="index"
-                             class="mb-3 flex items-center space-x-2">
-                            <div class="flex-1">
-                                <input v-model="ingredient.description" type="text"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                       placeholder="Ingredient description, for example: 3 tomatoes (diced)" required/>
+                        <div v-for="(ingredient, index) in ingredients" :key="index" class="mb-3">
+                            <div class="relative">
+                                <textarea
+                                    :value="ingredient.description"
+                                    @input="onIngredientInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
+                                    rows="1"
+                                    class="ingredient-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 resize-none overflow-hidden"
+                                    placeholder="Add ingredient. Example: 3 tomatoes (diced)"></textarea>
+                                <button
+                                    v-if="ingredients.length > 1 && index !== ingredients.length - 1"
+                                    type="button"
+                                    @click="removeIngredient(index)"
+                                    class="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-red-500 focus:outline-none">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <button type="button" @click="removeIngredient(index)"
-                                    class="rounded-md p-1 text-gray-400 hover:text-red-500"
-                                    :disabled="ingredients.length <= 1">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
                         </div>
-
-                        <button type="button" @click="addIngredient"
-                                class="w-full mt-4 flex items-center justify-center rounded-lg border border-gray-200 px-4 py-3 text-gray-700 hover:border-green-300 hover:bg-green-50 hover:text-green-700 transition-colors duration-200">
-                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                      d="M12 4v16m8-8H4"/>
-                            </svg>
-                            <span class="text-sm font-medium">Add Another Ingredient</span>
-                        </button>
                     </div>
 
                     <!-- Preparation Steps Section -->
@@ -268,33 +340,26 @@ const cancelEdit = () => {
                             <h2 class="text-xl font-semibold text-gray-900">Instructions</h2>
                         </div>
 
-                        <div v-for="(step, index) in preparationSteps" :key="index"
-                             class="mb-3 flex items-start space-x-2">
-                            <div class="flex-1">
-                                <textarea v-model="step.description" rows="1"
-                                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                          placeholder="Instruction step, for example: simmer the tomatoes"
-                                          required></textarea>
+                        <div v-for="(step, index) in preparationSteps" :key="index" class="mb-3">
+                            <div class="relative">
+                                <textarea
+                                    :value="step.description"
+                                    @input="onStepInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
+                                    rows="1"
+                                    class="step-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 resize-none overflow-hidden"
+                                    placeholder="Add instruction step. Example: simmer the tomatoes"></textarea>
+                                <button
+                                    v-if="preparationSteps.length > 1 && index !== preparationSteps.length - 1"
+                                    type="button"
+                                    @click="removeStep(index)"
+                                    class="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-red-500 focus:outline-none">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <button type="button" @click="removeStep(index)"
-                                    class="mt-2 rounded-md p-1 text-gray-400 hover:text-red-500"
-                                    :disabled="preparationSteps.length <= 1">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
                         </div>
-
-                        <!-- Add Step Button - lighter design -->
-                        <button type="button" @click="addStep"
-                                class="w-full mt-4 flex items-center justify-center rounded-lg border border-gray-200  px-4 py-3 text-gray-700 hover:border-green-300 hover:bg-green-50 hover:text-green-700 transition-colors duration-200">
-                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                      d="M12 4v16m8-8H4"/>
-                            </svg>
-                            <span class="text-sm font-medium">Add Another Step</span>
-                        </button>
                     </div>
                 </div>
 
