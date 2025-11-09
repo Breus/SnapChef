@@ -136,7 +136,7 @@ onMounted(async () => {
 
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl px-2 sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-6">
                 <button @click="$router.push('/')"
@@ -284,7 +284,7 @@ onMounted(async () => {
                     </div>
                 </div>
                 <!-- Recipe Body (Main section)-->
-                <div class="space-y-8 p-6">
+                <div class="space-y-8 p-4 sm:p-6">
                     <!-- Ingredients Section -->
                     <div>
                         <h2 class="mb-4 text-xl font-semibold text-gray-900">

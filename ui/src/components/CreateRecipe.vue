@@ -212,7 +212,7 @@ const cancelEdit = () => {
 </script>
 <template>
     <div class="min-h-screen bg-gray-50 py-8">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-6">
                 <button @click="$router.push('/')"
@@ -253,7 +253,7 @@ const cancelEdit = () => {
 
             <!-- Recipe Form -->
             <form @submit.prevent="submitForm" class="overflow-hidden rounded-lg bg-white shadow-lg">
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <!-- Basic Info Section -->
                     <div class="mb-8">
                         <h2 class="mb-4 text-xl font-semibold text-gray-900">Basic Information</h2>
