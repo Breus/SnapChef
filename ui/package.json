@@ -11,7 +11,7 @@
     "dependencies": {
         "@tailwindcss/vite": "^4.1.16",
         "async-mutex": "^0.5.0",
-        "tailwindcss": "^4.1.16",
+        "tailwindcss": "^4.1.17",
         "vue": "^3.5.22",
         "vue-router": "^4.6.3"
     },
