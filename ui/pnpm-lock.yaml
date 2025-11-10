@@ -15,8 +15,8 @@ importers:
         specifier: ^0.5.0
         version: 0.5.0
       tailwindcss:
-        specifier: ^4.1.16
-        version: 4.1.16
+        specifier: ^4.1.17
+        version: 4.1.17
       vue:
         specifier: ^3.5.22
         version: 3.5.22(typescript@5.9.3)
@@ -59,7 +59,7 @@ importers:
         version: 1.0.0(postcss-html@1.8.0)(stylelint@16.25.0(typescript@5.9.3))
       stylelint-config-tailwindcss:
         specifier: ^1.0.0
-        version: 1.0.0(stylelint@16.25.0(typescript@5.9.3))(tailwindcss@4.1.16)
+        version: 1.0.0(stylelint@16.25.0(typescript@5.9.3))(tailwindcss@4.1.17)
       stylelint-scss:
         specifier: ^6.12.1
         version: 6.12.1(stylelint@16.25.0(typescript@5.9.3))
@@ -1633,6 +1633,9 @@ packages:
   tailwindcss@4.1.16:
     resolution: {integrity: sha512-pONL5awpaQX4LN5eiv7moSiSPd/DLDzKVRJz8Q9PgzmAdd1R4307GQS2ZpfiN7ZmekdQrfhZZiSE5jkLR4WNaA==}
 
+  tailwindcss@4.1.17:
+    resolution: {integrity: sha512-j9Ee2YjuQqYT9bbRTfTZht9W/ytp5H+jJpZKiYdP/bpnXARAuELt9ofP0lPnmHjbga7SNQIxdTAXCmtKVYjN+Q==}
+
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
@@ -3199,10 +3202,10 @@ snapshots:
       stylelint: 16.25.0(typescript@5.9.3)
       stylelint-config-recommended: 17.0.0(stylelint@16.25.0(typescript@5.9.3))
 
-  stylelint-config-tailwindcss@1.0.0(stylelint@16.25.0(typescript@5.9.3))(tailwindcss@4.1.16):
+  stylelint-config-tailwindcss@1.0.0(stylelint@16.25.0(typescript@5.9.3))(tailwindcss@4.1.17):
     dependencies:
       stylelint: 16.25.0(typescript@5.9.3)
-      tailwindcss: 4.1.16
+      tailwindcss: 4.1.17
 
   stylelint-scss@6.12.1(stylelint@16.25.0(typescript@5.9.3)):
     dependencies:
@@ -3280,6 +3283,8 @@ snapshots:
       strip-ansi: 6.0.1
 
   tailwindcss@4.1.16: {}
+
+  tailwindcss@4.1.17: {}
 
   tapable@2.3.0: {}
 
