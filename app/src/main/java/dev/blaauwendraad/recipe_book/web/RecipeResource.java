@@ -32,6 +32,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.io.File;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
@@ -69,6 +70,7 @@ public class RecipeResource {
                         recipeSummary.id(),
                         recipeSummary.title(),
                         recipeSummary.description(),
+                        recipeSummary.imageName(),
                         recipeSummary.numServings(),
                         recipeSummary.preparationTime(),
                         recipeSummary.author() == null
@@ -93,6 +95,7 @@ public class RecipeResource {
                 recipe.id(),
                 recipe.title(),
                 recipe.description(),
+                recipe.imageName(),
                 recipe.numServings(),
                 recipe.preparationTime(),
                 recipe.author() == null
@@ -107,6 +110,25 @@ public class RecipeResource {
                         .toList()));
     }
 
+    @GET
+    @Path("/{recipeId}/image")
+    @PermitAll
+    @Produces("image/jpeg")
+    public Response getRecipeImage(@PathParam("recipeId") Long id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        if (recipe == null) {
+            throw new NotFoundException("Recipe not found with recipeId: " + id);
+        }
+        if (recipe.imageName() == null) {
+            throw new NotFoundException("Recipe with recipeId: " + id + " has no image");
+        }
+        File imageFile = new File("data/images/" + recipe.imageName());
+        if (!imageFile.exists()) {
+            throw new NotFoundException("Image not found for recipeId: " + id);
+        }
+        return Response.ok(imageFile).build();
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -115,6 +137,7 @@ public class RecipeResource {
         Long recipeId = recipeService.createRecipe(
                 newRecipe.title(),
                 newRecipe.description(),
+                newRecipe.imageName(),
                 newRecipe.numServings(),
                 newRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
@@ -138,6 +161,7 @@ public class RecipeResource {
                 recipeId,
                 updatedRecipe.title(),
                 updatedRecipe.description(),
+                updatedRecipe.imageName(),
                 updatedRecipe.numServings(),
                 updatedRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
