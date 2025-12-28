@@ -4,7 +4,7 @@ import dev.blaauwendraad.recipe_book.data.model.RefreshTokenEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RefreshTokenRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
-import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationValidationException;
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -64,7 +64,7 @@ class UserAuthenticationTest {
     }
 
     @Test
-    void login() throws UserLoginException {
+    void login() throws UserAuthenticationException {
         // Given
         var USER_EMAIL = "breus-test@example.com";
         var REFRESH_TOKEN = "refresh-test-token";
