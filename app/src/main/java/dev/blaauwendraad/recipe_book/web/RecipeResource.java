@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.web;
 
+import dev.blaauwendraad.recipe_book.service.ImageService;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
@@ -32,20 +33,21 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.File;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
 @Path("/api/recipes")
 public class RecipeResource {
     private final RecipeService recipeService;
+    private final ImageService imageService;
 
     @Inject
     JsonWebToken jwt;
 
     @Inject
-    public RecipeResource(RecipeService recipeService) {
+    public RecipeResource(RecipeService recipeService, ImageService imageService) {
         this.recipeService = recipeService;
+        this.imageService = imageService;
     }
 
     @GET
@@ -122,8 +124,8 @@ public class RecipeResource {
         if (recipe.imageName() == null) {
             throw new NotFoundException("Recipe with recipeId: " + id + " has no image");
         }
-        File imageFile = new File("data/images/" + recipe.imageName());
-        if (!imageFile.exists()) {
+        byte[] imageFile = imageService.getObject(recipe.imageName());
+        if (imageFile == null) {
             throw new NotFoundException("Image not found for recipeId: " + id);
         }
         return Response.ok(imageFile).build();
