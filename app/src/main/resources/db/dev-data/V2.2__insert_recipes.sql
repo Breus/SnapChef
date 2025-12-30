@@ -1,7 +1,7 @@
 -- Insert demo recipes
 INSERT INTO recipe (title, description, image_name, num_servings, preparation_time, author_id)
 SELECT title, description, image_name, num_servings, preparation_time, ua.id
-FROM (VALUES ('Spaghetti Bolognese', 'Classic Italian pasta dish.', 'spaghett.jpg', 4, 'MIN_0_15', 'Robert'),
+FROM (VALUES ('Spaghetti Bolognese', 'Classic Italian pasta dish.', 'spaghetti.jpg', 4, 'MIN_0_15', 'Robert'),
              ('Chicken Curry', 'Spicy Indian-style curry with tender chicken.', null, 4, 'MIN_0_15', 'Breus'),
              ('Caesar Salad', 'Classic romaine lettuce salad with creamy dressing.', null, 4, 'MIN_15_30', 'ChefMaster'),
              ('Chocolate Chip Cookies', 'Soft and chewy homemade cookies.', null, 4, 'MIN_15_30', 'FoodLover'),

@@ -1,0 +1,16 @@
+metadata_dir = "/var/lib/garage/meta"
+data_dir = "/var/lib/garage/data"
+db_engine = "lmdb"
+metadata_auto_snapshot_interval = "6h"
+
+replication_factor = 1
+compression_level = 1
+
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "host.docker.internal:3901" # IP of host
+rpc_secret = "46f752efc771a91a5314ec709f2bf772942393ad84e4487ef9b863cf16a3a054"
+
+[s3_api]
+s3_region = "garage"
+api_bind_addr = "[::]:3900"
+root_domain = ".s3.garage"

@@ -30,7 +30,7 @@ public class UserService {
     public void updateEmail(Long userId, String newEmail, String currentPassword) throws UserAuthenticationException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new UserAuthenticationException("No user account found for the provided email address.");
+            throw new UserAuthenticationException("No user account found for the provided user ID.");
         }
         if (!BcryptUtil.matches(currentPassword, userAccountEntity.passwordHash)) {
             throw new UserAuthenticationException("Invalid password provided.");
@@ -44,7 +44,7 @@ public class UserService {
             throws UserAuthenticationException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new UserAuthenticationException("No user account found for the provided email address.");
+            throw new UserAuthenticationException("No user account found for the provided user ID.");
         }
         if (!BcryptUtil.matches(currentPassword, userAccountEntity.passwordHash)) {
             throw new UserAuthenticationException("Invalid password provided.");
