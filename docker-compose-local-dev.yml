@@ -11,6 +11,16 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  garage:
+    image: dxflrs/garage:v2.1.0
+    ports:
+      - "3900:3900" # S3 API
+      - "3901:3901" # RPC
+    volumes:
+      - ./garage.toml:/etc/garage.toml
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+
   quarkus:
     build:
       context: ./app
@@ -23,6 +33,9 @@ services:
       - "8081:8081"
     volumes:
       - images:/deployments/data/images
+
 volumes:
   pg_data:
+  garage_meta:
+  garage_data:
   images:

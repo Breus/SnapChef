@@ -32,6 +32,7 @@ public final class ReferenceDataSyncService {
         validateRoles();
         if (profile.isPresent() && "dev".equals(profile.get())) {
             demoDataSyncService.insertDemoData();
+            demoDataSyncService.insertDemoImage();
         }
     }
 
