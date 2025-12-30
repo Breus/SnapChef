@@ -1,5 +1,6 @@
 package dev.blaauwendraad.recipe_book.web;
 
+import dev.blaauwendraad.recipe_book.service.ImageService;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
@@ -38,13 +39,15 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 @Path("/api/recipes")
 public class RecipeResource {
     private final RecipeService recipeService;
+    private final ImageService imageService;
 
     @Inject
     JsonWebToken jwt;
 
     @Inject
-    public RecipeResource(RecipeService recipeService) {
+    public RecipeResource(RecipeService recipeService, ImageService imageService) {
         this.recipeService = recipeService;
+        this.imageService = imageService;
     }
 
     @GET
@@ -69,6 +72,7 @@ public class RecipeResource {
                         recipeSummary.id(),
                         recipeSummary.title(),
                         recipeSummary.description(),
+                        recipeSummary.imageName(),
                         recipeSummary.numServings(),
                         recipeSummary.preparationTime(),
                         recipeSummary.author() == null
@@ -93,6 +97,7 @@ public class RecipeResource {
                 recipe.id(),
                 recipe.title(),
                 recipe.description(),
+                recipe.imageName(),
                 recipe.numServings(),
                 recipe.preparationTime(),
                 recipe.author() == null
@@ -107,6 +112,25 @@ public class RecipeResource {
                         .toList()));
     }
 
+    @GET
+    @Path("/{recipeId}/image")
+    @PermitAll
+    @Produces("image/jpeg")
+    public Response getRecipeImage(@PathParam("recipeId") Long id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        if (recipe == null) {
+            throw new NotFoundException("Recipe not found with recipeId: " + id);
+        }
+        if (recipe.imageName() == null) {
+            throw new NotFoundException("Recipe with recipeId: " + id + " has no image");
+        }
+        byte[] imageFile = imageService.getObject(recipe.imageName());
+        if (imageFile == null) {
+            throw new NotFoundException("Image not found for recipeId: " + id);
+        }
+        return Response.ok(imageFile).build();
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -115,6 +139,7 @@ public class RecipeResource {
         Long recipeId = recipeService.createRecipe(
                 newRecipe.title(),
                 newRecipe.description(),
+                newRecipe.imageName(),
                 newRecipe.numServings(),
                 newRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
@@ -138,6 +163,7 @@ public class RecipeResource {
                 recipeId,
                 updatedRecipe.title(),
                 updatedRecipe.description(),
+                updatedRecipe.imageName(),
                 updatedRecipe.numServings(),
                 updatedRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
