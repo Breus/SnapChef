@@ -1,11 +1,10 @@
 import type UserAccount from "../models/domain/UserAccount.ts";
-import type UserAccountResponse from "../models/dto/UserAccountResponse.ts";
 import { get, HttpError, put } from "./httpClient.ts";
 
 export const getUser = async (userId: number): Promise<UserAccount> => {
     try {
-        const user = await get<UserAccountResponse>(`/users/${userId}`, {auth: "accessToken"});
-        return user.userAccount;
+        const user = await get<UserAccount>(`/users/${userId}`, {auth: "accessToken"});
+        return user;
     } catch (error) {
         console.error("Error fetching user: ", error);
         throw error;

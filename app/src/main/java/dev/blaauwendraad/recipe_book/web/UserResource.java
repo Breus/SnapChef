@@ -6,7 +6,6 @@ import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import dev.blaauwendraad.recipe_book.web.model.UpdateEmailRequest;
 import dev.blaauwendraad.recipe_book.web.model.UpdatePasswordRequest;
 import dev.blaauwendraad.recipe_book.web.model.UserAccountDto;
-import dev.blaauwendraad.recipe_book.web.model.UserAccountResponse;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -39,12 +38,12 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public UserAccountResponse getUser(@PathParam("userId") Long userId) {
+    public UserAccountDto getUser(@PathParam("userId") Long userId) {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to get other user");
         }
         UserAccount user = userService.getUser(userId);
-        return new UserAccountResponse(new UserAccountDto(user.id(), user.username(), user.emailAddress()));
+        return new UserAccountDto(user.id(), user.username(), user.emailAddress());
     }
 
     @PUT

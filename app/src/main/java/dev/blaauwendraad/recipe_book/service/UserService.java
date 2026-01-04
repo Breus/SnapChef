@@ -22,7 +22,7 @@ public class UserService {
     public UserAccount getUser(Long userId) {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new NotFoundException("User with userId " + userId + " does not exist");
+            throw new NotFoundException("User with given userId does not exist");
         }
         return UserAccountConverter.toUserAccount(userAccountEntity);
     }
@@ -31,7 +31,7 @@ public class UserService {
     public void updateEmail(Long userId, String newEmail, String currentPassword) throws UserAuthenticationException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new UserAuthenticationException("User with userId " + userId + " does not exist");
+            throw new NotFoundException("User with given userId does not exist");
         }
         if (!BcryptUtil.matches(currentPassword, userAccountEntity.passwordHash)) {
             throw new UserAuthenticationException("Invalid password provided.");
@@ -49,10 +49,10 @@ public class UserService {
             throws UserAuthenticationException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new UserAuthenticationException("No user account found for the provided email address.");
+            throw new NotFoundException("User with given userId does not exist");
         }
         if (!BcryptUtil.matches(currentPassword, userAccountEntity.passwordHash)) {
-            throw new UserAuthenticationException("Invalid password provided.");
+            throw new UserAuthenticationException("Current password is incorrect.");
         }
         userAccountEntity.passwordHash = BcryptUtil.bcryptHash(newPassword);
         userRepository.persist(userAccountEntity);
