@@ -2,7 +2,7 @@ package dev.blaauwendraad.recipe_book.web;
 
 import dev.blaauwendraad.recipe_book.service.UserAuthenticationService;
 import dev.blaauwendraad.recipe_book.service.exception.AccessTokenRefreshException;
-import dev.blaauwendraad.recipe_book.service.exception.UserLoginException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
 import dev.blaauwendraad.recipe_book.service.exception.UserRegistrationException;
 import dev.blaauwendraad.recipe_book.service.model.AuthenticationDetails;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
@@ -35,7 +35,8 @@ public class UserAuthenticationResource {
     @POST
     @PermitAll
     @Path("/login")
-    public LoginResponse login(@Valid @NotNull LoginAttemptRequest loginAttemptRequest) throws UserLoginException {
+    public LoginResponse login(@Valid @NotNull LoginAttemptRequest loginAttemptRequest)
+            throws UserAuthenticationException {
         AuthenticationDetails loginDetails =
                 userAuthenticationService.login(loginAttemptRequest.emailAddress(), loginAttemptRequest.password());
         return new LoginResponse(
