@@ -3,12 +3,28 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "quarterly"
   - package-ecosystem: "gradle"
     directory: "/app"
     schedule:
-      interval: "weekly"
+      interval: "quarterly"
+    dependencies-backend-production:
+      dependency-type: "production"
+      applies-to: [version-updates, security-updates]
+      patterns: "*"
+    dependencies-backend-development:
+      dependency-type: "development"
+      applies-to: [version-updates, security-updates]
+      patterns: "*"
   - package-ecosystem: "npm"
     directory: "/ui"
     schedule:
-      interval: "weekly"
+      interval: "quarterly"
+    dependencies-frontend-production:
+      dependency-type: "production"
+      applies-to: [version-updates, security-updates]
+      patterns: "*"
+    dependencies-frontend-development:
+      dependency-type: "development"
+      applies-to: [version-updates, security-updates]
+      patterns: "*"
