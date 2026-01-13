@@ -11,9 +11,9 @@
     "dependencies": {
         "@tailwindcss/vite": "^4.1.18",
         "async-mutex": "^0.5.0",
-        "tailwindcss": "^4.1.16",
+        "tailwindcss": "^4.1.18",
         "vue": "^3.5.25",
-        "vue-router": "^4.6.3"
+        "vue-router": "^4.6.4"
     },
     "devDependencies": {
         "@eslint/css": "^0.14.1",
