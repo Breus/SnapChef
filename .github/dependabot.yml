@@ -7,17 +7,11 @@ updates:
     assignees:
       - "Breus"
       - "EmielBoss"
-    reviewers:
-      - "Breus"
-      - "EmielBoss"
   - package-ecosystem: "gradle"
     directory: "/app"
     schedule:
       interval: "quarterly"
     assignees:
-      - "Breus"
-      - "EmielBoss"
-    reviewers:
       - "Breus"
       - "EmielBoss"
     groups:
@@ -32,9 +26,6 @@ updates:
     schedule:
       interval: "quarterly"
     assignees:
-      - "Breus"
-      - "EmielBoss"
-    reviewers:
       - "Breus"
       - "EmielBoss"
     groups:
