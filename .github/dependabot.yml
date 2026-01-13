@@ -4,10 +4,22 @@ updates:
     directory: "/"
     schedule:
       interval: "quarterly"
+    assignees:
+      - "Breus"
+      - "EmielBoss"
+    reviewers:
+      - "Breus"
+      - "EmielBoss"
   - package-ecosystem: "gradle"
     directory: "/app"
     schedule:
       interval: "quarterly"
+    assignees:
+      - "Breus"
+      - "EmielBoss"
+    reviewers:
+      - "Breus"
+      - "EmielBoss"
     groups:
       dependencies-backend-production:
         dependency-type: "production"
@@ -19,6 +31,12 @@ updates:
     directory: "/ui"
     schedule:
       interval: "quarterly"
+    assignees:
+      - "Breus"
+      - "EmielBoss"
+    reviewers:
+      - "Breus"
+      - "EmielBoss"
     groups:
       dependencies-frontend-production:
         dependency-type: "production"
