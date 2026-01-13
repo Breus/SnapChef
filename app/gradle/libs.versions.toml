@@ -1,7 +1,7 @@
 [versions]
 assertj = "3.27.6"
-errorprone = "2.45.0"
-errorprone-plugin = "4.3.0"
+errorprone = "2.46.0"
+errorprone-plugin = "4.4.0"
 mockito-junit = "5.21.0"
 nullaway = "0.12.15"
 palantir-java-format = "2.73.0"
