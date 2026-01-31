@@ -8,6 +8,7 @@ import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 import {useAuth} from "../auth/useAuth.ts";
 import {PreparationTime} from "../models/domain/PreparationTime.ts";
+import { VueDraggableNext } from 'vue-draggable-next';
 
 const router = useRouter();
 const route = useRoute();
@@ -26,6 +27,16 @@ const preparationSteps = ref<PreparationStep[]>([{description: ""}]);
 // Form state
 const isSubmitting = ref(false);
 const error = ref<string | null>(null);
+
+// Drag and drop state
+const ingredientsReorderMode = ref(false);
+const stepsReorderMode = ref(false);
+const isMobile = ref(false);
+
+// Check if device is mobile
+const checkMobile = () => {
+    isMobile.value = window.innerWidth < 768;
+};
 
 // Auto-resize function for textareas
 const autoResize = (element: HTMLTextAreaElement) => {
@@ -107,6 +118,39 @@ const removeStep = (index: number) => {
     }
 };
 
+// Handle drag end event for ingredients
+const onIngredientDragEnd = () => {
+    // The array is automatically updated by VueDraggableNext
+    // We just need to trigger a re-render if needed
+    nextTick(() => {
+        autoResizeAllTextareas();
+    });
+};
+
+// Handle drag end event for preparation steps
+const onStepDragEnd = () => {
+    // The array is automatically updated by VueDraggableNext
+    // We just need to trigger a re-render if needed
+    nextTick(() => {
+        autoResizeAllTextareas();
+    });
+};
+
+// Toggle reorder modes
+const toggleIngredientsReorder = () => {
+    ingredientsReorderMode.value = !ingredientsReorderMode.value;
+    if (ingredientsReorderMode.value) {
+        stepsReorderMode.value = false; // Turn off other reorder mode
+    }
+};
+
+const toggleStepsReorder = () => {
+    stepsReorderMode.value = !stepsReorderMode.value;
+    if (stepsReorderMode.value) {
+        ingredientsReorderMode.value = false; // Turn off other reorder mode
+    }
+};
+
 // Auto-resize all textareas in the form
 const autoResizeAllTextareas = () => {
     nextTick(() => {
@@ -118,6 +162,10 @@ const autoResizeAllTextareas = () => {
 };
 
 onMounted(async () => {
+    // Check if mobile on mount
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     if (isEditMode && recipeId) {
         try {
             const recipe: Recipe = await getRecipeById(Number(recipeId));
@@ -310,56 +358,136 @@ const cancelEdit = () => {
 
                     <!-- Ingredients Section -->
                     <div class="mb-8">
-                        <h2 class="mb-4 text-xl font-semibold text-gray-900">Ingredients</h2>
-
-                        <div v-for="(ingredient, index) in ingredients" :key="index" class="mb-3">
-                            <div class="relative">
-                                <textarea
-                                    :value="ingredient.description"
-                                    @input="onIngredientInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
-                                    rows="1"
-                                    class="ingredient-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 resize-none overflow-hidden"
-                                    placeholder="Add ingredient. Example: 3 tomatoes (diced)"></textarea>
-                                <button
-                                    v-if="ingredients.length > 1 && index !== ingredients.length - 1"
-                                    type="button"
-                                    @click="removeIngredient(index)"
-                                    class="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-red-500 focus:outline-none">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
+                        <div class="mb-4 flex items-center justify-between">
+                            <h2 class="text-xl font-semibold text-gray-900">Ingredients</h2>
+                            <!-- Mobile only reorder button -->
+                            <button
+                                v-if="isMobile"
+                                type="button"
+                                @click="toggleIngredientsReorder"
+                                :class="[
+                                    'flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+                                    ingredientsReorderMode 
+                                        ? 'bg-green-100 text-green-700 border border-green-300' 
+                                        : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                                ]">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+                                </svg>
+                                {{ ingredientsReorderMode ? 'Done' : 'Order' }}
+                            </button>
                         </div>
+
+                        <VueDraggableNext 
+                            v-model="ingredients" 
+                            @end="onIngredientDragEnd"
+                            handle=".ingredient-drag-handle"
+                            :disabled="isMobile && !ingredientsReorderMode"
+                            ghost-class="drag-ghost"
+                            chosen-class="drag-chosen"
+                            drag-class="drag-dragging">
+                            <div v-for="(ingredient, index) in ingredients" :key="index" :class="['mb-3', isMobile && !ingredientsReorderMode ? '' : 'flex items-center']">
+                                <!-- Drag handle - only for non-last items and only when visible -->
+                                <div 
+                                    v-if="index !== ingredients.length - 1 && (!isMobile || ingredientsReorderMode)"
+                                    class="ingredient-drag-handle flex-shrink-0 w-5 mx-2 cursor-grab active:cursor-grabbing opacity-60 hover:opacity-100">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+                                    </svg>
+                                </div>
+                                <!-- Empty space placeholder for last item when drag handles are visible -->
+                                <div 
+                                    v-if="index === ingredients.length - 1 && (!isMobile || ingredientsReorderMode)"
+                                    class="flex-shrink-0 w-5 mx-2">
+                                </div>
+                                
+                                <div class="relative flex-1">
+                                    <textarea
+                                        :value="ingredient.description"
+                                        @input="onIngredientInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
+                                        rows="1"
+                                        class="ingredient-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 resize-none overflow-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                        placeholder="Add ingredient. Example: 3 tomatoes (diced)"></textarea>
+                                    <button
+                                        v-if="ingredients.length > 1 && index !== ingredients.length - 1"
+                                        type="button"
+                                        @click="removeIngredient(index)"
+                                        class="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-red-500 focus:outline-none">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </VueDraggableNext>
                     </div>
 
                     <!-- Preparation Steps Section -->
                     <div>
                         <div class="mb-4 flex items-center justify-between">
                             <h2 class="text-xl font-semibold text-gray-900">Instructions</h2>
+                            <!-- Mobile only reorder button -->
+                            <button
+                                v-if="isMobile"
+                                type="button"
+                                @click="toggleStepsReorder"
+                                :class="[
+                                    'flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+                                    stepsReorderMode 
+                                        ? 'bg-green-100 text-green-700 border border-green-300' 
+                                        : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                                ]">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+                                </svg>
+                                {{ stepsReorderMode ? 'Done' : 'Order' }}
+                            </button>
                         </div>
 
-                        <div v-for="(step, index) in preparationSteps" :key="index" class="mb-3">
-                            <div class="relative">
-                                <textarea
-                                    :value="step.description"
-                                    @input="onStepInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
-                                    rows="1"
-                                    class="step-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 resize-none overflow-hidden"
-                                    placeholder="Add instruction step. Example: simmer the tomatoes"></textarea>
-                                <button
-                                    v-if="preparationSteps.length > 1 && index !== preparationSteps.length - 1"
-                                    type="button"
-                                    @click="removeStep(index)"
-                                    class="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-red-500 focus:outline-none">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        <VueDraggableNext 
+                            v-model="preparationSteps" 
+                            @end="onStepDragEnd"
+                            handle=".step-drag-handle"
+                            :disabled="isMobile && !stepsReorderMode"
+                            ghost-class="drag-ghost"
+                            chosen-class="drag-chosen"
+                            drag-class="drag-dragging">
+                            <div v-for="(step, index) in preparationSteps" :key="index" :class="['mb-3', isMobile && !stepsReorderMode ? '' : 'flex items-center']">
+                                <!-- Drag handle - only for non-last items and only when visible -->
+                                <div 
+                                    v-if="index !== preparationSteps.length - 1 && (!isMobile || stepsReorderMode)"
+                                    class="step-drag-handle flex-shrink-0 w-5 mx-2 cursor-grab active:cursor-grabbing opacity-60 hover:opacity-100">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
                                     </svg>
-                                </button>
+                                </div>
+                                <!-- Empty space placeholder for last item when drag handles are visible -->
+                                <div 
+                                    v-if="index === preparationSteps.length - 1 && (!isMobile || stepsReorderMode)"
+                                    class="flex-shrink-0 w-5 mx-2">
+                                </div>
+                                
+                                <div class="relative flex-1">
+                                    <textarea
+                                        :value="step.description"
+                                        @input="onStepInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
+                                        rows="1"
+                                        class="step-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 resize-none overflow-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                        placeholder="Add instruction step. Example: simmer the tomatoes"></textarea>
+                                    <button
+                                        v-if="preparationSteps.length > 1 && index !== preparationSteps.length - 1"
+                                        type="button"
+                                        @click="removeStep(index)"
+                                        class="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-red-500 focus:outline-none">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </VueDraggableNext>
                     </div>
                 </div>
 
@@ -381,3 +509,80 @@ const cancelEdit = () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.drag-ghost {
+    opacity: 0.4;
+    background: #f3f4f6;
+    border: 2px dashed #9ca3af;
+    border-radius: 8px;
+}
+
+.drag-chosen {
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+}
+
+.drag-dragging {
+    opacity: 0.9;
+    transform: rotate(1deg);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+}
+
+/* Drag handle styles - no background, just lines */
+.ingredient-drag-handle,
+.step-drag-handle {
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.ingredient-drag-handle:hover,
+.step-drag-handle:hover {
+    opacity: 1 !important;
+}
+
+/* Desktop hover behavior - show drag handles on hover */
+@media (min-width: 768px) {
+    .ingredient-drag-handle,
+    .step-drag-handle {
+        opacity: 0.6;
+    }
+    
+    .ingredient-drag-handle:hover,
+    .step-drag-handle:hover {
+        opacity: 1;
+    }
+}
+
+/* Ensure textareas don't interfere with drag handle */
+.ingredient-textarea:focus,
+.step-textarea:focus {
+    z-index: 20;
+}
+
+/* Smooth transitions for drag operations */
+* {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Reorder button animations */
+button {
+    transition: all 0.2s ease;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+    .drag-ghost,
+    .drag-chosen,
+    .drag-dragging {
+        margin: 0 -4px;
+        padding: 0 4px;
+    }
+}
+</style>

@@ -20,6 +20,9 @@ importers:
       vue:
         specifier: ^3.5.25
         version: 3.5.26(typescript@5.9.3)
+      vue-draggable-next:
+        specifier: ^2.3.0
+        version: 2.3.0(sortablejs@1.15.6)(vue@3.5.26(typescript@5.9.3))
       vue-router:
         specifier: ^4.6.4
         version: 4.6.4(vue@3.5.26(typescript@5.9.3))
@@ -1548,6 +1551,9 @@ packages:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
     engines: {node: '>=10'}
 
+  sortablejs@1.15.6:
+    resolution: {integrity: sha512-aNfiuwMEpfBM/CN6LY0ibyhxPfPbyFeBTYJKCvzkJ2GkUpazIt3H+QIPAMHwqQ7tMKaHz1Qj+rJJCqljnf4p3A==}
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -1764,6 +1770,12 @@ packages:
 
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
+
+  vue-draggable-next@2.3.0:
+    resolution: {integrity: sha512-ymbY0UIwfSdg0iDN/iyNNwUrTqZ/6KbPryzsvTNXBLuDCuOBdNijSK8yynNtmiSj6RapTPQfjLGQdJrZkzBd2w==}
+    peerDependencies:
+      sortablejs: ^1.14.0
+      vue: ^3.5.17
 
   vue-eslint-parser@10.2.0:
     resolution: {integrity: sha512-CydUvFOQKD928UzZhTp4pr2vWz1L+H99t7Pkln2QSPdvmURT0MoC4wUccfCnuEaihNsu9aYYyk+bep8rlfkUXw==}
@@ -3145,6 +3157,8 @@ snapshots:
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
 
+  sortablejs@1.15.6: {}
+
   source-map-js@1.2.1: {}
 
   string-width@4.2.3:
@@ -3353,6 +3367,11 @@ snapshots:
       lightningcss: 1.30.2
 
   vscode-uri@3.1.0: {}
+
+  vue-draggable-next@2.3.0(sortablejs@1.15.6)(vue@3.5.26(typescript@5.9.3)):
+    dependencies:
+      sortablejs: 1.15.6
+      vue: 3.5.26(typescript@5.9.3)
 
   vue-eslint-parser@10.2.0(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
