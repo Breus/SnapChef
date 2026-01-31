@@ -40,8 +40,26 @@ const checkMobile = () => {
 
 // Auto-resize function for textareas
 const autoResize = (element: HTMLTextAreaElement) => {
+    // Temporarily set height to auto to get proper scrollHeight
     element.style.height = 'auto';
-    element.style.height = element.scrollHeight + 'px';
+    
+    // Get the actual scrollHeight which accounts for both content and placeholder
+    let newHeight = element.scrollHeight;
+    
+    // If textarea is empty, ensure it's tall enough for the placeholder
+    if (!element.value.trim()) {
+        // Temporarily set the placeholder as value to measure its height
+        const originalValue = element.value;
+        element.value = element.placeholder;
+        element.style.height = 'auto';
+        const placeholderHeight = element.scrollHeight;
+        
+        // Restore original value
+        element.value = originalValue;
+        newHeight = Math.max(placeholderHeight, 44);
+    }
+    
+    element.style.height = newHeight + 'px';
 };
 
 // Handle ingredient input changes
@@ -59,13 +77,9 @@ const onIngredientInput = (index: number, value: string, event: Event) => {
     // If typing in the last field and it's not empty, add a new field
     if (index === ingredients.value.length - 1 && value.trim()) {
         ingredients.value.push({description: ""});
-        // Auto-resize the new field after it's added to the DOM
+        // Auto-resize all textareas after the new field is added to the DOM
         nextTick(() => {
-            const textareas = document.querySelectorAll('.ingredient-textarea');
-            const newTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
-            if (newTextarea) {
-                autoResize(newTextarea);
-            }
+            autoResizeAllTextareas();
         });
     }
 
@@ -95,13 +109,9 @@ const onStepInput = (index: number, value: string, event: Event) => {
     // If typing in the last field and it's not empty, add a new field
     if (index === preparationSteps.value.length - 1 && value.trim()) {
         preparationSteps.value.push({description: ""});
-        // Auto-resize the new field after it's added to the DOM
+        // Auto-resize all textareas after the new field is added to the DOM
         nextTick(() => {
-            const textareas = document.querySelectorAll('.step-textarea');
-            const newTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
-            if (newTextarea) {
-                autoResize(newTextarea);
-            }
+            autoResizeAllTextareas();
         });
     }
 
@@ -177,13 +187,17 @@ onMounted(async () => {
             preparationSteps.value = [...recipe.preparationSteps, {description: ""}];
 
             // Auto-resize all textareas after loading the data
-            autoResizeAllTextareas();
+            nextTick(() => {
+                autoResizeAllTextareas();
+            });
         } catch (err) {
             error.value = "Failed to load recipe for editing.";
         }
     } else {
         // Auto-resize textareas on initial mount for new recipes
-        autoResizeAllTextareas();
+        nextTick(() => {
+            autoResizeAllTextareas();
+        });
     }
 });
 
@@ -406,7 +420,7 @@ const cancelEdit = () => {
                                         :value="ingredient.description"
                                         @input="onIngredientInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
                                         rows="1"
-                                        class="ingredient-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 resize-none overflow-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                        class="ingredient-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 resize-none overflow-hidden min-h-[44px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                         placeholder="Add ingredient. Example: 3 tomatoes (diced)"></textarea>
                                     <button
                                         v-if="ingredients.length > 1 && index !== ingredients.length - 1"
@@ -473,7 +487,7 @@ const cancelEdit = () => {
                                         :value="step.description"
                                         @input="onStepInput(index, ($event.target as HTMLTextAreaElement).value, $event)"
                                         rows="1"
-                                        class="step-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 resize-none overflow-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                        class="step-textarea bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pr-10 resize-none overflow-hidden min-h-[44px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                                         placeholder="Add instruction step. Example: simmer the tomatoes"></textarea>
                                     <button
                                         v-if="preparationSteps.length > 1 && index !== preparationSteps.length - 1"
