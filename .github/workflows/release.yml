@@ -95,10 +95,10 @@ jobs:
                 POSTGRES_USER: quarkus_user
                 POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
                 POSTGRES_DB: recipe_book
+              networks: [snapchef]
+              restart: unless-stopped
               volumes:
                 - pg_data:/var/lib/postgresql/data
-              ports:
-                - "5432:5432"
             quarkus:
               image: ${{ env.GHCR_REPO }}/backend:${{ env.VERSION }}
               environment:
@@ -106,11 +106,15 @@ jobs:
                 PUB_KEY_LOCATION: file:/keys/publicKey.pem
                 PRIV_KEY_LOCATION: file:/keys/privateKey.pem
               ports:
-                - "8081:8081"
+                - "localhost:8081:8081"
+              networks: [snapchef]
+              restart: unless-stopped
               volumes:
                 - /opt/snapchef/keys:/keys:ro
               depends_on:
                 - postgres
+          networks:
+            snapchef:
           volumes:
             pg_data:
           EOF
