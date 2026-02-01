@@ -106,7 +106,7 @@ jobs:
                 PUB_KEY_LOCATION: file:/keys/publicKey.pem
                 PRIV_KEY_LOCATION: file:/keys/privateKey.pem
               ports:
-                - "localhost:8081:8081"
+                - "127.0.0.1:8081:8081"
               networks: [snapchef]
               restart: unless-stopped
               volumes:
