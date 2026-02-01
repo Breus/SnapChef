@@ -13,7 +13,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 public class PostgresResource implements QuarkusTestResourceLifecycleManager {
 
     private final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:latest").withStartupTimeout(Duration.ofSeconds(60));
+            new PostgreSQLContainer<>("postgres:18-alpine").withStartupTimeout(Duration.ofSeconds(60));
 
     @Override
     public Map<String, String> start() {
