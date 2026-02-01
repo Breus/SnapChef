@@ -117,6 +117,8 @@ jobs:
             snapchef:
           volumes:
             pg_data:
+              name: snapchef_pg_data
+              external: true
           EOF
 
       - name: Attach docker-compose file to release
