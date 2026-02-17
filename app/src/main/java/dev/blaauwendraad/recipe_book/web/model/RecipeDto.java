@@ -8,7 +8,7 @@ public record RecipeDto(
         Long id,
         String title,
         @Nullable String description,
-        @Nullable String imageName,
+        Boolean hasImage,
         Integer numServings,
         PreparationTime preparationTime,
         @Nullable RecipeAuthorDto author,

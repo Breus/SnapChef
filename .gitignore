@@ -398,6 +398,9 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+.factorypath
+.settings/
+**/bin/
 
 # Java heap dump
 *.hprof

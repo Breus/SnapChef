@@ -10,7 +10,12 @@ rpc_bind_addr = "[::]:3901"
 rpc_public_addr = "host.docker.internal:3901" # IP of host
 rpc_secret = "46f752efc771a91a5314ec709f2bf772942393ad84e4487ef9b863cf16a3a054"
 
-[s3_api]
+[s3_api] # API of Garage
 s3_region = "garage"
 api_bind_addr = "[::]:3900"
 root_domain = ".s3.garage"
+
+[s3_web] # API of static website
+bind_addr = "[::]:3902"
+root_domain = ".web.garage.localhost"
+index = "index.html"

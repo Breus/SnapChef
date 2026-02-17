@@ -1,7 +1,9 @@
 package dev.blaauwendraad.recipe_book.web;
 
-import dev.blaauwendraad.recipe_book.service.ImageService;
 import dev.blaauwendraad.recipe_book.service.RecipeService;
+import dev.blaauwendraad.recipe_book.service.exception.EntityNotFoundException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthorizationException;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
 import dev.blaauwendraad.recipe_book.service.model.Recipe;
@@ -9,12 +11,12 @@ import dev.blaauwendraad.recipe_book.web.model.IngredientDto;
 import dev.blaauwendraad.recipe_book.web.model.PreparationStepDto;
 import dev.blaauwendraad.recipe_book.web.model.RecipeAuthorDto;
 import dev.blaauwendraad.recipe_book.web.model.RecipeDto;
-import dev.blaauwendraad.recipe_book.web.model.RecipeResponse;
 import dev.blaauwendraad.recipe_book.web.model.RecipeSummariesFilter;
 import dev.blaauwendraad.recipe_book.web.model.RecipeSummariesResponse;
 import dev.blaauwendraad.recipe_book.web.model.RecipeSummaryDto;
 import dev.blaauwendraad.recipe_book.web.model.SaveRecipeRequestDto;
 import dev.blaauwendraad.recipe_book.web.model.SaveRecipeResponseDto;
+import jakarta.annotation.Nullable;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,7 +27,6 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -33,21 +34,22 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.io.File;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jboss.resteasy.reactive.PartType;
+import org.jboss.resteasy.reactive.RestForm;
 
 @ApplicationScoped
 @Path("/api/recipes")
 public class RecipeResource {
     private final RecipeService recipeService;
-    private final ImageService imageService;
 
     @Inject
     JsonWebToken jwt;
 
     @Inject
-    public RecipeResource(RecipeService recipeService, ImageService imageService) {
+    public RecipeResource(RecipeService recipeService) {
         this.recipeService = recipeService;
-        this.imageService = imageService;
     }
 
     @GET
@@ -72,7 +74,7 @@ public class RecipeResource {
                         recipeSummary.id(),
                         recipeSummary.title(),
                         recipeSummary.description(),
-                        recipeSummary.imageName(),
+                        recipeSummary.imageName() != null,
                         recipeSummary.numServings(),
                         recipeSummary.preparationTime(),
                         recipeSummary.author() == null
@@ -87,17 +89,14 @@ public class RecipeResource {
     @Path("/{recipeId}")
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public RecipeResponse getRecipe(@PathParam("recipeId") Long id) {
-        Recipe recipe = recipeService.getRecipeById(id);
-        if (recipe == null) {
-            throw new NotFoundException("Recipe not found with recipeId: " + id);
-        }
+    public RecipeDto getRecipe(@PathParam("recipeId") Long id) throws EntityNotFoundException {
+        Recipe recipe = recipeService.getRecipe(id);
 
-        return new RecipeResponse(new RecipeDto(
+        return new RecipeDto(
                 recipe.id(),
                 recipe.title(),
                 recipe.description(),
-                recipe.imageName(),
+                recipe.imageName() != null,
                 recipe.numServings(),
                 recipe.preparationTime(),
                 recipe.author() == null
@@ -109,37 +108,29 @@ public class RecipeResource {
                         .toList(),
                 recipe.preparationSteps().stream()
                         .map(step -> new PreparationStepDto(step.description()))
-                        .toList()));
+                        .toList());
     }
 
     @GET
     @Path("/{recipeId}/image")
     @PermitAll
     @Produces("image/jpeg")
-    public Response getRecipeImage(@PathParam("recipeId") Long id) {
-        Recipe recipe = recipeService.getRecipeById(id);
-        if (recipe == null) {
-            throw new NotFoundException("Recipe not found with recipeId: " + id);
-        }
-        if (recipe.imageName() == null) {
-            throw new NotFoundException("Recipe with recipeId: " + id + " has no image");
-        }
-        byte[] imageFile = imageService.getObject(recipe.imageName());
-        if (imageFile == null) {
-            throw new NotFoundException("Image not found for recipeId: " + id);
-        }
+    public Response getRecipeImage(@PathParam("recipeId") Long id) throws EntityNotFoundException {
+        byte[] imageFile = recipeService.getRecipeImage(id);
         return Response.ok(imageFile).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @RolesAllowed({"admin", "user"})
-    public SaveRecipeResponseDto createRecipe(@NotNull @Valid SaveRecipeRequestDto newRecipe) {
+    public SaveRecipeResponseDto createRecipe(
+            @RestForm("newRecipe") @PartType(MediaType.APPLICATION_JSON) @NotNull @Valid SaveRecipeRequestDto newRecipe,
+            @RestForm("recipeImage") @Nullable File recipeImage)
+            throws UserAuthenticationException {
         Long recipeId = recipeService.createRecipe(
                 newRecipe.title(),
                 newRecipe.description(),
-                newRecipe.imageName(),
                 newRecipe.numServings(),
                 newRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
@@ -148,22 +139,26 @@ public class RecipeResource {
                         .toList(),
                 newRecipe.preparationSteps().stream()
                         .map(stepDto -> new PreparationStep(stepDto.description()))
-                        .toList());
+                        .toList(),
+                recipeImage);
         return new SaveRecipeResponseDto(recipeId);
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/{recipeId}")
     @RolesAllowed({"admin", "user"})
     public SaveRecipeResponseDto updateRecipe(
-            @PathParam("recipeId") Long recipeId, @NotNull @Valid SaveRecipeRequestDto updatedRecipe) {
+            @PathParam("recipeId") Long recipeId,
+            @RestForm("newRecipe") @PartType(MediaType.APPLICATION_JSON) @NotNull @Valid
+                    SaveRecipeRequestDto updatedRecipe,
+            @RestForm("recipeImage") @Nullable File recipeImage)
+            throws UserAuthorizationException, UserAuthenticationException, EntityNotFoundException {
         recipeService.updateRecipe(
                 recipeId,
                 updatedRecipe.title(),
                 updatedRecipe.description(),
-                updatedRecipe.imageName(),
                 updatedRecipe.numServings(),
                 updatedRecipe.preparationTime(),
                 Long.valueOf(jwt.getName()),
@@ -172,7 +167,8 @@ public class RecipeResource {
                         .toList(),
                 updatedRecipe.preparationSteps().stream()
                         .map(stepDto -> new PreparationStep(stepDto.description()))
-                        .toList());
+                        .toList(),
+                recipeImage);
         return new SaveRecipeResponseDto(recipeId);
     }
 
@@ -181,7 +177,8 @@ public class RecipeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public Response deleteRecipe(@PathParam("recipeId") Long recipeId) {
+    public Response deleteRecipe(@PathParam("recipeId") Long recipeId)
+            throws UserAuthorizationException, UserAuthenticationException, EntityNotFoundException {
         recipeService.deleteRecipe(recipeId, Long.valueOf(jwt.getName()));
         return Response.noContent().build();
     }

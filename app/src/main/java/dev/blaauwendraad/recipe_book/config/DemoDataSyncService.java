@@ -56,7 +56,7 @@ public final class DemoDataSyncService {
 
     void insertDemoImage() {
         File imageFile = new File("data/images/spaghetti.jpg");
-        imageService.putObject(imageFile);
+        imageService.putImage(imageFile, "spaghetti.jpg");
         log.info("Inserted demo image into Garage/S3");
     }
 }

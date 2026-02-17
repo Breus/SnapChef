@@ -2,13 +2,13 @@ package dev.blaauwendraad.recipe_book.service;
 
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.service.exception.EntityNotFoundException;
 import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class UserService {
@@ -19,19 +19,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserAccount getUser(Long userId) {
+    public UserAccount getUser(Long userId) throws EntityNotFoundException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new NotFoundException("User with given userId does not exist");
+            throw new EntityNotFoundException("User with given userId does not exist");
         }
         return UserAccountConverter.toUserAccount(userAccountEntity);
     }
 
     @Transactional
-    public void updateEmail(Long userId, String newEmail, String currentPassword) throws UserAuthenticationException {
+    public void updateEmail(Long userId, String newEmail, String currentPassword)
+            throws UserAuthenticationException, EntityNotFoundException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new NotFoundException("User with given userId does not exist");
+            throw new EntityNotFoundException("User with given userId does not exist");
         }
         if (!BcryptUtil.matches(currentPassword, userAccountEntity.passwordHash)) {
             throw new UserAuthenticationException("Invalid password provided.");
@@ -46,10 +47,10 @@ public class UserService {
 
     @Transactional
     public void updatePassword(Long userId, String currentPassword, String newPassword)
-            throws UserAuthenticationException {
+            throws UserAuthenticationException, EntityNotFoundException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new NotFoundException("User with given userId does not exist");
+            throw new EntityNotFoundException("User with given userId does not exist");
         }
         if (!BcryptUtil.matches(currentPassword, userAccountEntity.passwordHash)) {
             throw new UserAuthenticationException("Current password is incorrect.");

@@ -12,7 +12,7 @@ defineProps<{ recipeSummary: RecipeSummary }>();
         <!-- Recipe Content with Image -->
         <div class="flex flex-1 gap-4 p-4 h-full">
             <!-- Thumbnail Image -->
-            <div v-if="recipeSummary.imageName" class="flex-shrink-0">
+            <div v-if="recipeSummary.hasImage" class="flex-shrink-0">
                 <img 
                     :src="`${API_BASE_URL}/recipes/${recipeSummary.id}/image`"
                     :alt="recipeSummary.title"

@@ -2,10 +2,10 @@ package dev.blaauwendraad.recipe_book.service;
 
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.service.exception.EntityNotFoundException;
 import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import io.quarkus.elytron.security.common.BcryptUtil;
-import jakarta.ws.rs.NotFoundException;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +34,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserTest() {
+    void getUserTest() throws EntityNotFoundException {
         // Given
         UserAccountEntity userAccountEntity = createUserAccountEntity(1L, "testuser@example.com");
         Mockito.when(userRepository.findById(1L)).thenReturn(userAccountEntity);
@@ -53,8 +53,8 @@ class UserServiceTest {
     @Test
     void getUserTest_NotFound() {
         Assertions.assertThatThrownBy(() -> userService.getUser(2L))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("User with given userId does not exist");
+                .hasMessageContaining("Entity not found.")
+                .hasFieldOrPropertyWithValue("detailMessage", "User with given userId does not exist");
     }
 
     @Test
@@ -74,8 +74,9 @@ class UserServiceTest {
     @Test
     void updateEmail_NotFound() {
         Assertions.assertThatThrownBy(() -> userService.updateEmail(10L, "newemail@example.com", TEST_PASSWORD))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("User with given userId does not exist");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Entity not found.")
+                .hasFieldOrPropertyWithValue("detailMessage", "User with given userId does not exist");
     }
 
     @Test
@@ -126,8 +127,9 @@ class UserServiceTest {
     @Test
     void updatePassword_NotFound() {
         Assertions.assertThatThrownBy(() -> userService.updatePassword(10L, TEST_PASSWORD, "newpassword123"))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("User with given userId does not exist");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Entity not found.")
+                .hasFieldOrPropertyWithValue("detailMessage", "User with given userId does not exist");
     }
 
     @Test

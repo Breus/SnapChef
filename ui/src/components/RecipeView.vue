@@ -10,6 +10,7 @@ import {
 import {useAuth} from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 import {PreparationTime} from "../models/domain/PreparationTime.ts";
+import { API_BASE_URL } from "../api/httpClient.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -202,6 +203,17 @@ onMounted(async () => {
             <div v-else-if="!showLoading && recipe" class="overflow-hidden rounded-lg bg-white shadow-lg">
                 <!-- Recipe Header -->
                 <div class="border-b border-gray-300 px-4 sm:px-6 pt-6 sm:pt-8 pb-6">
+                    <!-- Image and Header Content Container -->
+                    <div :class="recipe.hasImage ? 'flex gap-6' : ''">
+                        <!-- Recipe Image -->
+                        <div v-if="recipe.hasImage" class="flex-shrink-0">
+                            <img :src="`${API_BASE_URL}/recipes/${recipe.id}/image`" 
+                                 :alt="recipe.title" 
+                                 class="w-48 h-48 object-cover rounded-lg shadow-md">
+                        </div>
+                        
+                        <!-- Header Content -->
+                        <div class="flex-1 min-w-0">
                     <!-- Title and Actions Row for Desktop -->
                     <div class="hidden md:flex md:items-start md:justify-between md:mb-4">
                         <h1 class="text-3xl font-bold text-gray-900 flex-1 pr-4">
@@ -254,52 +266,51 @@ onMounted(async () => {
 
                     <!-- Action Buttons for Mobile -->
                     <div class="block md:hidden mb-4">
-                        <div class="flex items-center justify-start space-x-1">
+                        <div class="flex items-center justify-start space-x-5">
                             <button @click="clickFavoriteRecipe"
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors duration-150"
-                                    :class="recipe && userFavorites.includes(recipe.id) ? 'text-green-700 border-green-300' : 'text-gray-700'">
+                                    class="p-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors duration-150"
+                                    :class="recipe && userFavorites.includes(recipe.id) ? 'text-green-700 border-green-300' : 'text-gray-700'"
+                                    title="Favorite Recipe">
                                 <svg v-if="recipe && userFavorites.includes(recipe.id)" xmlns="http://www.w3.org/2000/svg"
                                      stroke="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                     class="w-4 h-4 mr-1.5">
-                                    <path :fill="'#16a34a'" stroke-linecap="round" stroke-linejoin="round"
+                                     class="w-5 h-5">
+                                    <path :fill="'none'" stroke-linecap="round" stroke-linejoin="round"
                                           d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
                                 </svg>
                                 <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                      stroke-width="1.5" stroke="currentColor"
-                                     class="w-4 h-4 mr-1.5">
+                                     class="w-5 h-5">
                                     <path fill="none" stroke-linecap="round" stroke-linejoin="round"
                                           d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
                                 </svg>
-                                <span v-if="recipe && userFavorites.includes(recipe.id)">Favorited</span>
-                                <span v-else>Favorite</span>
                             </button>
                             <button v-if="recipe && recipe.author && recipe.author.userId == userId" @click="editRecipe"
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors duration-150">
+                                    class="p-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors duration-150"
+                                    title="Edit Recipe">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5"
                                      stroke="currentColor"
-                                     class="w-4 h-4 mr-1.5">
+                                     class="w-5 h-5 text-gray-500 hover:text-blue-600 transition-colors duration-150">
                                     <path fill="none" stroke-linecap="round" stroke-linejoin="round"
                                           d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
                                 </svg>
-                                Edit
                             </button>
                             <button v-if="recipe && recipe.author && recipe.author.userId == userId" @click="deleteRecipe"
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 rounded-lg border border-red-300 bg-white hover:bg-red-50 transition-colors duration-150">
+                                    class="p-2 rounded-lg border border-red-300 bg-white hover:bg-red-50 text-red-700 transition-colors duration-150"
+                                    title="Delete Recipe">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5"
                                      stroke="currentColor"
-                                     class="w-4 h-4 mr-1.5">
+                                     class="w-5 h-5">
                                     <path fill="none" stroke-linecap="round" stroke-linejoin="round"
                                           d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
                                 </svg>
-                                Delete
                             </button>
                         </div>
                     </div>
-                    <p class="mb-4 text-lg text-gray-600">
+                    <p class="hidden md:block mb-4 text-lg text-gray-600">
                         {{ recipe?.description }}
                     </p>
 
-                    <div class="mb-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div class="mb-4 flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-2 md:gap-4 text-sm text-gray-500">
                         <div class="flex items-center">
                             <span class="mr-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
@@ -336,7 +347,12 @@ onMounted(async () => {
                                     PreparationTime[recipe.preparationTime as keyof typeof PreparationTime]
                                 }}</span>
                         </div>
+                    </div>                        </div>
                     </div>
+                    <!-- Description for Mobile - Outside flex container -->
+                    <p class="block md:hidden mt-4 text-lg text-gray-600">
+                        {{ recipe?.description }}
+                    </p>
                 </div>
                 <!-- Recipe Body (Main section)-->
                 <div class="space-y-8 p-4 sm:p-6">
