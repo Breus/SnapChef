@@ -74,7 +74,7 @@ public class RecipeResource {
                         recipeSummary.id(),
                         recipeSummary.title(),
                         recipeSummary.description(),
-                        recipeSummary.imageName() != null,
+                        recipeSummary.imageName(),
                         recipeSummary.numServings(),
                         recipeSummary.preparationTime(),
                         recipeSummary.author() == null
@@ -96,7 +96,7 @@ public class RecipeResource {
                 recipe.id(),
                 recipe.title(),
                 recipe.description(),
-                recipe.imageName() != null,
+                recipe.imageName(),
                 recipe.numServings(),
                 recipe.preparationTime(),
                 recipe.author() == null

@@ -10,7 +10,7 @@ import {
 import {useAuth} from "../auth/useAuth.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 import {PreparationTime} from "../models/domain/PreparationTime.ts";
-import { API_BASE_URL } from "../api/httpClient.ts";
+import { OBJECT_STORAGE_BASE_URL } from "../api/httpClient.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -204,10 +204,10 @@ onMounted(async () => {
                 <!-- Recipe Header -->
                 <div class="border-b border-gray-300 px-4 sm:px-6 pt-6 sm:pt-8 pb-6">
                     <!-- Image and Header Content Container -->
-                    <div :class="recipe.hasImage ? 'flex gap-6' : ''">
+                    <div :class="recipe.imageName ? 'flex gap-6' : ''">
                         <!-- Recipe Image -->
-                        <div v-if="recipe.hasImage" class="flex-shrink-0">
-                            <img :src="`${API_BASE_URL}/recipes/${recipe.id}/image`" 
+                        <div v-if="recipe.imageName" class="flex-shrink-0">
+                            <img :src="`${OBJECT_STORAGE_BASE_URL}/${recipe.imageName}`" 
                                  :alt="recipe.title" 
                                  class="w-48 h-48 object-cover rounded-lg shadow-md">
                         </div>

@@ -18,4 +18,3 @@ root_domain = ".s3.garage"
 [s3_web] # API of static website
 bind_addr = "[::]:3902"
 root_domain = ".web.garage.localhost"
-index = "index.html"

@@ -4,7 +4,7 @@ export default interface RecipeSummary {
     id: number;
     title: string;
     description: string;
-    hasImage: boolean;
+    imageName: string | null;
     numServings: number;
     preparationTime: PreparationTime;
     author: {

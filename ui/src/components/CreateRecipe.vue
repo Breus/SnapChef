@@ -189,7 +189,7 @@ onMounted(async () => {
             ingredients.value = [...recipe.ingredients, {description: ""}];
             preparationSteps.value = [...recipe.preparationSteps, {description: ""}];
 
-            if(recipe.hasImage) {
+            if(recipe.imageName) {
                 try {
                     const response = await fetch(`${API_BASE_URL}/recipes/${recipe.id}/image`);
                     if (response.ok) {

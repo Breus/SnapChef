@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/osx,vim,node,patch,vuejs,gradle,intellij,certificates,java
-# Edit at https://www.toptal.com/developers/gitignore?templates=osx,vim,node,patch,vuejs,gradle,intellij,certificates,java
+# Created by https://www.toptal.com/developers/gitignore/api/osx,vim,node,patch,vuejs,gradle,intellij,visualstudiocode,certificates,java
+# Edit at https://www.toptal.com/developers/gitignore?templates=osx,vim,node,patch,vuejs,gradle,intellij,visualstudiocode,certificates,java
 
 ### Frontebd build artifcats ###
 app/src/main/resources/META-INF/resources

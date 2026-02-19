@@ -10,7 +10,7 @@ export const getRecipeById = async (id: number): Promise<Recipe> => {
         const recipe: Recipe = {
             title: data.title.trim(),
             description: data.description.trim(),
-            hasImage: data.hasImage,
+            imageName: data.imageName,
             numServings: data.numServings,
             preparationTime: data.preparationTime as PreparationTime,
             author: {

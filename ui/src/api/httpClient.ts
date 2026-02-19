@@ -4,6 +4,7 @@ import { refreshAccessToken } from "./userAuthenticationApi";
 
 const BACKEND_HOST_URL = import.meta.env.VITE_BACKEND_HOST_URL || "http://localhost:8081";
 export const API_BASE_URL = `${BACKEND_HOST_URL}/api`;
+export const OBJECT_STORAGE_BASE_URL = "http://images.web.garage.localhost:3902";
 
 // Types for HTTP client
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";

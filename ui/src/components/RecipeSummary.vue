@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PreparationTime } from "../models/domain/PreparationTime.ts";
 import type RecipeSummary from "../models/domain/RecipeSummary.ts";
-import { API_BASE_URL } from "../api/httpClient.ts";
+import { OBJECT_STORAGE_BASE_URL } from "../api/httpClient.ts";
 
 defineProps<{ recipeSummary: RecipeSummary }>();
 
@@ -12,9 +12,9 @@ defineProps<{ recipeSummary: RecipeSummary }>();
         <!-- Recipe Content with Image -->
         <div class="flex flex-1 gap-4 p-4 h-full">
             <!-- Thumbnail Image -->
-            <div v-if="recipeSummary.hasImage" class="flex-shrink-0">
+            <div v-if="recipeSummary.imageName" class="flex-shrink-0">
                 <img 
-                    :src="`${API_BASE_URL}/recipes/${recipeSummary.id}/image`"
+                    :src="`${OBJECT_STORAGE_BASE_URL}/${recipeSummary.imageName}`"
                     :alt="recipeSummary.title"
                     class="h-22 w-22 rounded-lg object-cover"
                 />

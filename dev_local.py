@@ -78,6 +78,7 @@ def setup_garage():
             file.write(f"S3_ACCESS_KEY_ID={key_id}\n")
             file.write(f"S3_ACCESS_KEY_SECRET={key_secret}\n")
         subprocess.run(garage_command + ["bucket", "allow", "--read", "--write", "--owner", bucket_name, "--key", bucket_name + "-key"], check=True)
+        subprocess.run(garage_command + ["bucket", "website", "--allow", bucket_name], check=True)
     except subprocess.CalledProcessError as exception:
         print(f"Failed to setup Garage: {exception}")
         sys.exit(1)
