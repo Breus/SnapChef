@@ -1,8 +1,8 @@
-import type Ingredient from "./Ingredient.ts";
-import type { PreparationTime } from "./PreparationTime.ts";
-import type PreparationStep from "./PreparationStep.ts";
+import type Ingredient from "../domain/Ingredient.ts";
+import type PreparationStep from "../domain/PreparationStep.ts";
+import type { PreparationTime } from "../domain/PreparationTime.ts";
 
-export default interface Recipe {
+export default interface RecipeDto {
     id: number;
     title: string;
     description: string;

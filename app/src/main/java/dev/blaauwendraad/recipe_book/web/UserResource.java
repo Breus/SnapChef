@@ -1,6 +1,7 @@
 package dev.blaauwendraad.recipe_book.web;
 
 import dev.blaauwendraad.recipe_book.service.UserService;
+import dev.blaauwendraad.recipe_book.service.exception.EntityNotFoundException;
 import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
 import dev.blaauwendraad.recipe_book.service.model.UserAccount;
 import dev.blaauwendraad.recipe_book.web.model.UpdateEmailRequest;
@@ -38,7 +39,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "user"})
-    public UserAccountDto getUser(@PathParam("userId") Long userId) {
+    public UserAccountDto getUser(@PathParam("userId") Long userId) throws EntityNotFoundException {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to get other user");
         }
@@ -52,7 +53,7 @@ public class UserResource {
     @Path("/email")
     @RolesAllowed({"admin", "user"})
     public Response updateEmail(@PathParam("userId") Long userId, @Valid @NotNull UpdateEmailRequest request)
-            throws UserAuthenticationException {
+            throws UserAuthenticationException, EntityNotFoundException {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to update e-mail of other user");
         }
@@ -66,7 +67,7 @@ public class UserResource {
     @Path("/password")
     @RolesAllowed({"admin", "user"})
     public Response updatePassword(@PathParam("userId") Long userId, @Valid @NotNull UpdatePasswordRequest request)
-            throws UserAuthenticationException {
+            throws UserAuthenticationException, EntityNotFoundException {
         if (!Long.valueOf(jwt.getName()).equals(userId)) {
             throw new ForbiddenException("Not allowed to update password of other user");
         }

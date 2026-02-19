@@ -34,6 +34,7 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
             UserAccountEntity userAccountEntity,
             String title,
             @Nullable String description,
+            @Nullable String imageName,
             Integer numServings,
             PreparationTime preparationTime,
             List<Ingredient> ingredients,
@@ -49,6 +50,7 @@ public class RecipeRepository implements PanacheRepository<RecipeEntity> {
         var recipeEntity = existingRecipeEntity != null ? existingRecipeEntity : new RecipeEntity();
         recipeEntity.title = title;
         recipeEntity.description = description;
+        recipeEntity.imageName = imageName;
         recipeEntity.numServings = numServings;
         recipeEntity.preparationTime = preparationTime;
 
