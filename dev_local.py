@@ -17,7 +17,7 @@ def check_command_exists(cmd):
 def cleanup(signum=None, _=None):
     print("\nShutting down Docker Compose...")
     try:
-        subprocess.run(["docker", "compose", "down"], check=True)
+        subprocess.run(["docker", "compose", "-f", "docker-compose-local-dev.yml", "-f", "docker-compose.override.yml", "down"], check=True)
     except Exception as exc:
         print(f"Error during docker compose down: {exc}")
     sys.exit(0)
@@ -51,7 +51,7 @@ def verify_local_setup_completed():
 def start_docker_compose():
     print("Starting Docker Compose...")
     try:
-        subprocess.run(["docker", "compose", "-f", "docker-compose-local-dev.yml", "up", "-d"], check=True)
+        subprocess.run(["docker", "compose", "-f", "docker-compose-local-dev.yml", "-f", "docker-compose.override.yml", "up", "-d"], check=True)
     except subprocess.CalledProcessError as exception:
         print(f"Failed to start Docker Compose: {exception}")
         sys.exit(1)
