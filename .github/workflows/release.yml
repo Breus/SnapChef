@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push PostgreSQL image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./
           file: ./app/src/main/docker/Dockerfile.postgres
@@ -76,7 +76,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build and push Quarkus backend image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./app
           file: ./app/src/main/docker/Dockerfile.jvm
