@@ -6,6 +6,7 @@ public record RecipeSummary(
         Long id,
         String title,
         @Nullable String description,
+        @Nullable String imageName,
         Integer numServings,
         PreparationTime preparationTime,
         @Nullable Author author) {}

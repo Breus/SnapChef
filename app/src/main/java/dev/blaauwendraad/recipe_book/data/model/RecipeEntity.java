@@ -35,6 +35,10 @@ public class RecipeEntity extends PanacheEntityBase {
     @Nullable
     public String description;
 
+    @Column(name = "image_name")
+    @Nullable
+    public String imageName;
+
     @Column(name = "num_servings")
     @SuppressWarnings("NullAway.Init")
     public Integer numServings;

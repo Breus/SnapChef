@@ -57,6 +57,33 @@ def start_docker_compose():
         sys.exit(1)
 
 
+def setup_garage():
+    print("Starting Garage...")
+    try:
+        bucket_name = "images"
+        zone_name = "local"
+        garage_command = ["docker", "exec", "-it", "snapchef-garage-1", "/garage"]
+        output = subprocess.run(garage_command + ["status"], capture_output=True, text=True, check=True)
+        if zone_name in output.stdout:
+            print("Garage already set up.")
+            return
+        node_id = output.stdout.splitlines()[4].split(" ")[0]
+        subprocess.run(garage_command + ["layout", "assign", node_id, "-z", zone_name, "-c", "1G"], check=True)
+        subprocess.run(garage_command + ["layout", "apply", "--version", "1"], check=True)
+        subprocess.run(garage_command + ["bucket", "create", bucket_name], check=True)
+        output = subprocess.run(garage_command + ["key", "create", bucket_name + "-key"], capture_output=True, text=True, check=True)
+        key_id = output.stdout.splitlines()[3].split(":")[1].strip()
+        key_secret = output.stdout.splitlines()[5].split(":")[1].strip()
+        with open("app/.env", "w") as file:
+            file.write(f"S3_ACCESS_KEY_ID={key_id}\n")
+            file.write(f"S3_ACCESS_KEY_SECRET={key_secret}\n")
+        subprocess.run(garage_command + ["bucket", "allow", "--read", "--write", "--owner", bucket_name, "--key", bucket_name + "-key"], check=True)
+        subprocess.run(garage_command + ["bucket", "website", "--allow", bucket_name], check=True)
+    except subprocess.CalledProcessError as exception:
+        print(f"Failed to setup Garage: {exception}")
+        sys.exit(1)
+
+
 def start_quarkus_dev():
     print("Starting Quarkus Dev...")
     proc = subprocess.Popen(
@@ -89,6 +116,7 @@ def main():
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
     start_docker_compose()
+    setup_garage()
     start_quarkus_dev()
 
 

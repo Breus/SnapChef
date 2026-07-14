@@ -4,6 +4,9 @@ import dev.blaauwendraad.recipe_book.data.model.RecipeEntity;
 import dev.blaauwendraad.recipe_book.data.model.UserAccountEntity;
 import dev.blaauwendraad.recipe_book.repository.RecipeRepository;
 import dev.blaauwendraad.recipe_book.repository.UserRepository;
+import dev.blaauwendraad.recipe_book.service.exception.EntityNotFoundException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthenticationException;
+import dev.blaauwendraad.recipe_book.service.exception.UserAuthorizationException;
 import dev.blaauwendraad.recipe_book.service.model.Author;
 import dev.blaauwendraad.recipe_book.service.model.Ingredient;
 import dev.blaauwendraad.recipe_book.service.model.PreparationStep;
@@ -15,6 +18,7 @@ import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +26,13 @@ import java.util.stream.Collectors;
 public class RecipeService {
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+    private final ImageService imageService;
 
     @Inject
-    public RecipeService(UserRepository userRepository, RecipeRepository recipeRepository) {
+    public RecipeService(UserRepository userRepository, RecipeRepository recipeRepository, ImageService imageService) {
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
+        this.imageService = imageService;
     }
 
     public List<RecipeSummary> getAllRecipeSummaries(
@@ -62,21 +68,22 @@ public class RecipeService {
                 recipeEntity.id,
                 recipeEntity.title,
                 recipeEntity.description,
+                recipeEntity.imageName,
                 recipeEntity.numServings,
                 recipeEntity.preparationTime,
                 recipeEntity.author == null ? null : new Author(recipeEntity.author.id, recipeEntity.author.username));
     }
 
-    @Nullable
-    public Recipe getRecipeById(Long recipeId) {
+    public Recipe getRecipe(Long recipeId) throws EntityNotFoundException {
         RecipeEntity recipeEntity = recipeRepository.findById(recipeId);
         if (recipeEntity == null) {
-            return null;
+            throw new EntityNotFoundException("Recipe with recipeId " + recipeId + " does not exist");
         }
         return new Recipe(
                 recipeEntity.id,
                 recipeEntity.title,
                 recipeEntity.description,
+                recipeEntity.imageName,
                 recipeEntity.numServings,
                 recipeEntity.preparationTime,
                 recipeEntity.author == null ? null : new Author(recipeEntity.author.id, recipeEntity.author.username),
@@ -88,6 +95,18 @@ public class RecipeService {
                         .collect(Collectors.toList()));
     }
 
+    public byte[] getRecipeImage(Long recipeId) throws EntityNotFoundException {
+        Recipe recipe = getRecipe(recipeId);
+        if (recipe.imageName() == null) {
+            throw new EntityNotFoundException("Recipe with recipeId: " + recipeId + " has no image");
+        }
+        byte[] imageFile = imageService.getImage(recipe.imageName());
+        if (imageFile == null) {
+            throw new EntityNotFoundException("Image not found for recipeId: " + recipeId);
+        }
+        return imageFile;
+    }
+
     @Transactional
     public Long createRecipe(
             String title,
@@ -96,16 +115,23 @@ public class RecipeService {
             PreparationTime preparationTime,
             Long userId,
             List<Ingredient> ingredients,
-            List<PreparationStep> preparationSteps) {
+            List<PreparationStep> preparationSteps,
+            @Nullable File recipeImage)
+            throws UserAuthenticationException {
         UserAccountEntity userAccountEntity = userRepository.findById(userId);
         if (userAccountEntity == null) {
-            throw new IllegalArgumentException("Author with userId " + userId + " does not exist");
+            throw new UserAuthenticationException("User with userId " + userId + " does not exist");
+        }
+        String imageName = null;
+        if (recipeImage != null) {
+            imageName = imageService.putImage(recipeImage);
         }
         return recipeRepository.persistRecipeEntity(
                 null,
                 userAccountEntity,
                 title,
                 description,
+                imageName,
                 numServings,
                 preparationTime,
                 ingredients,
@@ -113,18 +139,19 @@ public class RecipeService {
     }
 
     @Transactional
-    public void deleteRecipe(Long recipeId, Long userId) {
+    public void deleteRecipe(Long recipeId, Long userId)
+            throws UserAuthorizationException, UserAuthenticationException, EntityNotFoundException {
         UserAccountEntity userAccount = userRepository.findById(userId);
         if (userAccount == null) {
-            throw new IllegalArgumentException("User with userId " + userId + " does not exist");
+            throw new UserAuthenticationException("User with userId " + userId + " does not exist");
         }
-        RecipeEntity recipeEntity = RecipeEntity.findById(recipeId);
-        if (recipeEntity == null) {
-            throw new IllegalArgumentException("Recipe with recipeId " + recipeId + " does not exist");
-        }
-        if (recipeEntity.author == null || !recipeEntity.author.id.equals(userId)) {
-            throw new IllegalArgumentException(
+        Recipe recipe = getRecipe(recipeId);
+        if (recipe.author() == null || !recipe.author().id().equals(userId)) {
+            throw new UserAuthorizationException(
                     "User with userId " + userId + " is not the author of the recipe with recipeId " + recipeId);
+        }
+        if (recipe.imageName() != null) {
+            imageService.deleteImage(recipe.imageName());
         }
         recipeRepository.deleteById(recipeId);
     }
@@ -138,24 +165,34 @@ public class RecipeService {
             PreparationTime preparationTime,
             Long userId,
             List<Ingredient> ingredients,
-            List<PreparationStep> preparationSteps) {
+            List<PreparationStep> preparationSteps,
+            @Nullable File recipeImage)
+            throws UserAuthorizationException, UserAuthenticationException, EntityNotFoundException {
         UserAccountEntity userAccount = userRepository.findById(userId);
         if (userAccount == null) {
-            throw new IllegalArgumentException("User with userId " + userId + " does not exist");
+            throw new UserAuthenticationException("User with userId " + userId + " does not exist");
         }
         RecipeEntity existingRecipeEntity = RecipeEntity.findById(recipeId);
         if (existingRecipeEntity == null) {
-            throw new IllegalArgumentException("Recipe with recipeId " + recipeId + " does not exist");
+            throw new EntityNotFoundException("Recipe with recipeId " + recipeId + " does not exist");
         }
         if (existingRecipeEntity.author == null || !existingRecipeEntity.author.id.equals(userId)) {
-            throw new IllegalArgumentException(
+            throw new UserAuthorizationException(
                     "User with userId " + userId + " is not the author of the recipe with recipeId " + recipeId);
+        }
+        if (existingRecipeEntity.imageName != null) {
+            imageService.deleteImage(existingRecipeEntity.imageName);
+        }
+        String imageName = null;
+        if (recipeImage != null) {
+            imageName = imageService.putImage(recipeImage);
         }
         recipeRepository.persistRecipeEntity(
                 existingRecipeEntity,
                 existingRecipeEntity.author,
                 title,
                 description,
+                imageName,
                 numServings,
                 preparationTime,
                 ingredients,

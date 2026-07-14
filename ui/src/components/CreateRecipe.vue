@@ -4,10 +4,11 @@ import {useRoute, useRouter} from "vue-router";
 import {createRecipe, getRecipeById, updateRecipe} from "../api/recipeApi.ts";
 import type Ingredient from "../models/domain/Ingredient.ts";
 import type PreparationStep from "../models/domain/PreparationStep.ts";
-import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
 import type Recipe from "../models/domain/Recipe.ts";
 import {useAuth} from "../auth/useAuth.ts";
 import {PreparationTime} from "../models/domain/PreparationTime.ts";
+import type RecipeCreateDto from "../models/dto/RecipeCreateDto.ts";
+import {API_BASE_URL} from "../api/httpClient.ts";
 import { VueDraggableNext } from 'vue-draggable-next';
 
 const router = useRouter();
@@ -23,6 +24,8 @@ const numServings = ref<number>(4);
 const preparationTime = ref<PreparationTime>(PreparationTime.MIN_15_30);
 const ingredients = ref<Ingredient[]>([{description: ""}]);
 const preparationSteps = ref<PreparationStep[]>([{description: ""}]);
+const recipeImage = ref<File | null>(null);
+const imagePreviewUrl = ref<string | null>(null);
 
 // Form state
 const isSubmitting = ref(false);
@@ -186,6 +189,20 @@ onMounted(async () => {
             ingredients.value = [...recipe.ingredients, {description: ""}];
             preparationSteps.value = [...recipe.preparationSteps, {description: ""}];
 
+            if(recipe.imageName) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/recipes/${recipe.id}/image`);
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const file = new File([blob], "recipe-image.jpg", { type: blob.type });
+                        recipeImage.value = file;
+                        imagePreviewUrl.value = URL.createObjectURL(blob);
+                    }
+                } catch (err) {
+                    console.error("Failed to load recipe image:", err);
+                }
+            }
+
             // Auto-resize all textareas after loading the data
             nextTick(() => {
                 autoResizeAllTextareas();
@@ -231,6 +248,7 @@ const submitForm = async () => {
             throw new Error("Number of servings must be between 1 and 100");
         }
 
+        const newRecipeFormData = new FormData();
         const newRecipe: RecipeCreateDto = {
             title: title.value.trim(),
             description: description.value.trim(),
@@ -239,6 +257,10 @@ const submitForm = async () => {
             ingredients: validIngredients,
             preparationSteps: validSteps,
         };
+        newRecipeFormData.append("newRecipe", new Blob([JSON.stringify(newRecipe)], { type: 'application/json' }));
+        if (recipeImage.value) {
+            newRecipeFormData.append("recipeImage", recipeImage.value);
+        }
 
         if (!isLoggedIn()) {
             throw new Error("You must be logged in to create a recipe.");
@@ -246,10 +268,10 @@ const submitForm = async () => {
         let goToRecipeId: number;
         if (isEditMode && recipeId) {
             // Update existing recipe
-            await updateRecipe(Number(recipeId), newRecipe);
+            await updateRecipe(Number(recipeId), newRecipeFormData);
             goToRecipeId = Number(recipeId);
         } else {
-            goToRecipeId = await createRecipe(newRecipe);
+            goToRecipeId = await createRecipe(newRecipeFormData);
         }
         router.push(`/recipe/${goToRecipeId}`);
     } catch (err) {
@@ -270,6 +292,106 @@ const cancelEdit = () => {
     } else {
         router.push("/");
     }
+};
+
+// Compress image using Canvas API
+const compressImage = async (file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.8): Promise<File> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target?.result as string;
+            
+            img.onload = () => {
+                // Calculate new dimensions while maintaining aspect ratio
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round((width * maxHeight) / height);
+                        height = maxHeight;
+                    }
+                }
+                
+                // Create canvas and draw image
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                
+                const ctx = canvas.getContext('2d');
+                if (!ctx) {
+                    reject(new Error('Failed to get canvas context'));
+                    return;
+                }
+                
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Convert canvas to blob
+                canvas.toBlob(
+                    (blob) => {
+                        if (!blob) {
+                            reject(new Error('Failed to compress image'));
+                            return;
+                        }
+                        
+                        // Create new file from blob
+                        const compressedFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now(),
+                        });
+                        
+                        resolve(compressedFile);
+                    },
+                    'image/jpeg',
+                    quality
+                );
+            };
+            
+            img.onerror = () => {
+                reject(new Error('Failed to load image'));
+            };
+        };
+        
+        reader.onerror = () => {
+            reject(new Error('Failed to read file'));
+        };
+    });
+};
+
+const handleImageUpload = async (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    
+    if (file) {
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            error.value = "File must be an image";
+            return;
+        }
+        
+        try {
+            const compressedFile = await compressImage(file);
+            recipeImage.value = compressedFile;
+            imagePreviewUrl.value = URL.createObjectURL(recipeImage.value);
+            
+        } catch (err) {
+            console.error('Image compression error:', err);
+            error.value = "Failed to process image. Please try another image.";
+        }
+    }
+};
+
+const removeImage = () => {
+    recipeImage.value = null;
+    imagePreviewUrl.value = null;
 };
 </script>
 <template>
@@ -357,14 +479,46 @@ const cancelEdit = () => {
                                 <!-- Number of Servings -->
                                 <div class="mt-4 sm:mt-0 sm:flex-1">
                                     <label for="numServings"
-                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. of
-                                        servings</label>
+                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. of servings</label>
                                     <div class="flex items-center space-x-2">
                                         <input v-model="numServings" type="number" id="numServings" min="1" max="100"
                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 w-16"
                                                placeholder="4">
                                         <span class="text-sm text-gray-700 dark:text-gray-300">servings</span>
                                     </div>
+                                </div>
+
+                                <!-- Image upload -->
+                                <div class="mt-4 sm:mt-0 sm:flex-1 self-end">
+                                    <label for="recipeImage"
+                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image</label>
+                                    <div v-if="!imagePreviewUrl"
+                                         class="flex items-center justify-center w-[100px] h-[40px]">
+                                        <label for="recipeImage"
+                                               class="flex items-center justify-center w-full h-full px-4 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600">
+                                            <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" fill="none"
+                                                 stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">{{ 'Upload' }}</span>
+                                        </label>
+                                        <input id="recipeImage" type="file" accept="image/*" class="hidden"
+                                               @change="handleImageUpload"/>
+                                    </div>
+                                    <button v-else type="button" @click="removeImage" 
+                                            class="relative inline-block group cursor-pointer h-[34px]">
+                                        <img :src="imagePreviewUrl" alt="Recipe preview"
+                                             class="h-full w-auto rounded-lg object-cover border border-gray-300"/>
+                                        <div class="absolute inset-0 flex items-center justify-center rounded-lg">
+                                            <div class="rounded-full bg-red-500 p-2 opacity-0 group-hover:opacity-100">
+                                                <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                          d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>

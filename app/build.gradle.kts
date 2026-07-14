@@ -20,7 +20,7 @@ val quarkusPlatformVersion: String by project
 dependencies {
     errorprone(libs.errorprone.core)
     errorprone(libs.nullaway)
-
+    
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
     implementation(libs.quarkus.arc)
@@ -33,6 +33,8 @@ dependencies {
     implementation(libs.quarkus.rest)
     implementation(libs.quarkus.rest.jackson)
     implementation(libs.quarkus.smallrye.jwt)
+    implementation("io.quarkiverse.amazonservices:quarkus-amazon-s3:3.12.1")
+    implementation("software.amazon.awssdk:url-connection-client:2.40.13")
 
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockito.junit)

@@ -12,9 +12,7 @@ const isLoading = ref<boolean>(true);
 const showLoading = ref<boolean>(false);
 let loadingTimer: number | null = null;
 
-
-// Recipe summaries overview filtering
-type RecipeFilterType = "ALL" | "MY" | "FAVORITES";
+type RecipeFilterType = "ALL" | "MY" | "FAVORITES"; // Recipe summaries overview filtering
 
 const storedFilter = localStorage.getItem("filter") as RecipeFilterType;
 const filterType = ref<RecipeFilterType>(storedFilter && isLoggedIn() ? storedFilter : "ALL");

@@ -3,7 +3,8 @@ import { useAuth } from "../auth/useAuth";
 import { refreshAccessToken } from "./userAuthenticationApi";
 
 const BACKEND_HOST_URL = import.meta.env.VITE_BACKEND_HOST_URL || "http://localhost:8081";
-const API_BASE_URL = `${BACKEND_HOST_URL}/api/`;
+export const API_BASE_URL = `${BACKEND_HOST_URL}/api`;
+export const OBJECT_STORAGE_BASE_URL = "http://images.web.garage.localhost:3902";
 
 // Types for HTTP client
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -55,13 +56,6 @@ export class HttpError<T = unknown> extends Error {
     }
 }
 
-// Default request configuration
-const defaultConfig: RequestConfig = {
-    headers: {
-        "Content-Type": "application/json",
-    },
-};
-
 // Helper function to build URL with query parameters
 const buildUrl = (path: string, params?: Record<string, string>): string => {
     const queryString = params ? `?${new URLSearchParams(params).toString()}` : "";
@@ -72,8 +66,12 @@ const buildUrl = (path: string, params?: Record<string, string>): string => {
 
 // Implementation of the HTTP client
 class FetchHttpClient implements HttpClient {
-    async request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig): Promise<T> {
-        const mergedConfig = {...defaultConfig, ...config};
+    async request<T>(method: HttpMethod, path: string, data?: unknown, config?: RequestConfig, formdata: boolean = false): Promise<T> {
+        var defaultHeaders = {};
+        if(!formdata) {
+            defaultHeaders = {"Content-Type": "application/json"};
+        }
+        const mergedConfig = { headers: defaultHeaders, ...config };
         let {headers, params, signal, auth} = mergedConfig;
 
         if (auth === "accessToken") {
@@ -92,12 +90,14 @@ class FetchHttpClient implements HttpClient {
 
         const requestOptions: RequestInit = {
             method,
-            headers: {...defaultConfig.headers, ...headers},
+            headers: {...defaultHeaders, ...headers},
             signal,
         };
 
-        if (data && ["POST", "PUT", "PATCH"].includes(method)) {
+        if (data && !formdata && ["POST", "PUT", "PATCH"].includes(method)) {
             requestOptions.body = JSON.stringify(data);
+        } else if (data && formdata && ["POST", "PUT", "PATCH"].includes(method)) {
+            requestOptions.body = data as FormData;
         }
 
         try {
@@ -166,3 +166,4 @@ export const post = httpClient.post.bind(httpClient);
 export const put = httpClient.put.bind(httpClient);
 export const del = httpClient.delete.bind(httpClient);
 export const patch = httpClient.patch.bind(httpClient);
+export const request = httpClient.request.bind(httpClient);
