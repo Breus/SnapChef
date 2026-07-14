@@ -1,13 +1,13 @@
 [versions]
-assertj = "3.27.6"
-errorprone = "2.46.0"
-errorprone-plugin = "4.4.0"
-mockito-junit = "5.21.0"
-nullaway = "0.12.15"
+assertj = "3.27.7"
+errorprone = "2.50.0"
+errorprone-plugin = "5.1.0"
+mockito-junit = "5.23.0"
+nullaway = "0.13.7"
 palantir-java-format = "2.73.0"
-quarkus = "3.31.1"
-quarkus-quinoa = "2.7.1"
-rest-assured = "6.0.0"
+quarkus = "3.37.2"
+quarkus-quinoa = "2.8.3"
+rest-assured = "6.0.1"
 testcontainers = "1.21.4"
 
 [libraries]
@@ -33,4 +33,4 @@ testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.
 [plugins]
 errorprone = { id = "net.ltgt.errorprone", version.ref = "errorprone-plugin" }
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }
-spotless = { id = "com.diffplug.spotless", version = "8.1.0" }
+spotless = { id = "com.diffplug.spotless", version = "8.8.0" }
