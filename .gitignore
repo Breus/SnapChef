@@ -4,6 +4,10 @@
 ### Frontebd build artifcats ###
 app/src/main/resources/META-INF/resources
 
+### Eclipse/JDT generated files (Eclipse IDE and VSCode Java extension) ###
+**/.factorypath
+app/bin/
+
 ### certificates ###
 *.pem
 !app/src/test/resources/test-keys/*.pem
